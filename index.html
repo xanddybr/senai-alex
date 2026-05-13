@@ -8,6 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+
+  .nao-selecionavel {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none;      /* Internet Explorer/Edge */
+  user-select: none;          /* Padrão moderno (Chrome, Firefox, Opera) */
+  }
+
   :root {
     --navy: #0a2540;
     --navy-soft: #14365b;
@@ -1006,15 +1013,15 @@ function renderExercise(ex) {
       <ol class="flow-steps">${stepsHtml}</ol>
 
       <div class="ex-section-label">JavaScript (VSCode)</div>
-      <div class="code-wrap">
+      <div class="code-wrap nao-selecionavel">
         <div class="code-header">
           <span class="code-filename">exercicio${String(ex.n).padStart(2, '0')}.js</span>
-          <button class="copy-btn" onclick="copyCode(this, ${ex.n})">copiar</button>
+          <button class="copy-btn" onclick="copyCode(this, ${ex.n})" style="display:none;">copiar</button>
         </div>
         <pre id="code-${ex.n}">${highlight(ex.code)}</pre>
       </div>
 
-      <button class="run-btn" onclick="runCode(${ex.n})">Rodar agora no navegador</button>
+      <button class="run-btn" style="display:none;" onclick="runCode(${ex.n})" >Rodar agora no navegador</button>
     </article>
   `;
 }
