@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>30 Novos Exercícios · Aulas 02-04 · Programador Front-End</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a2540;
+    --navy-soft: #14365b;
+    --teal: #0c8599;
+    --teal-light: #67c5d6;
+    --gold: #e8a004;
+    --coral: #d8542a;
+    --bg: #f7f3ec;
+    --paper: #ffffff;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --rule: #d4cbb8;
+    --easy: #2f8a3d;
+    --decision: #b8631a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .hero {
+    background: var(--navy);
+    color: white;
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(103, 197, 214, 0.15) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 1200px; margin: 0 auto; position: relative; }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 18px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--teal-light);
+    font-weight: 400;
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    max-width: 700px;
+    color: rgba(255, 255, 255, 0.78);
+    margin-bottom: 30px;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 22px;
+    font-size: 13px;
+  }
+  .hero-meta div { display: flex; flex-direction: column; gap: 2px; }
+  .hero-meta .label {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .hero-meta .value { font-weight: 500; color: white; }
+
+  /* WORKFLOW */
+  .workflow {
+    background: var(--paper);
+    padding: 36px 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .workflow-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .workflow-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--navy);
+  }
+  .workflow-desc {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .step {
+    border-left: 3px solid var(--teal);
+    padding: 6px 20px;
+  }
+  .step .num {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .step h3 {
+    font-size: 15px;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .step p {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .step code {
+    background: #f0ece2;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .step kbd {
+    background: #e9e3d3;
+    border: 1px solid #cfc6b2;
+    border-bottom-width: 2px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+
+  /* NAV */
+  .nav-section {
+    background: var(--bg);
+    padding: 30px 40px 0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: linear-gradient(to bottom, var(--bg) 75%, transparent);
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .nav-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-right: 8px;
+  }
+  .pill {
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  .pill:hover { border-color: var(--navy); }
+  .pill.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+  /* GROUP HEADER */
+  .group-header {
+    max-width: 1200px;
+    margin: 30px auto 0;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .group-header h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 26px;
+    color: var(--navy);
+  }
+  .group-header .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+  .group-header .count {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+
+  /* EXERCISES */
+  .exercises {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 40px 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+  }
+
+  .exercise {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 24px 24px 22px;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
+  }
+  .exercise:hover {
+    box-shadow: 0 4px 24px rgba(10, 37, 64, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .ex-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .ex-number {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 1;
+    color: var(--navy);
+    flex-shrink: 0;
+    letter-spacing: -1px;
+    min-width: 50px;
+  }
+  .ex-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 3px;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+  .ex-tag.easy { background: #e3f1e5; color: var(--easy); }
+  .ex-tag.decision { background: #fbeede; color: var(--decision); }
+
+  .ex-problem {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+    margin-bottom: 18px;
+    flex: 1;
+  }
+  .ex-hint {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    background: #f0ece2;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.5;
+  }
+  .ex-hint .lbl {
+    color: var(--teal);
+    font-weight: 700;
+    margin-right: 4px;
+  }
+
+  .ex-checklist {
+    border-top: 1px dashed var(--rule);
+    padding-top: 14px;
+    margin-top: auto;
+  }
+  .ex-checklist-label {
+    font-size: 10.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .ex-checklist ul {
+    list-style: none;
+  }
+  .ex-checklist li {
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding-left: 20px;
+    position: relative;
+    margin-bottom: 4px;
+  }
+  .ex-checklist li::before {
+    content: "☐";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--teal);
+    font-weight: 700;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--navy);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 40px;
+    text-align: center;
+    font-size: 13px;
+  }
+  .footer strong { color: white; }
+
+  /* PRINT */
+  @media print {
+    body { background: white; }
+    .hero { background: white; color: var(--navy); border-bottom: 2px solid var(--navy); page-break-after: avoid; }
+    .hero::before { display: none; }
+    .hero h1 em { color: var(--teal); }
+    .hero-sub, .hero-meta .label, .hero-meta .value { color: var(--ink-soft); }
+    .nav-section { display: none; }
+    .exercises { grid-template-columns: repeat(2, 1fr); gap: 18px; padding: 20px; }
+    .exercise { border: 1px solid #ccc; break-inside: avoid; box-shadow: none; }
+    .footer { background: white; color: var(--ink-soft); border-top: 1px solid var(--rule); }
+  }
+
+  @media (max-width: 600px) {
+    .hero, .workflow, .nav-section, .group-header { padding-left: 20px; padding-right: 20px; }
+    .exercises { padding: 20px; grid-template-columns: 1fr; }
+    .exercise { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Aulas 02 a 04 · Lógica de Programação</div>
+    <h1>30 problemas para <em>pseudocódigo, fluxograma e console</em></h1>
+    <p class="hero-sub">Cada problema deve ser resolvido três vezes: primeiro como pseudocódigo no VisuAlg, depois como fluxograma no Draw.io, e por fim como código JavaScript testado no console do Chrome (F12). Mesma lógica, três formas de pensar.</p>
+    <div class="hero-meta">
+      <div>
+        <span class="label">Curso</span>
+        <span class="value">Programador Front-End</span>
+      </div>
+      <div>
+        <span class="label">Unidade Curricular</span>
+        <span class="value">Lógica de Programação · 32h</span>
+      </div>
+      <div>
+        <span class="label">Professor</span>
+        <span class="value">Alexandre Santana</span>
+      </div>
+      <div>
+        <span class="label">Total de problemas</span>
+        <span class="value">30 · 3 formas de resolver</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="workflow">
+  <div class="workflow-inner">
+    <h2 class="workflow-title">Como resolver cada problema</h2>
+    <p class="workflow-desc">Para cada um dos 30 problemas, siga estes 4 passos na ordem.</p>
+    <div class="steps-grid">
+      <div class="step">
+        <span class="num">01</span>
+        <h3>Pseudocódigo no VisuAlg</h3>
+        <p>Abra o VisuAlg e escreva o algoritmo com <code>Var</code>, <code>Inicio</code>, <code>leia</code>, <code>escreva</code> e <code>fimalgoritmo</code>. Pressione <kbd>F9</kbd> para executar.</p>
+      </div>
+      <div class="step">
+        <span class="num">02</span>
+        <h3>Fluxograma no Draw.io</h3>
+        <p>Abra <code>app.diagrams.net</code> e desenhe usando elipse (início/fim), paralelogramo (leia/escreva), retângulo (cálculo) e losango (decisão).</p>
+      </div>
+      <div class="step">
+        <span class="num">03</span>
+        <h3>Console do Chrome</h3>
+        <p>Abra o Chrome, pressione <kbd>F12</kbd>, vá na aba <strong>Console</strong>. Use <code>prompt()</code> para entrada e <code>console.log()</code> para saída.</p>
+      </div>
+      <div class="step">
+        <span class="num">04</span>
+        <h3>Teste sempre</h3>
+        <p>Rode com pelo menos <strong>3 entradas diferentes</strong> para cada problema. Inclua casos extremos (zero, valor mínimo, valor máximo).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="nav-section">
+  <div class="nav-inner">
+    <span class="nav-label">Filtrar</span>
+    <button class="pill active" data-filter="all">Todos (30)</button>
+    <button class="pill" data-filter="easy">Sequência simples (15)</button>
+    <button class="pill" data-filter="decision">Com decisão (15)</button>
+  </div>
+</nav>
+
+<div class="group-header" data-group="easy">
+  <h2>Sequência simples</h2>
+  <div class="rule"></div>
+  <span class="count">Problemas 1 a 15</span>
+</div>
+
+<main class="exercises" id="exercises-easy" data-tag="easy">
+  <!-- 1 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">01</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba um número e mostre o triplo dele.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> triplo = numero * 3</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 2 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">02</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba 3 números e mostre a soma dos três.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> soma = a + b + c</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 3 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">03</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba a idade em anos e converta para dias.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> dias = anos * 365</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 4 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">04</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba uma distância em quilômetros e converta para metros.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> metros = km * 1000</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 5 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">05</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba a base e a altura de um triângulo e calcule a área.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> area = (base * altura) / 2</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 6 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">06</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba a base e a altura de um retângulo e calcule o perímetro.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> perimetro = 2 * (base + altura)</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 7 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">07</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba um valor em reais e converta para euros (cotação: R$ 6,20 = € 1,00).</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> euros = reais / 6.20</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 8 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">08</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba 4 notas e calcule a média simples.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> media = (n1+n2+n3+n4) / 4</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 9 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">09</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba uma quantidade de segundos e converta para horas.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> horas = segundos / 3600</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 10 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">10</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba um número e mostre a metade dele.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> metade = numero / 2</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 11 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">11</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba a quantidade de pessoas de uma família e o consumo de água por pessoa por dia (em litros). Calcule o consumo total diário.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> total = pessoas * consumo</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 12 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">12</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba a distância de uma viagem e o consumo do carro (km/L). Calcule quantos litros serão gastos.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> litros = distancia / consumo</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 13 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">13</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba o salário bruto e calcule o salário líquido descontando 11% de INSS.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> liquido = bruto - (bruto * 0.11)</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 14 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">14</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba o raio e a altura de um cilindro e calcule o volume (use π = 3.14).</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> volume = 3.14 * raio * raio * altura</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 15 -->
+  <article class="exercise" data-tag="easy">
+    <div class="ex-top">
+      <span class="ex-number">15</span>
+      <span class="ex-tag easy">Sequência</span>
+    </div>
+    <p class="ex-problem">Receba o preço unitário de um produto e a quantidade comprada. Mostre o valor total da compra.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> total = preco * quantidade</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+</main>
+
+<div class="group-header" data-group="decision">
+  <h2>Com decisão</h2>
+  <div class="rule"></div>
+  <span class="count">Problemas 16 a 30 · usam if/else</span>
+</div>
+
+<main class="exercises" id="exercises-decision" data-tag="decision">
+  <!-- 16 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">16</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba um número e diga se ele é múltiplo de 5.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se numero % 5 == 0 → múltiplo</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 17 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">17</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba um número e diga se ele é menor que 50.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se numero &lt; 50 → "menor que 50"</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 18 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">18</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba a presença do aluno em porcentagem. Se for menor que 75%, está reprovado por falta.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se presenca &lt; 75 → reprovado</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 19 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">19</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba um número e diga se ele é igual a zero.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se numero == 0 → "é zero"</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 20 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">20</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba a idade da pessoa. Se for 60 anos ou mais, mostre que é idosa.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se idade &gt;= 60 → idoso</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 21 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">21</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba a idade da pessoa. Se for 18 ou mais, pode comprar bebida alcoólica.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se idade &gt;= 18 → pode comprar</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 22 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">22</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba a temperatura em graus Celsius. Se for menor ou igual a 0°C, mostre "Congelando".</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se temp &lt;= 0 → "Congelando"</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 23 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">23</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba um número e diga se ele é múltiplo de 4.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se numero % 4 == 0 → múltiplo</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 24 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">24</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba um número e diga se ele é múltiplo de 9.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se numero % 9 == 0 → múltiplo</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 25 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">25</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba uma senha. Se tiver 8 caracteres ou mais, está válida.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se senha.length &gt;= 8 → válida</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 26 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">26</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba uma letra. Diga se é vogal (a, e, i, o, u).</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se letra == "a" ou "e" ou "i" ou "o" ou "u"</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 27 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">27</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba um número e diga se ele está entre 100 e 200 (inclusive).</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se numero &gt;= 100 e numero &lt;= 200</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 28 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">28</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba dois números e mostre qual é o menor.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se a &lt; b → "a menor", senao → "b menor"</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 29 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">29</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba a velocidade de um carro. Se for acima de 60 km/h, está acima do limite urbano.</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se velocidade &gt; 60 → multa</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- 30 -->
+  <article class="exercise" data-tag="decision">
+    <div class="ex-top">
+      <span class="ex-number">30</span>
+      <span class="ex-tag decision">Com decisão</span>
+    </div>
+    <p class="ex-problem">Receba o nível do tanque em porcentagem. Se for menor que 20%, mostre "Precisa abastecer".</p>
+    <div class="ex-hint"><span class="lbl">dica:</span> se tanque &lt; 20 → "abastecer"</div>
+    <div class="ex-checklist">
+      <div class="ex-checklist-label">Entregar</div>
+      <ul>
+        <li>Pseudocódigo (.alg)</li>
+        <li>Fluxograma (.drawio)</li>
+        <li>Print do console</li>
+      </ul>
+    </div>
+  </article>
+</main>
+
+<footer class="footer">
+  <p><strong>Programador Front-End · Firjan SENAI</strong></p>
+  <p style="margin-top: 6px;">Aulas 02 a 04 · Pseudocódigo, Operadores e Condicionais · Distribuído para uso em sala de aula</p>
+</footer>
+
+<script>
+// Filter pills
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    const f = pill.dataset.filter;
+    
+    document.querySelectorAll('.exercise').forEach(card => {
+      if (f === 'all' || card.dataset.tag === f) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    
+    // Hide/show entire group sections too
+    document.querySelectorAll('.group-header, .exercises').forEach(el => {
+      const tag = el.dataset.tag || el.dataset.group;
+      if (!tag) return;
+      if (f === 'all' || tag === f) {
+        el.style.display = '';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
