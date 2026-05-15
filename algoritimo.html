@@ -1177,7 +1177,7 @@ function highlight(code) {
 
 const tagLabels = { sequencia: 'Sequência', decisao: 'Com decisão' };
 
-/*function renderCard(ex) {
+function renderCard(ex) {
   return `
     <article class="exercise" data-tag="${ex.tag}" id="ex-${ex.n}">
       <header class="ex-head">
@@ -1200,13 +1200,13 @@ const tagLabels = { sequencia: 'Sequência', decisao: 'Com decisão' };
         </div>
       </div>
 
-      <div class="actions">
+      <div class="actions" style="display:none;">
         <button class="btn-action toggle" onclick="toggleSolution(${ex.n}, this)">Ver solução</button>
         <button class="btn-action btn-run" onclick="runCode(${ex.n})">Rodar agora</button>
       </div>
     </article>
   `;
-} */
+}
 
 // Group cards by tag
 document.getElementById('exercises-sequencia').innerHTML =
