@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>30 Novos Exercícios · Aulas 02-04 · Programador Front-End</title>
+<title>60 Problemas · Sequência e Decisão · Programador Front-End</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --navy: #0a2540;
-    --navy-soft: #14365b;
     --teal: #0c8599;
     --teal-light: #67c5d6;
     --gold: #e8a004;
@@ -19,9 +18,10 @@
     --paper: #ffffff;
     --ink: #1a1a1a;
     --ink-soft: #4a4a4a;
+    --ink-light: #7a7468;
     --rule: #d4cbb8;
-    --easy: #2f8a3d;
-    --decision: #b8631a;
+    --seq: #2f8a3d;
+    --dec: #b8631a;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,24 +33,36 @@
     line-height: 1.6;
   }
 
-  /* HEADER */
+  /* HERO */
   .hero {
     background: var(--navy);
     color: white;
-    padding: 60px 40px 50px;
+    padding: 70px 40px 60px;
     position: relative;
     overflow: hidden;
   }
   .hero::before {
     content: "";
     position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(103, 197, 214, 0.15) 0%, transparent 65%);
+    top: -40%; right: -10%;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(103, 197, 214, 0.16) 0%, transparent 65%);
     pointer-events: none;
   }
-  .hero-inner { max-width: 1200px; margin: 0 auto; position: relative; }
+  .hero-inner { max-width: 1280px; margin: 0 auto; position: relative; }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--teal-light);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    letter-spacing: 0.3px;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: white; }
   .eyebrow {
     font-size: 12px;
     letter-spacing: 4px;
@@ -62,10 +74,10 @@
   .hero h1 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: clamp(2.2rem, 5vw, 3.6rem);
-    line-height: 1.05;
-    letter-spacing: -1px;
-    margin-bottom: 18px;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    line-height: 1.0;
+    letter-spacing: -1.2px;
+    margin-bottom: 20px;
   }
   .hero h1 em {
     font-style: italic;
@@ -74,9 +86,9 @@
   }
   .hero-sub {
     font-size: 1.05rem;
-    max-width: 700px;
+    max-width: 720px;
     color: rgba(255, 255, 255, 0.78);
-    margin-bottom: 30px;
+    margin-bottom: 32px;
   }
   .hero-meta {
     display: flex;
@@ -95,64 +107,44 @@
   }
   .hero-meta .value { font-weight: 500; color: white; }
 
-  /* WORKFLOW */
-  .workflow {
+  /* INSTRUCTIONS BAND */
+  .how-band {
     background: var(--paper);
-    padding: 36px 40px;
     border-bottom: 1px solid var(--rule);
+    padding: 32px 40px;
   }
-  .workflow-inner {
-    max-width: 1200px;
+  .how-inner {
+    max-width: 1280px;
     margin: 0 auto;
-  }
-  .workflow-title {
-    font-family: 'Fraunces', serif;
-    font-size: 22px;
-    font-weight: 500;
-    margin-bottom: 6px;
-    color: var(--navy);
-  }
-  .workflow-desc {
-    color: var(--ink-soft);
-    font-size: 14px;
-    margin-bottom: 24px;
-  }
-  .steps-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 22px;
   }
-  .step {
+  .how-step {
     border-left: 3px solid var(--teal);
-    padding: 6px 20px;
+    padding: 4px 18px;
   }
-  .step .num {
+  .how-step .n {
     font-family: 'Fraunces', serif;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 500;
     color: var(--teal);
     line-height: 1;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     display: block;
   }
-  .step h3 {
-    font-size: 15px;
+  .how-step h3 {
+    font-size: 14.5px;
     margin-bottom: 4px;
     font-weight: 600;
   }
-  .step p {
-    font-size: 13.5px;
+  .how-step p {
+    font-size: 13px;
     color: var(--ink-soft);
-    line-height: 1.55;
+    line-height: 1.5;
+    display: none;
   }
-  .step code {
-    background: #f0ece2;
-    padding: 1px 5px;
-    border-radius: 3px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-  }
-  .step kbd {
+  .how-step kbd {
     background: #e9e3d3;
     border: 1px solid #cfc6b2;
     border-bottom-width: 2px;
@@ -161,18 +153,25 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
   }
+  .how-step code {
+    background: #f0ece2;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
 
-  /* NAV */
+  /* FILTER NAV */
   .nav-section {
     background: var(--bg);
-    padding: 30px 40px 0;
+    padding: 26px 40px 0;
     position: sticky;
     top: 0;
     z-index: 50;
-    background: linear-gradient(to bottom, var(--bg) 75%, transparent);
+    background: linear-gradient(to bottom, var(--bg) 80%, transparent);
   }
   .nav-inner {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     display: flex;
     gap: 8px;
@@ -190,7 +189,7 @@
     border: 1px solid var(--rule);
     background: var(--paper);
     border-radius: 20px;
-    padding: 6px 14px;
+    padding: 7px 16px;
     font-size: 13px;
     cursor: pointer;
     transition: all 0.15s;
@@ -200,20 +199,26 @@
   .pill:hover { border-color: var(--navy); }
   .pill.active { background: var(--navy); color: white; border-color: var(--navy); }
 
-  /* GROUP HEADER */
+  /* GROUP DIVIDER */
   .group-header {
-    max-width: 1200px;
-    margin: 30px auto 0;
+    max-width: 1280px;
+    margin: 36px auto 0;
     padding: 0 40px;
     display: flex;
-    align-items: center;
-    gap: 16px;
+    align-items: baseline;
+    gap: 20px;
   }
   .group-header h2 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: 26px;
+    font-size: 28px;
     color: var(--navy);
+    letter-spacing: -0.5px;
+  }
+  .group-header h2 em {
+    font-style: italic;
+    color: var(--teal);
+    font-weight: 400;
   }
   .group-header .rule {
     flex: 1;
@@ -221,20 +226,20 @@
     background: var(--rule);
   }
   .group-header .count {
-    font-size: 12px;
+    font-size: 11.5px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--ink-soft);
+    color: var(--ink-light);
     font-weight: 600;
   }
 
-  /* EXERCISES */
+  /* EXERCISES GRID */
   .exercises {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 20px 40px 50px;
+    padding: 24px 40px 30px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 24px;
   }
 
@@ -242,32 +247,59 @@
     background: var(--paper);
     border: 1px solid var(--rule);
     border-radius: 6px;
-    padding: 24px 24px 22px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    transition: box-shadow 0.2s, transform 0.2s;
     position: relative;
+    transition: box-shadow 0.2s, transform 0.2s;
   }
   .exercise:hover {
-    box-shadow: 0 4px 24px rgba(10, 37, 64, 0.08);
+    box-shadow: 0 6px 24px rgba(10, 37, 64, 0.08);
     transform: translateY(-2px);
   }
+  .exercise[data-tag="sequencia"]::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--seq);
+    border-radius: 6px 6px 0 0;
+  }
+  .exercise[data-tag="decisao"]::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--dec);
+    border-radius: 6px 6px 0 0;
+  }
 
-  .ex-top {
+  .ex-head {
     display: flex;
     align-items: flex-start;
     gap: 14px;
     margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--rule);
   }
   .ex-number {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: 36px;
+    font-size: 34px;
     line-height: 1;
     color: var(--navy);
-    flex-shrink: 0;
     letter-spacing: -1px;
+    flex-shrink: 0;
     min-width: 50px;
+  }
+  .ex-meta { flex: 1; }
+  .ex-title {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 6px;
   }
   .ex-tag {
     display: inline-block;
@@ -276,18 +308,16 @@
     text-transform: uppercase;
     padding: 3px 9px;
     border-radius: 3px;
-    font-weight: 600;
-    margin-top: 8px;
+    font-weight: 700;
   }
-  .ex-tag.easy { background: #e3f1e5; color: var(--easy); }
-  .ex-tag.decision { background: #fbeede; color: var(--decision); }
+  .ex-tag.sequencia { background: #e3f1e5; color: var(--seq); }
+  .ex-tag.decisao { background: #fbeede; color: var(--dec); }
 
   .ex-problem {
-    font-size: 15px;
+    font-size: 14.5px;
     line-height: 1.55;
-    color: var(--ink);
-    margin-bottom: 18px;
-    flex: 1;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
   }
   .ex-hint {
     font-size: 12.5px;
@@ -303,66 +333,133 @@
     color: var(--teal);
     font-weight: 700;
     margin-right: 4px;
-    display:none;
   }
 
-  .ex-checklist {
-    border-top: 1px dashed var(--rule);
-    padding-top: 14px;
+  /* Solution area - hidden by default */
+  .solution {
+    display: none;
+    margin-bottom: 14px;
+  }
+  .exercise.show-solution .solution { display: block; }
+
+  .code-wrap {
+    background: var(--navy);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .code-filename {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .copy-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+  .copy-btn.copied { background: var(--teal); border-color: var(--teal); color: white; }
+  pre {
+    padding: 14px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.65;
+    color: #e6e6e6;
+  }
+  .tk-kw { color: #ff7b9c; }
+  .tk-str { color: #c3e88d; }
+  .tk-num { color: #f78c6c; }
+  .tk-fn { color: #82aaff; }
+  .tk-cm { color: #5c7791; font-style: italic; }
+
+  /* Actions row */
+  .actions {
+    display: flex;
+    gap: 8px;
     margin-top: auto;
   }
-  .ex-checklist-label {
-    font-size: 10.5px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-weight: 600;
-    color: var(--teal);
-    margin-bottom: 8px;
-  }
-  .ex-checklist ul {
-    list-style: none;
-  }
-  .ex-checklist li {
+  .btn-action {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--navy);
+    font-family: inherit;
     font-size: 13px;
-    color: var(--ink-soft);
-    padding-left: 20px;
-    position: relative;
-    margin-bottom: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
   }
-  .ex-checklist li::before {
-    content: "☐";
-    position: absolute;
-    left: 0;
-    top: 0;
-    color: var(--teal);
-    font-weight: 700;
+  .btn-action:hover { border-color: var(--navy); }
+  .btn-action.toggle.active {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
   }
+  .btn-run {
+    background: var(--gold);
+    color: var(--navy);
+    border-color: var(--gold);
+  }
+  .btn-run:hover { background: #f7b21f; border-color: #f7b21f; }
+  .btn-action::before {
+    font-size: 11px;
+  }
+  .btn-action.toggle::before { content: "▾"; transition: transform 0.2s; }
+  .btn-action.toggle.active::before { transform: rotate(180deg); }
+  .btn-run::before { content: "▶"; font-size: 9px; }
 
   /* FOOTER */
-  .footer {
+  footer {
     background: var(--navy);
     color: rgba(255, 255, 255, 0.7);
-    padding: 40px;
+    padding: 36px 40px;
     text-align: center;
     font-size: 13px;
+    margin-top: 50px;
   }
-  .footer strong { color: white; }
+  footer strong { color: white; }
+  footer a {
+    color: var(--teal-light);
+    text-decoration: none;
+  }
 
   /* PRINT */
   @media print {
     body { background: white; }
-    .hero { background: white; color: var(--navy); border-bottom: 2px solid var(--navy); page-break-after: avoid; }
+    .hero { background: white; color: var(--navy); }
     .hero::before { display: none; }
     .hero h1 em { color: var(--teal); }
-    .hero-sub, .hero-meta .label, .hero-meta .value { color: var(--ink-soft); }
-    .nav-section { display: none; }
-    .exercises { grid-template-columns: repeat(2, 1fr); gap: 18px; padding: 20px; }
+    .hero-sub, .hero-meta .label { color: var(--ink-soft); }
+    .nav-section, .actions { display: none; }
+    .exercise.show-solution .solution { display: block; }
+    .exercises { grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 20px; }
     .exercise { border: 1px solid #ccc; break-inside: avoid; box-shadow: none; }
-    .footer { background: white; color: var(--ink-soft); border-top: 1px solid var(--rule); }
+    footer { background: white; color: var(--ink-soft); border-top: 1px solid var(--rule); }
   }
 
   @media (max-width: 600px) {
-    .hero, .workflow, .nav-section, .group-header { padding-left: 20px; padding-right: 20px; }
+    .hero, .how-band, .nav-section, .group-header { padding-left: 20px; padding-right: 20px; }
     .exercises { padding: 20px; grid-template-columns: 1fr; }
     .exercise { padding: 20px; }
   }
@@ -372,55 +469,52 @@
 
 <header class="hero">
   <div class="hero-inner">
-    <div class="eyebrow">Aulas 02 a 04 · Lógica de Programação</div>
-    <h1>Vamos resolver alguns problemas em pseudocódigo, fluxograma e console</em></h1>
-    <p class="hero-sub">Cada problema deve ser resolvido três vezes: primeiro como pseudocódigo no VisuAlg, depois como fluxograma no Draw.io, e por fim como código JavaScript testado no console do Chrome (F12). Mesma lógica, três formas de pensar.</p>
+    <a href="Portal_Programador_Frontend.html" class="back-link">← Voltar ao portal</a>
+    <div class="eyebrow">Banco de exercícios · Aulas 02 a 04</div>
+    <h1>P roblemas para dominar <em>sequência e decisão</em></h1>
+    <p class="hero-sub">Trinta exercícios de sequência simples e trinta com decisão — pseudocódigo no VisuAlg, fluxograma no Draw.io e código JavaScript pronto para rodar no console do Chrome. Tente resolver sozinho primeiro; a solução fica escondida atrás do botão.</p>
     <div class="hero-meta">
       <div>
         <span class="label">Curso</span>
         <span class="value">Programador Front-End</span>
       </div>
       <div>
-        <span class="label">Unidade Curricular</span>
-        <span class="value">Lógica de Programação · 32h</span>
+        <span class="label">Material</span>
+        <span class="value">03 · Banco completo</span>
+      </div>
+      <div>
+        <span class="label">Total</span>
+        <span class="value">60 problemas · 3 formas de resolver</span>
       </div>
       <div>
         <span class="label">Professor</span>
         <span class="value">Alexandre Santana</span>
       </div>
-      <div>
-        <span class="label">Total de problemas</span>
-        <span class="value">30 · 3 formas de resolver</span>
-      </div>
     </div>
   </div>
 </header>
 
-<section class="workflow">
-  <div class="workflow-inner">
-    <h2 class="workflow-title">Como resolver cada problema</h2>
-    <p class="workflow-desc">Para cada um dos 30 problemas, siga estes 4 passos na ordem.</p>
-    <div class="steps-grid">
-      <div class="step">
-        <span class="num">01</span>
-        <h3>Pseudocódigo no VisuAlg</h3>
-        <p>Abra o VisuAlg e escreva o algoritmo com <code>Var</code>, <code>Inicio</code>, <code>leia</code>, <code>escreva</code> e <code>fimalgoritmo</code>. Pressione <kbd>F9</kbd> para executar.</p>
-      </div>
-      <div class="step">
-        <span class="num">02</span>
-        <h3>Fluxograma no Draw.io</h3>
-        <p>Abra <code>app.diagrams.net</code> e desenhe usando elipse (início/fim), paralelogramo (leia/escreva), retângulo (cálculo) e losango (decisão).</p>
-      </div>
-      <div class="step">
-        <span class="num">03</span>
-        <h3>Console do Chrome</h3>
-        <p>Abra o Chrome, pressione <kbd>F12</kbd>, vá na aba <strong>Console</strong>. Use <code>prompt()</code> para entrada e <code>console.log()</code> para saída.</p>
-      </div>
-      <div class="step">
-        <span class="num">04</span>
-        <h3>Teste sempre</h3>
-        <p>Rode com pelo menos <strong>3 entradas diferentes</strong> para cada problema. Inclua casos extremos (zero, valor mínimo, valor máximo).</p>
-      </div>
+<section class="how-band">
+  <div class="how-inner">
+    <div class="how-step">
+      <span class="n">01</span>
+      <h3>Tente sozinho primeiro</h3>
+      <p>Leia o problema, identifique entradas e saídas, faça o fluxograma e o pseudocódigo antes de olhar a solução.</p>
+    </div>
+    <div class="how-step">
+      <span class="n">02</span>
+      <h3>Console do Chrome</h3>
+      <p>Abra qualquer página, pressione <kbd>F12</kbd> e vá em <strong>Console</strong>. Cole seu código e pressione <kbd>Enter</kbd>.</p>
+    </div>
+    <div class="how-step">
+      <span class="n">03</span>
+      <h3>Compare com a solução</h3>
+      <p>Clique em <strong>Ver solução</strong> só depois de tentar. Compare sua versão com a solução oficial.</p>
+    </div>
+    <div class="how-step">
+      <span class="n">04</span>
+      <h3>Rode aqui mesmo</h3>
+      <p>O botão <strong>Rodar agora</strong> executa o código nesta página com <code>prompt()</code> e <code>alert()</code> reais.</p>
     </div>
   </div>
 </section>
@@ -428,598 +522,742 @@
 <nav class="nav-section">
   <div class="nav-inner">
     <span class="nav-label">Filtrar</span>
-    <button class="pill active" data-filter="all">Todos (30)</button>
-    <button class="pill" data-filter="easy">Sequência simples (15)</button>
-    <button class="pill" data-filter="decision">Com decisão (15)</button>
+    <button class="pill active" data-filter="all">Todos (60)</button>
+    <button class="pill" data-filter="sequencia">Sequência (30)</button>
+    <button class="pill" data-filter="decisao">Com decisão (30)</button>
   </div>
 </nav>
 
-<div class="group-header" data-group="easy">
-  <h2>Sequência simples</h2>
+<div class="group-header" data-group="sequencia">
+  <h2>Sequência <em>simples</em></h2>
   <div class="rule"></div>
-  <span class="count">Problemas 1 a 15</span>
+  <span class="count">Problemas 1 a 30</span>
 </div>
 
-<main class="exercises" id="exercises-easy" data-tag="easy">
-  <!-- 1 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">01</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba um número e mostre o triplo dele.</p>
-    <div class="ex-hint d-none" ><span class="lbl">dica:</span> triplo = numero * 3</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 2 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">02</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba 3 números e mostre a soma dos três.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> soma = a + b + c</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 3 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">03</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba a idade em anos e converta para dias.</p>
-    <div class="ex-hint"><span class="lbl" style="display:none;">dica:</span> dias = anos * 365</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 4 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">04</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba uma distância em quilômetros e converta para metros.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> metros = km * 1000</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 5 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">05</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba a base e a altura de um triângulo e calcule a área.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> area = (base * altura) / 2</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 6 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">06</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba a base e a altura de um retângulo e calcule o perímetro.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> perimetro = 2 * (base + altura)</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 7 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">07</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba um valor em reais e converta para euros (cotação: R$ 6,20 = € 1,00).</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> euros = reais / 6.20</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 8 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">08</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba 4 notas e calcule a média simples.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> media = (n1+n2+n3+n4) / 4</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 9 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">09</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba uma quantidade de segundos e converta para horas.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> horas = segundos / 3600</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 10 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">10</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba um número e mostre a metade dele.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> metade = numero / 2</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 11 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">11</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba a quantidade de pessoas de uma família e o consumo de água por pessoa por dia (em litros). Calcule o consumo total diário.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> total = pessoas * consumo</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 12 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">12</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba a distância de uma viagem e o consumo do carro (km/L). Calcule quantos litros serão gastos.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> litros = distancia / consumo</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 13 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">13</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba o salário bruto e calcule o salário líquido descontando 11% de INSS.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> liquido = bruto - (bruto * 0.11)</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 14 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">14</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba o raio e a altura de um cilindro e calcule o volume (use π = 3.14).</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> volume = 3.14 * raio * raio * altura</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 15 -->
-  <article class="exercise" data-tag="easy">
-    <div class="ex-top">
-      <span class="ex-number">15</span>
-      <span class="ex-tag easy">Sequência</span>
-    </div>
-    <p class="ex-problem">Receba o preço unitário de um produto e a quantidade comprada. Mostre o valor total da compra.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> total = preco * quantidade</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
+<main class="exercises" id="exercises-sequencia" data-tag-section="sequencia">
+  <!-- Cards injected by JS -->
 </main>
 
-<div class="group-header" data-group="decision">
-  <h2>Com decisão</h2>
+<div class="group-header" data-group="decisao">
+  <h2>Com <em>decisão</em></h2>
   <div class="rule"></div>
-  <span class="count">Problemas 16 a 30 · usam if/else</span>
+  <span class="count">Problemas 31 a 60</span>
 </div>
 
-<main class="exercises" id="exercises-decision" data-tag="decision">
-  <!-- 16 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">16</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba um número e diga se ele é múltiplo de 5.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se numero % 5 == 0 → múltiplo</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 17 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">17</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba um número e diga se ele é menor que 50.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se numero &lt; 50 → "menor que 50"</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 18 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">18</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba a presença do aluno em porcentagem. Se for menor que 75%, está reprovado por falta.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se presenca &lt; 75 → reprovado</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 19 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">19</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba um número e diga se ele é igual a zero.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se numero == 0 → "é zero"</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 20 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">20</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba a idade da pessoa. Se for 60 anos ou mais, mostre que é idosa.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se idade &gt;= 60 → idoso</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 21 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">21</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba a idade da pessoa. Se for 18 ou mais, pode comprar bebida alcoólica.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se idade &gt;= 18 → pode comprar</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 22 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">22</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba a temperatura em graus Celsius. Se for menor ou igual a 0°C, mostre "Congelando".</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se temp &lt;= 0 → "Congelando"</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 23 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">23</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba um número e diga se ele é múltiplo de 4.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se numero % 4 == 0 → múltiplo</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 24 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">24</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba um número e diga se ele é múltiplo de 9.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se numero % 9 == 0 → múltiplo</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 25 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">25</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba uma senha. Se tiver 8 caracteres ou mais, está válida.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se senha.length &gt;= 8 → válida</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 26 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">26</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba uma letra. Diga se é vogal (a, e, i, o, u).</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se letra == "a" ou "e" ou "i" ou "o" ou "u"</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 27 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">27</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba um número e diga se ele está entre 100 e 200 (inclusive).</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se numero &gt;= 100 e numero &lt;= 200</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 28 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">28</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba dois números e mostre qual é o menor.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se a &lt; b → "a menor", senao → "b menor"</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 29 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">29</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba a velocidade de um carro. Se for acima de 60 km/h, está acima do limite urbano.</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se velocidade &gt; 60 → multa</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
-
-  <!-- 30 -->
-  <article class="exercise" data-tag="decision">
-    <div class="ex-top">
-      <span class="ex-number">30</span>
-      <span class="ex-tag decision">Com decisão</span>
-    </div>
-    <p class="ex-problem">Receba o nível do tanque em porcentagem. Se for menor que 20%, mostre "Precisa abastecer".</p>
-    <div class="ex-hint"><span class="lbl">dica:</span> se tanque &lt; 20 → "abastecer"</div>
-    <div class="ex-checklist">
-      <div class="ex-checklist-label">Entregar</div>
-      <ul>
-        <li>Pseudocódigo (.alg)</li>
-        <li>Fluxograma (.drawio)</li>
-        <li>Print do console</li>
-      </ul>
-    </div>
-  </article>
+<main class="exercises" id="exercises-decisao" data-tag-section="decisao">
+  <!-- Cards injected by JS -->
 </main>
 
-<footer class="footer">
+<footer>
   <p><strong>Programador Front-End · Firjan SENAI</strong></p>
-  <p style="margin-top: 6px;">Aulas 02 a 04 · Pseudocódigo, Operadores e Condicionais · Distribuído para uso em sala de aula</p>
+  <p style="margin-top: 6px;">Material 03 · Banco completo de exercícios · <a href="Portal_Programador_Frontend.html">Voltar ao portal</a></p>
 </footer>
 
 <script>
-// Filter pills
+// ============================================================
+// BANCO DE 60 PROBLEMAS
+// ============================================================
+const exercises = [
+  // ====== SEQUÊNCIA (1-30) ======
+  {
+    n: 1, tag: 'sequencia', title: 'Quadruplo de um número',
+    problem: 'Receba um número e mostre o quádruplo dele.',
+    hint: 'quadruplo = num * 4',
+    code: `let num = Number(prompt("Digite um número:"));
+let quadruplo = num * 4;
+console.log("O quádruplo é " + quadruplo);`
+  },
+  {
+    n: 2, tag: 'sequencia', title: 'Soma de 5 números',
+    problem: 'Receba 5 números e mostre a soma deles.',
+    hint: 'soma = a + b + c + d + e',
+    code: `let a = Number(prompt("1º:"));
+let b = Number(prompt("2º:"));
+let c = Number(prompt("3º:"));
+let d = Number(prompt("4º:"));
+let e = Number(prompt("5º:"));
+let soma = a + b + c + d + e;
+console.log("Soma:", soma);`
+  },
+  {
+    n: 3, tag: 'sequencia', title: 'Idade em horas',
+    problem: 'Receba a idade em anos e converta para horas.',
+    hint: 'horas = anos * 365 * 24',
+    code: `let anos = Number(prompt("Sua idade em anos:"));
+let horas = anos * 365 * 24;
+console.log("Você viveu cerca de " + horas + " horas");`
+  },
+  {
+    n: 4, tag: 'sequencia', title: 'Metros em centímetros',
+    problem: 'Receba uma medida em metros e converta para centímetros.',
+    hint: 'cm = metros * 100',
+    code: `let metros = Number(prompt("Metros:"));
+let cm = metros * 100;
+console.log(metros + " m = " + cm + " cm");`
+  },
+  {
+    n: 5, tag: 'sequencia', title: 'Centímetros em milímetros',
+    problem: 'Receba uma medida em centímetros e converta para milímetros.',
+    hint: 'mm = cm * 10',
+    code: `let cm = Number(prompt("Centímetros:"));
+let mm = cm * 10;
+console.log(cm + " cm = " + mm + " mm");`
+  },
+  {
+    n: 6, tag: 'sequencia', title: 'Toneladas em quilos',
+    problem: 'Receba um peso em toneladas e converta para quilos.',
+    hint: 'kg = toneladas * 1000',
+    code: `let t = Number(prompt("Toneladas:"));
+let kg = t * 1000;
+console.log(t + " t = " + kg + " kg");`
+  },
+  {
+    n: 7, tag: 'sequencia', title: 'Diâmetro do círculo',
+    problem: 'Receba o raio de um círculo e calcule o diâmetro.',
+    hint: 'diametro = raio * 2',
+    code: `let raio = Number(prompt("Raio:"));
+let diametro = raio * 2;
+console.log("Diâmetro: " + diametro);`
+  },
+  {
+    n: 8, tag: 'sequencia', title: 'Circunferência do círculo',
+    problem: 'Receba o raio e calcule a circunferência (use π = 3.14).',
+    hint: 'circunferencia = 2 * 3.14 * raio',
+    code: `let raio = Number(prompt("Raio:"));
+let circ = 2 * 3.14 * raio;
+console.log("Circunferência: " + circ);`
+  },
+  {
+    n: 9, tag: 'sequencia', title: 'Área do círculo',
+    problem: 'Receba o raio e calcule a área do círculo (use π = 3.14).',
+    hint: 'area = 3.14 * raio * raio',
+    code: `let raio = Number(prompt("Raio:"));
+let area = 3.14 * raio * raio;
+console.log("Área: " + area);`
+  },
+  {
+    n: 10, tag: 'sequencia', title: 'Volume da esfera',
+    problem: 'Receba o raio de uma esfera e calcule o volume (V = 4/3 × π × r³, use π = 3.14).',
+    hint: 'volume = (4/3) * 3.14 * raio * raio * raio',
+    code: `let raio = Number(prompt("Raio:"));
+let volume = (4/3) * 3.14 * raio * raio * raio;
+console.log("Volume da esfera: " + volume);`
+  },
+  {
+    n: 11, tag: 'sequencia', title: 'Volume do paralelepípedo',
+    problem: 'Receba largura, altura e profundidade e calcule o volume.',
+    hint: 'volume = largura * altura * profundidade',
+    code: `let l = Number(prompt("Largura:"));
+let h = Number(prompt("Altura:"));
+let p = Number(prompt("Profundidade:"));
+let v = l * h * p;
+console.log("Volume: " + v);`
+  },
+  {
+    n: 12, tag: 'sequencia', title: 'Real para libra esterlina',
+    problem: 'Converta reais para libras (cotação: R$ 7,50 = £ 1,00).',
+    hint: 'libras = reais / 7.50',
+    code: `let reais = Number(prompt("Reais:"));
+let libras = reais / 7.50;
+console.log("£ " + libras.toFixed(2));`
+  },
+  {
+    n: 13, tag: 'sequencia', title: 'Real para peso argentino',
+    problem: 'Converta reais para pesos argentinos (cotação: R$ 1,00 = ARS 200).',
+    hint: 'pesos = reais * 200',
+    code: `let reais = Number(prompt("Reais:"));
+let pesos = reais * 200;
+console.log("ARS $ " + pesos);`
+  },
+  {
+    n: 14, tag: 'sequencia', title: 'Dólar para real',
+    problem: 'Converta dólares para reais (cotação: US$ 1,00 = R$ 5,00).',
+    hint: 'reais = dolares * 5',
+    code: `let dolares = Number(prompt("Dólares:"));
+let reais = dolares * 5;
+console.log("R$ " + reais);`
+  },
+  {
+    n: 15, tag: 'sequencia', title: 'Média ponderada de 3 notas',
+    problem: 'Receba 3 notas com pesos 2, 3 e 5. Calcule a média ponderada.',
+    hint: 'media = (n1*2 + n2*3 + n3*5) / 10',
+    code: `let n1 = Number(prompt("Nota 1 (peso 2):"));
+let n2 = Number(prompt("Nota 2 (peso 3):"));
+let n3 = Number(prompt("Nota 3 (peso 5):"));
+let media = (n1*2 + n2*3 + n3*5) / 10;
+console.log("Média ponderada: " + media);`
+  },
+  {
+    n: 16, tag: 'sequencia', title: 'Minutos em dias',
+    problem: 'Receba uma quantidade de minutos e converta para dias.',
+    hint: 'dias = minutos / 1440',
+    code: `let min = Number(prompt("Minutos:"));
+let dias = min / 1440;
+console.log(min + " min = " + dias + " dias");`
+  },
+  {
+    n: 17, tag: 'sequencia', title: 'Dias em segundos',
+    problem: 'Receba uma quantidade de dias e converta para segundos.',
+    hint: 'segundos = dias * 86400',
+    code: `let dias = Number(prompt("Dias:"));
+let seg = dias * 86400;
+console.log(dias + " dias = " + seg + " segundos");`
+  },
+  {
+    n: 18, tag: 'sequencia', title: 'Quinta parte de um número',
+    problem: 'Receba um número e mostre a quinta parte dele.',
+    hint: 'quinta = num / 5',
+    code: `let num = Number(prompt("Número:"));
+let quinta = num / 5;
+console.log("Quinta parte: " + quinta);`
+  },
+  {
+    n: 19, tag: 'sequencia', title: 'Décimo de um número',
+    problem: 'Receba um número e mostre o décimo dele.',
+    hint: 'decimo = num / 10',
+    code: `let num = Number(prompt("Número:"));
+let decimo = num / 10;
+console.log("Décimo: " + decimo);`
+  },
+  {
+    n: 20, tag: 'sequencia', title: 'Cubo de um número',
+    problem: 'Receba um número e mostre o cubo dele (n × n × n).',
+    hint: 'cubo = num * num * num',
+    code: `let num = Number(prompt("Número:"));
+let cubo = num * num * num;
+console.log("Cubo: " + cubo);`
+  },
+  {
+    n: 21, tag: 'sequencia', title: 'Conta de luz do chuveiro',
+    problem: 'Receba a potência do chuveiro em kW, o tempo de banho em horas, os dias de uso no mês e a tarifa por kWh. Calcule o gasto mensal.',
+    hint: 'custo = potencia * tempo * dias * tarifa',
+    code: `let pot = Number(prompt("Potência (kW):"));
+let tempo = Number(prompt("Tempo de banho (h):"));
+let dias = Number(prompt("Dias no mês:"));
+let tarifa = Number(prompt("Tarifa por kWh:"));
+let custo = pot * tempo * dias * tarifa;
+console.log("Gasto mensal: R$ " + custo.toFixed(2));`
+  },
+  {
+    n: 22, tag: 'sequencia', title: 'Conta total de energia',
+    problem: 'Receba o consumo em kWh e a tarifa. Calcule o valor da conta.',
+    hint: 'conta = kwh * tarifa',
+    code: `let kwh = Number(prompt("Consumo (kWh):"));
+let tarifa = Number(prompt("Tarifa:"));
+let conta = kwh * tarifa;
+console.log("Conta: R$ " + conta.toFixed(2));`
+  },
+  {
+    n: 23, tag: 'sequencia', title: 'Combustível para 3 viagens',
+    problem: 'Receba a distância de uma viagem e o consumo do carro (km/L). Calcule o combustível total para fazer essa viagem 3 vezes.',
+    hint: 'litros = (distancia * 3) / consumo',
+    code: `let dist = Number(prompt("Distância (km):"));
+let consumo = Number(prompt("Consumo (km/L):"));
+let litros = (dist * 3) / consumo;
+console.log("Total: " + litros.toFixed(2) + " L");`
+  },
+  {
+    n: 24, tag: 'sequencia', title: 'Bônus por desempenho',
+    problem: 'Receba o salário e o percentual do bônus. Calcule o valor do bônus.',
+    hint: 'bonus = salario * percentual / 100',
+    code: `let sal = Number(prompt("Salário:"));
+let pct = Number(prompt("Percentual do bônus:"));
+let bonus = sal * pct / 100;
+console.log("Bônus: R$ " + bonus.toFixed(2));`
+  },
+  {
+    n: 25, tag: 'sequencia', title: 'Pressão arterial média',
+    problem: 'Receba a pressão sistólica e a diastólica. Calcule a PAM = (sist + 2 × diast) / 3.',
+    hint: 'pam = (sistolica + 2 * diastolica) / 3',
+    code: `let sis = Number(prompt("Sistólica:"));
+let dia = Number(prompt("Diastólica:"));
+let pam = (sis + 2 * dia) / 3;
+console.log("PAM: " + pam.toFixed(1) + " mmHg");`
+  },
+  {
+    n: 26, tag: 'sequencia', title: 'Frequência cardíaca de treino',
+    problem: 'Receba a idade. Calcule a FC de treino: (220 − idade) × 0.7.',
+    hint: 'fc = (220 - idade) * 0.7',
+    code: `let idade = Number(prompt("Idade:"));
+let fc = (220 - idade) * 0.7;
+console.log("FC ideal: " + fc.toFixed(0) + " bpm");`
+  },
+  {
+    n: 27, tag: 'sequencia', title: 'Refrigerante para festa',
+    problem: 'Receba o número de convidados. Calcule quantos litros de refrigerante são necessários (0.5 L por pessoa).',
+    hint: 'litros = convidados * 0.5',
+    code: `let conv = Number(prompt("Convidados:"));
+let litros = conv * 0.5;
+console.log("Comprar " + litros + " L de refrigerante");`
+  },
+  {
+    n: 28, tag: 'sequencia', title: 'Tinta para pintar parede',
+    problem: 'Receba a área da parede em m². Calcule quantos litros de tinta (1 L cobre 8 m²).',
+    hint: 'litros = area / 8',
+    code: `let area = Number(prompt("Área da parede (m²):"));
+let litros = area / 8;
+console.log("Comprar " + litros.toFixed(1) + " L de tinta");`
+  },
+  {
+    n: 29, tag: 'sequencia', title: 'Azulejos para um cômodo',
+    problem: 'Receba a área do cômodo e a área de cada azulejo (em m²). Calcule quantos azulejos comprar.',
+    hint: 'azulejos = area_comodo / area_azulejo',
+    code: `let comodo = Number(prompt("Área do cômodo (m²):"));
+let azulejo = Number(prompt("Área do azulejo (m²):"));
+let qtd = comodo / azulejo;
+console.log("Comprar " + Math.ceil(qtd) + " azulejos");`
+  },
+  {
+    n: 30, tag: 'sequencia', title: 'Tempo total da série',
+    problem: 'Receba o número de episódios e a duração de cada um (em minutos). Calcule o tempo total para maratonar tudo.',
+    hint: 'total = episodios * duracao',
+    code: `let ep = Number(prompt("Quantos episódios?"));
+let dur = Number(prompt("Duração de cada (min):"));
+let total = ep * dur;
+console.log("Tempo total: " + total + " min (" + (total/60).toFixed(1) + " h)");`
+  },
+
+  // ====== COM DECISÃO (31-60) ======
+  {
+    n: 31, tag: 'decisao', title: 'Maior entre dois números',
+    problem: 'Receba dois números e mostre qual é o maior (ou se são iguais).',
+    hint: 'se a > b → a maior; se b > a → b maior; senão → iguais',
+    code: `let a = Number(prompt("Primeiro:"));
+let b = Number(prompt("Segundo:"));
+if (a > b) {
+  console.log(a + " é o maior");
+} else if (b > a) {
+  console.log(b + " é o maior");
+} else {
+  console.log("São iguais");
+}`
+  },
+  {
+    n: 32, tag: 'decisao', title: 'Acima de 1000?',
+    problem: 'Receba um número e diga se ele está acima de 1000.',
+    hint: 'se num > 1000 → "acima"',
+    code: `let num = Number(prompt("Número:"));
+if (num > 1000) {
+  console.log(num + " está ACIMA de 1000");
+} else {
+  console.log(num + " está abaixo ou igual a 1000");
+}`
+  },
+  {
+    n: 33, tag: 'decisao', title: 'Múltiplo de 11?',
+    problem: 'Receba um número e diga se é múltiplo de 11.',
+    hint: 'se num % 11 == 0',
+    code: `let num = Number(prompt("Número:"));
+if (num % 11 === 0) {
+  console.log(num + " é múltiplo de 11");
+} else {
+  console.log(num + " NÃO é múltiplo de 11");
+}`
+  },
+  {
+    n: 34, tag: 'decisao', title: 'Múltiplo de 6?',
+    problem: 'Receba um número e diga se é múltiplo de 6.',
+    hint: 'se num % 6 == 0',
+    code: `let num = Number(prompt("Número:"));
+if (num % 6 === 0) {
+  console.log(num + " é múltiplo de 6");
+} else {
+  console.log(num + " NÃO é múltiplo de 6");
+}`
+  },
+  {
+    n: 35, tag: 'decisao', title: 'Múltiplo de 8?',
+    problem: 'Receba um número e diga se é múltiplo de 8.',
+    hint: 'se num % 8 == 0',
+    code: `let num = Number(prompt("Número:"));
+if (num % 8 === 0) {
+  console.log(num + " é múltiplo de 8");
+} else {
+  console.log(num + " NÃO é múltiplo de 8");
+}`
+  },
+  {
+    n: 36, tag: 'decisao', title: 'Pode doar sangue?',
+    problem: 'No Brasil, pode doar sangue quem tem entre 16 e 69 anos. Receba a idade e responda.',
+    hint: 'se idade >= 16 e idade <= 69',
+    code: `let idade = Number(prompt("Idade:"));
+if (idade >= 16 && idade <= 69) {
+  console.log("Você pode doar sangue!");
+} else {
+  console.log("Fora da faixa para doação (16 a 69).");
+}`
+  },
+  {
+    n: 37, tag: 'decisao', title: 'Pode se aposentar?',
+    problem: 'Receba a idade. Se for 65 anos ou mais, pode se aposentar.',
+    hint: 'se idade >= 65',
+    code: `let idade = Number(prompt("Idade:"));
+if (idade >= 65) {
+  console.log("Pode se aposentar!");
+} else {
+  console.log("Ainda não pode (faltam " + (65-idade) + " anos)");
+}`
+  },
+  {
+    n: 38, tag: 'decisao', title: 'Aprovado com louvor?',
+    problem: 'Receba a nota final. Se for 9 ou mais, foi aprovado com louvor.',
+    hint: 'se nota >= 9',
+    code: `let nota = Number(prompt("Nota final:"));
+if (nota >= 9) {
+  console.log("APROVADO COM LOUVOR! 🏆");
+} else {
+  console.log("Sem louvor (nota " + nota + ")");
+}`
+  },
+  {
+    n: 39, tag: 'decisao', title: 'Aprovado por nota E presença',
+    problem: 'Para ser aprovado, precisa ter nota ≥ 7 E presença ≥ 75%. Receba os dois e decida.',
+    hint: 'se nota >= 7 && presenca >= 75',
+    code: `let nota = Number(prompt("Nota:"));
+let pres = Number(prompt("Presença (%):"));
+if (nota >= 7 && pres >= 75) {
+  console.log("APROVADO!");
+} else {
+  console.log("Reprovado.");
+}`
+  },
+  {
+    n: 40, tag: 'decisao', title: 'Pode dirigir caminhão?',
+    problem: 'No Brasil, dirige caminhão quem tem 21 anos ou mais (CNH C/D/E). Receba a idade.',
+    hint: 'se idade >= 21',
+    code: `let idade = Number(prompt("Idade:"));
+if (idade >= 21) {
+  console.log("Pode tirar CNH de caminhão");
+} else {
+  console.log("Ainda não (mínimo 21 anos)");
+}`
+  },
+  {
+    n: 41, tag: 'decisao', title: 'Excesso de bagagem?',
+    problem: 'A companhia aérea permite até 23kg. Receba o peso da bagagem e diga se há excesso.',
+    hint: 'se peso > 23',
+    code: `let peso = Number(prompt("Peso da bagagem (kg):"));
+if (peso > 23) {
+  console.log("EXCESSO! " + (peso-23).toFixed(1) + " kg acima do limite");
+} else {
+  console.log("Bagagem dentro do limite");
+}`
+  },
+  {
+    n: 42, tag: 'decisao', title: 'Acima do peso (IMC)?',
+    problem: 'Receba o IMC. Se for maior que 25, está acima do peso.',
+    hint: 'se imc > 25',
+    code: `let imc = Number(prompt("Seu IMC:"));
+if (imc > 25) {
+  console.log("IMC " + imc + " - acima do peso ideal");
+} else {
+  console.log("IMC " + imc + " - dentro ou abaixo do ideal");
+}`
+  },
+  {
+    n: 43, tag: 'decisao', title: 'Abaixo do peso (IMC)?',
+    problem: 'Receba o IMC. Se for menor que 18.5, está abaixo do peso.',
+    hint: 'se imc < 18.5',
+    code: `let imc = Number(prompt("Seu IMC:"));
+if (imc < 18.5) {
+  console.log("IMC " + imc + " - abaixo do peso");
+} else {
+  console.log("IMC " + imc + " - dentro ou acima do ideal");
+}`
+  },
+  {
+    n: 44, tag: 'decisao', title: 'Triângulo equilátero?',
+    problem: 'Receba os 3 lados de um triângulo. Se todos forem iguais, é equilátero.',
+    hint: 'se a == b && b == c',
+    code: `let a = Number(prompt("Lado A:"));
+let b = Number(prompt("Lado B:"));
+let c = Number(prompt("Lado C:"));
+if (a === b && b === c) {
+  console.log("É um triângulo EQUILÁTERO");
+} else {
+  console.log("NÃO é equilátero");
+}`
+  },
+  {
+    n: 45, tag: 'decisao', title: 'Ano bissexto (simplificado)?',
+    problem: 'Receba um ano. Versão simplificada: se o ano é divisível por 4, é bissexto.',
+    hint: 'se ano % 4 == 0',
+    code: `let ano = Number(prompt("Ano:"));
+if (ano % 4 === 0) {
+  console.log(ano + " é bissexto");
+} else {
+  console.log(ano + " NÃO é bissexto");
+}`
+  },
+  {
+    n: 46, tag: 'decisao', title: 'Conta no vermelho?',
+    problem: 'Receba o saldo da conta. Se for negativo, está no vermelho.',
+    hint: 'se saldo < 0',
+    code: `let saldo = Number(prompt("Saldo:"));
+if (saldo < 0) {
+  console.log("ATENÇÃO: conta no vermelho (R$ " + saldo + ")");
+} else {
+  console.log("Saldo positivo: R$ " + saldo);
+}`
+  },
+  {
+    n: 47, tag: 'decisao', title: 'Limite do cartão excedido?',
+    problem: 'Receba o valor gasto e o limite do cartão. Se gasto > limite, está excedido.',
+    hint: 'se gasto > limite',
+    code: `let gasto = Number(prompt("Gasto:"));
+let limite = Number(prompt("Limite:"));
+if (gasto > limite) {
+  console.log("LIMITE EXCEDIDO em R$ " + (gasto-limite));
+} else {
+  console.log("Disponível ainda: R$ " + (limite-gasto));
+}`
+  },
+  {
+    n: 48, tag: 'decisao', title: 'Está muito quente?',
+    problem: 'Receba a temperatura. Se for acima de 35°C, está muito quente.',
+    hint: 'se temp > 35',
+    code: `let temp = Number(prompt("Temperatura (°C):"));
+if (temp > 35) {
+  console.log(temp + "°C - MUITO QUENTE!");
+} else {
+  console.log(temp + "°C - normal");
+}`
+  },
+  {
+    n: 49, tag: 'decisao', title: 'Friozinho?',
+    problem: 'Receba a temperatura. Se estiver entre 10 e 20°C, é friozinho gostoso.',
+    hint: 'se temp >= 10 e temp <= 20',
+    code: `let temp = Number(prompt("Temperatura (°C):"));
+if (temp >= 10 && temp <= 20) {
+  console.log(temp + "°C - friozinho gostoso");
+} else {
+  console.log(temp + "°C - fora dessa faixa");
+}`
+  },
+  {
+    n: 50, tag: 'decisao', title: 'Chuva forte?',
+    problem: 'Receba a precipitação em mm. Se for acima de 50mm, é chuva forte.',
+    hint: 'se precipitacao > 50',
+    code: `let chuva = Number(prompt("Precipitação (mm):"));
+if (chuva > 50) {
+  console.log("CHUVA FORTE - " + chuva + " mm");
+} else {
+  console.log("Chuva normal: " + chuva + " mm");
+}`
+  },
+  {
+    n: 51, tag: 'decisao', title: 'Hipertensão?',
+    problem: 'Receba pressão sistólica e diastólica. Se sistólica > 140 OU diastólica > 90, é hipertensão.',
+    hint: 'se sis > 140 || dia > 90',
+    code: `let sis = Number(prompt("Sistólica:"));
+let dia = Number(prompt("Diastólica:"));
+if (sis > 140 || dia > 90) {
+  console.log("HIPERTENSÃO - procurar médico");
+} else {
+  console.log("Pressão dentro do normal");
+}`
+  },
+  {
+    n: 52, tag: 'decisao', title: 'Está com febre?',
+    problem: 'Receba a temperatura corporal. Se for maior que 37.5°C, é febre.',
+    hint: 'se temp > 37.5',
+    code: `let temp = Number(prompt("Temperatura corporal:"));
+if (temp > 37.5) {
+  console.log("FEBRE: " + temp + "°C");
+} else {
+  console.log("Sem febre: " + temp + "°C");
+}`
+  },
+  {
+    n: 53, tag: 'decisao', title: 'Bateu o recorde?',
+    problem: 'Receba o tempo do nadador e o recorde olímpico (em segundos). Se tempo < recorde, bateu.',
+    hint: 'se tempo < recorde',
+    code: `let tempo = Number(prompt("Seu tempo (s):"));
+let rec = Number(prompt("Recorde olímpico (s):"));
+if (tempo < rec) {
+  console.log("BATEU O RECORDE! Diferença: " + (rec-tempo).toFixed(2) + " s");
+} else {
+  console.log("Não bateu. Faltaram " + (tempo-rec).toFixed(2) + " s");
+}`
+  },
+  {
+    n: 54, tag: 'decisao', title: 'Multa de velocidade?',
+    problem: 'Receba a velocidade do veículo e o limite da via. Se velocidade > limite, multa.',
+    hint: 'se velocidade > limite',
+    code: `let vel = Number(prompt("Velocidade:"));
+let lim = Number(prompt("Limite da via:"));
+if (vel > lim) {
+  console.log("MULTA: " + (vel-lim) + " km/h acima");
+} else {
+  console.log("Dentro do limite");
+}`
+  },
+  {
+    n: 55, tag: 'decisao', title: 'É de manhã?',
+    problem: 'Receba a hora (0 a 23). Se for menor que 12, é manhã.',
+    hint: 'se hora < 12',
+    code: `let hora = Number(prompt("Hora (0-23):"));
+if (hora < 12) {
+  console.log("Manhã (" + hora + "h)");
+} else {
+  console.log("Tarde ou noite (" + hora + "h)");
+}`
+  },
+  {
+    n: 56, tag: 'decisao', title: 'Sinal verde?',
+    problem: 'Receba o sinal de trânsito (V=verde, A=amarelo, R=vermelho). Se for V, pode passar.',
+    hint: 'se sinal == "V"',
+    code: `let sinal = prompt("Sinal (V/A/R):").toUpperCase();
+if (sinal === "V") {
+  console.log("VERDE - pode passar");
+} else {
+  console.log("Não está verde - aguarde");
+}`
+  },
+  {
+    n: 57, tag: 'decisao', title: 'Idosa tem prioridade?',
+    problem: 'Receba o gênero (F/M) e a idade. Se for F E idade ≥ 60, tem prioridade prioritária.',
+    hint: 'se genero == "F" && idade >= 60',
+    code: `let gen = prompt("Gênero (F/M):").toUpperCase();
+let idade = Number(prompt("Idade:"));
+if (gen === "F" && idade >= 60) {
+  console.log("Prioridade prioritária");
+} else {
+  console.log("Sem prioridade especial");
+}`
+  },
+  {
+    n: 58, tag: 'decisao', title: 'Elevador lotado?',
+    problem: 'O elevador comporta no máximo 8 pessoas. Receba o número atual e diga se está lotado.',
+    hint: 'se pessoas > 8',
+    code: `let p = Number(prompt("Pessoas no elevador:"));
+if (p > 8) {
+  console.log("LOTADO - pessoas devem descer");
+} else {
+  console.log("Capacidade OK (" + p + "/8)");
+}`
+  },
+  {
+    n: 59, tag: 'decisao', title: 'Fila rápida do mercado?',
+    problem: 'A fila rápida é só para quem tem menos de 10 itens. Receba a quantidade.',
+    hint: 'se itens < 10',
+    code: `let itens = Number(prompt("Itens no carrinho:"));
+if (itens < 10) {
+  console.log("Pode usar a FILA RÁPIDA");
+} else {
+  console.log("Use a fila normal (" + itens + " itens)");
+}`
+  },
+  {
+    n: 60, tag: 'decisao', title: 'Saque autorizado?',
+    problem: 'Receba o saldo da conta e o valor do saque. Se valor ≤ saldo, autoriza.',
+    hint: 'se valor <= saldo',
+    code: `let saldo = Number(prompt("Saldo:"));
+let valor = Number(prompt("Valor do saque:"));
+if (valor <= saldo) {
+  console.log("AUTORIZADO. Novo saldo: R$ " + (saldo-valor));
+} else {
+  console.log("NEGADO. Saldo insuficiente.");
+}`
+  }
+];
+
+// ============================================================
+// RENDERING
+// ============================================================
+function highlight(code) {
+  return code
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/(\/\/[^\n]*)/g, '<span class="tk-cm">$1</span>')
+    .replace(/("[^"]*")/g, '<span class="tk-str">$1</span>')
+    .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="tk-num">$1</span>')
+    .replace(/\b(prompt|console\.log|Number|String|Math\.ceil|Math\.floor|toFixed|toUpperCase|alert)\b/g, '<span class="tk-fn">$1</span>')
+    .replace(/\b(let|const|var|if|else|return|true|false|null|undefined)\b/g, '<span class="tk-kw">$1</span>');
+}
+
+const tagLabels = { sequencia: 'Sequência', decisao: 'Com decisão' };
+
+function renderCard(ex) {
+  return `
+    <article class="exercise" data-tag="${ex.tag}" id="ex-${ex.n}">
+      <header class="ex-head">
+        <span class="ex-number">${String(ex.n).padStart(2, '0')}</span>
+        <div class="ex-meta">
+          <h3 class="ex-title">${ex.title}</h3>
+          <span class="ex-tag ${ex.tag}">${tagLabels[ex.tag]}</span>
+        </div>
+      </header>
+      <p class="ex-problem">${ex.problem}</p>
+      <div class="ex-hint"><span class="lbl">dica:</span>${ex.hint}</div>
+
+      <div class="solution">
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-filename">problema${String(ex.n).padStart(2, '0')}.js</span>
+            <button class="copy-btn" onclick="copyCode(this, ${ex.n})">copiar</button>
+          </div>
+          <pre>${highlight(ex.code)}</pre>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-action toggle" onclick="toggleSolution(${ex.n}, this)">Ver solução</button>
+        <button class="btn-action btn-run" onclick="runCode(${ex.n})">Rodar agora</button>
+      </div>
+    </article>
+  `;
+}
+
+// Group cards by tag
+document.getElementById('exercises-sequencia').innerHTML =
+  exercises.filter(e => e.tag === 'sequencia').map(renderCard).join('');
+document.getElementById('exercises-decisao').innerHTML =
+  exercises.filter(e => e.tag === 'decisao').map(renderCard).join('');
+
+// Toggle solution
+function toggleSolution(n, btn) {
+  const card = document.getElementById('ex-' + n);
+  const isOpen = card.classList.toggle('show-solution');
+  btn.classList.toggle('active', isOpen);
+  btn.textContent = isOpen ? 'Esconder solução' : 'Ver solução';
+}
+
+// Copy code
+function copyCode(btn, n) {
+  const ex = exercises.find(e => e.n === n);
+  navigator.clipboard.writeText(ex.code).then(() => {
+    btn.textContent = '✓ copiado';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'copiar';
+      btn.classList.remove('copied');
+    }, 1800);
+  });
+}
+
+// Run code
+function runCode(n) {
+  const ex = exercises.find(e => e.n === n);
+  try {
+    new Function(ex.code)();
+  } catch (err) {
+    alert('Erro: ' + err.message);
+  }
+}
+
+// Filters
 document.querySelectorAll('.pill').forEach(pill => {
   pill.addEventListener('click', () => {
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     pill.classList.add('active');
     const f = pill.dataset.filter;
-    
     document.querySelectorAll('.exercise').forEach(card => {
-      if (f === 'all' || card.dataset.tag === f) {
-        card.style.display = '';
-      } else {
-        card.style.display = 'none';
-      }
+      card.style.display = (f === 'all' || card.dataset.tag === f) ? '' : 'none';
     });
-    
-    // Hide/show entire group sections too
     document.querySelectorAll('.group-header, .exercises').forEach(el => {
-      const tag = el.dataset.tag || el.dataset.group;
+      const tag = el.dataset.group || el.dataset.tagSection;
       if (!tag) return;
-      if (f === 'all' || tag === f) {
-        el.style.display = '';
-      } else {
-        el.style.display = 'none';
-      }
+      el.style.display = (f === 'all' || tag === f) ? '' : 'none';
     });
   });
 });
