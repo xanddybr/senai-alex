@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>25 Exercícios · Vetores e Matrizes · Aula 06</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a2540;
+    --teal: #0c8599;
+    --teal-light: #67c5d6;
+    --gold: #e8a004;
+    --bg: #f7f3ec;
+    --paper: #ffffff;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --ink-light: #7a7468;
+    --rule: #d4cbb8;
+    --green: #2f8a3d;
+    --orange: #b8631a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
+
+  /* HERO */
+  .hero { background: var(--navy); color: white; padding: 60px 40px 50px; position: relative; overflow: hidden; }
+  .hero::before { content:""; position:absolute; top:-40%; right:-10%; width:700px; height:700px; background:radial-gradient(circle,rgba(103,197,214,.15) 0%,transparent 65%); pointer-events:none; }
+  .hero-inner { max-width: 1280px; margin: 0 auto; position: relative; }
+  .back-link { display:inline-flex; align-items:center; gap:6px; color:var(--teal-light); text-decoration:none; font-size:13px; font-weight:500; margin-bottom:22px; transition:color .15s; }
+  .back-link:hover { color: white; }
+  .eyebrow { font-size:12px; letter-spacing:4px; text-transform:uppercase; color:var(--teal-light); font-weight:500; margin-bottom:16px; }
+  .hero h1 { font-family:'Fraunces',serif; font-weight:500; font-size:clamp(2rem,5vw,3.6rem); line-height:1.0; letter-spacing:-1px; margin-bottom:18px; }
+  .hero h1 em { font-style:italic; color:var(--teal-light); font-weight:400; }
+  .hero-sub { font-size:1.05rem; max-width:700px; color:rgba(255,255,255,.78); margin-bottom:28px; }
+  .hero-meta { display:flex; flex-wrap:wrap; gap:26px; border-top:1px solid rgba(255,255,255,.15); padding-top:20px; font-size:13px; }
+  .hero-meta div { display:flex; flex-direction:column; gap:2px; }
+  .hero-meta .lbl { text-transform:uppercase; letter-spacing:2px; font-size:10.5px; color:rgba(255,255,255,.5); }
+  .hero-meta .val { font-weight:500; color:white; }
+
+  /* TIP BAND */
+  .tip-band { background:var(--paper); border-bottom:1px solid var(--rule); padding:26px 40px; }
+  .tip-inner { max-width:1280px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; }
+  .tip { border-left:3px solid var(--teal); padding:4px 18px; }
+  .tip .n { font-family:'Fraunces',serif; font-size:24px; font-weight:500; color:var(--teal); line-height:1; margin-bottom:4px; display:block; }
+  .tip h3 { font-size:14px; margin-bottom:3px; font-weight:600; }
+  .tip p { font-size:13px; color:var(--ink-soft); line-height:1.5; }
+  .tip code { background:#f0ece2; padding:1px 5px; border-radius:3px; font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .tip kbd { background:#e9e3d3; border:1px solid #cfc6b2; border-bottom-width:2px; padding:1px 6px; border-radius:3px; font-family:'JetBrains Mono',monospace; font-size:11px; }
+
+  /* NAV */
+  .nav-bar { background:var(--bg); padding:24px 40px 0; position:sticky; top:0; z-index:50; background:linear-gradient(to bottom,var(--bg) 80%,transparent); }
+  .nav-inner { max-width:1280px; margin:0 auto; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .nav-lbl { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--ink-soft); margin-right:8px; }
+  .pill { border:1px solid var(--rule); background:var(--paper); border-radius:20px; padding:6px 16px; font-size:13px; cursor:pointer; transition:all .15s; font-family:inherit; font-weight:500; }
+  .pill:hover { border-color:var(--navy); }
+  .pill.active { background:var(--navy); color:white; border-color:var(--navy); }
+
+  /* GROUP HEADER */
+  .grp { max-width:1280px; margin:30px auto 0; padding:0 40px; display:flex; align-items:baseline; gap:18px; }
+  .grp h2 { font-family:'Fraunces',serif; font-weight:500; font-size:26px; color:var(--navy); letter-spacing:-.5px; }
+  .grp h2 em { font-style:italic; color:var(--teal); font-weight:400; }
+  .grp .rule { flex:1; height:1px; background:var(--rule); }
+  .grp .count { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-light); font-weight:600; }
+
+  /* GRID */
+  .grid { max-width:1280px; margin:0 auto; padding:20px 40px 50px; display:grid; grid-template-columns:repeat(auto-fill,minmax(380px,1fr)); gap:22px; }
+
+  /* CARD */
+  .card { background:var(--paper); border:1px solid var(--rule); border-radius:6px; padding:22px; display:flex; flex-direction:column; transition:box-shadow .2s, transform .2s; position:relative; overflow:hidden; }
+  .card:hover { box-shadow:0 6px 24px rgba(10,37,64,.08); transform:translateY(-2px); }
+  .card[data-group="vetor"]::before { content:""; position:absolute; top:0; left:0; right:0; height:3px; background:var(--green); border-radius:6px 6px 0 0; }
+  .card[data-group="matriz"]::before { content:""; position:absolute; top:0; left:0; right:0; height:3px; background:var(--orange); border-radius:6px 6px 0 0; }
+
+  .card-head { display:flex; align-items:flex-start; gap:14px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed var(--rule); }
+  .num { font-family:'Fraunces',serif; font-weight:500; font-size:34px; line-height:1; color:var(--navy); letter-spacing:-1px; min-width:48px; flex-shrink:0; }
+  .meta { flex:1; }
+  .title { font-family:'Fraunces',serif; font-size:18px; font-weight:500; color:var(--ink); margin-bottom:5px; line-height:1.2; }
+  .tag { display:inline-block; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; padding:3px 9px; border-radius:3px; font-weight:700; }
+  .tag.vetor { background:#e3f1e5; color:var(--green); }
+  .tag.matriz { background:#fbeede; color:var(--orange); }
+
+  .problem { font-size:14.5px; line-height:1.55; color:var(--ink-soft); margin-bottom:12px; }
+  .hint { font-size:12.5px; color:var(--ink-soft); background:#f0ece2; border-radius:4px; padding:8px 12px; margin-bottom:14px; font-family:'JetBrains Mono',monospace; line-height:1.5; }
+  .hint .lbl { color:var(--teal); font-weight:700; margin-right:4px; }
+
+  /* Solution panel */
+  .solution { display:none; margin-bottom:12px; }
+  .card.open .solution { display:block; }
+
+  .code-wrap { background:var(--navy); border-radius:5px; overflow:hidden; }
+  .code-head { display:flex; justify-content:space-between; align-items:center; padding:7px 13px; border-bottom:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.2); }
+  .code-fname { font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(255,255,255,.55); }
+  .copy-btn { background:transparent; border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.7); padding:3px 10px; border-radius:3px; font-size:11px; cursor:pointer; font-family:inherit; transition:all .15s; }
+  .copy-btn:hover { background:rgba(255,255,255,.1); color:white; }
+  .copy-btn.ok { background:var(--teal); border-color:var(--teal); color:white; }
+  pre { padding:13px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.65; color:#e6e6e6; }
+  .kw { color:#ff7b9c; } .str { color:#c3e88d; } .num { color:#f78c6c; } .fn { color:#82aaff; } .cm { color:#5c7791; font-style:italic; }
+
+  /* Buttons */
+  .actions { display:flex; gap:8px; margin-top:auto; }
+  .btn { flex:1; padding:10px 14px; border-radius:4px; border:1px solid var(--rule); background:var(--paper); color:var(--navy); font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; transition:all .15s; display:flex; align-items:center; justify-content:center; gap:6px; }
+  .btn:hover { border-color:var(--navy); }
+  .btn.toggle::before { content:"▾"; font-size:11px; transition:transform .2s; }
+  .btn.toggle.open::before { transform:rotate(180deg); }
+  .card.open .btn.toggle { background:var(--navy); color:white; border-color:var(--navy); }
+  .btn.run { background:var(--gold); color:var(--navy); border-color:var(--gold); }
+  .btn.run::before { content:"▶"; font-size:9px; }
+  .btn.run:hover { background:#f7b21f; }
+
+  /* FOOTER */
+  footer { background:var(--navy); color:rgba(255,255,255,.7); padding:32px 40px; text-align:center; font-size:13px; margin-top:40px; }
+  footer strong { color:white; }
+  footer a { color:var(--teal-light); text-decoration:none; }
+
+  @media (max-width:600px) {
+    .hero, .tip-band, .nav-bar, .grp { padding-left:20px; padding-right:20px; }
+    .grid { padding:20px; grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <a href="Portal_Programador_Frontend.html" class="back-link">← Voltar ao portal</a>
+    <div class="eyebrow">Aula 06 · Vetores e Matrizes</div>
+    <h1>25 exercícios para dominar <em>arrays no console</em></h1>
+    <p class="hero-sub">Vinte exercícios com vetores e cinco com matrizes — todos para rodar direto no console do Chrome. Tente escrever o código antes de ver a solução.</p>
+    <div class="hero-meta">
+      <div><span class="lbl">Aula</span><span class="val">06 · Vetores e Matrizes</span></div>
+      <div><span class="lbl">Total</span><span class="val">25 exercícios</span></div>
+      <div><span class="lbl">Ferramenta</span><span class="val">Console do Chrome</span></div>
+      <div><span class="lbl">Professor</span><span class="val">Alexandre Santana</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="tip-band">
+  <div class="tip-inner">
+    <div class="tip">
+      <span class="n">01</span>
+      <h3>Abra o console</h3>
+      <p>Em qualquer aba do Chrome pressione <kbd>F12</kbd> → aba <strong>Console</strong>. Cole o código e pressione <kbd>Enter</kbd>.</p>
+    </div>
+    <div class="tip">
+      <span class="n">02</span>
+      <h3>Arrays em JavaScript</h3>
+      <p>Em JS o vetor se chama <code>array</code>. O índice começa em <code>0</code>. <code>let v = [10, 20, 30]</code> → <code>v[0]</code> é 10.</p>
+    </div>
+    <div class="tip">
+      <span class="n">03</span>
+      <h3>Tente primeiro</h3>
+      <p>Escreva sua solução antes de clicar em <strong>Ver solução</strong>. Compare as duas versões — aprenda com a diferença.</p>
+    </div>
+    <div class="tip">
+      <span class="n">04</span>
+      <h3>Rodar aqui mesmo</h3>
+      <p>O botão <strong>Rodar agora</strong> executa o código nesta página com <code>prompt()</code> e <code>console.log()</code> reais.</p>
+    </div>
+  </div>
+</section>
+
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <span class="nav-lbl">Filtrar</span>
+    <button class="pill active" data-f="all">Todos (25)</button>
+    <button class="pill" data-f="vetor">Vetores (20)</button>
+    <button class="pill" data-f="matriz">Matrizes (5)</button>
+  </div>
+</nav>
+
+<div class="grp" data-g="vetor">
+  <h2>Vetores <em>(Arrays)</em></h2>
+  <div class="rule"></div>
+  <span class="count">Exercícios 1 a 20</span>
+</div>
+<div class="grid" id="grid-vetor"></div>
+
+<div class="grp" data-g="matriz">
+  <h2>Matrizes <em>(Arrays 2D)</em></h2>
+  <div class="rule"></div>
+  <span class="count">Exercícios 21 a 25</span>
+</div>
+<div class="grid" id="grid-matriz"></div>
+
+<footer>
+  <p><strong>Programador Front-End · Firjan SENAI</strong></p>
+  <p style="margin-top:6px;">Aula 06 · Vetores e Matrizes · <a href="Portal_Programador_Frontend.html">Voltar ao portal</a></p>
+</footer>
+
+<script>
+const exercises = [
+  // ============================================================
+  // VETORES (1–20)
+  // ============================================================
+  {
+    n:1, g:'vetor', title:'Criar e exibir o primeiro elemento',
+    problem:'Crie um array com 5 números inteiros e exiba o primeiro elemento no console.',
+    hint:'v[0] acessa a primeira posição (índice começa em 0)',
+    code:`let numeros = [10, 20, 30, 40, 50];
+console.log("Primeiro elemento:", numeros[0]);`
+  },
+  {
+    n:2, g:'vetor', title:'Exibir o último elemento',
+    problem:'Crie um array com 4 nomes e exiba o último sem escrever o índice na mão. Use a propriedade length.',
+    hint:'último = v[v.length - 1]',
+    code:`let nomes = ["Ana", "Bruno", "Carlos", "Diana"];
+console.log("Último nome:", nomes[nomes.length - 1]);`
+  },
+  {
+    n:3, g:'vetor', title:'Mostrar o tamanho do array',
+    problem:'Crie um array com 6 frutas e exiba quantas frutas há.',
+    hint:'array.length retorna o número de elementos',
+    code:`let frutas = ["maçã", "banana", "uva", "pera", "manga", "laranja"];
+console.log("Total de frutas:", frutas.length);`
+  },
+  {
+    n:4, g:'vetor', title:'Exibir todos os elementos com for',
+    problem:'Crie um array com 5 notas e exiba cada uma no console usando um laço for.',
+    hint:'for (let i = 0; i < v.length; i++) → v[i]',
+    code:`let notas = [8.5, 7.0, 9.0, 6.5, 10.0];
+for (let i = 0; i < notas.length; i++) {
+  console.log("Nota " + (i+1) + ":", notas[i]);
+}`
+  },
+  {
+    n:5, g:'vetor', title:'Calcular a soma de um array',
+    problem:'Dado o array [4, 8, 15, 16, 23], calcule e exiba a soma de todos os elementos.',
+    hint:'acumulador soma = 0; soma += v[i]',
+    code:`let v = [4, 8, 15, 16, 23];
+let soma = 0;
+for (let i = 0; i < v.length; i++) {
+  soma += v[i];
+}
+console.log("Soma:", soma);`
+  },
+  {
+    n:6, g:'vetor', title:'Calcular a média',
+    problem:'Dado o array [6, 8, 7, 9, 5], calcule e exiba a média dos valores.',
+    hint:'media = soma / v.length',
+    code:`let notas = [6, 8, 7, 9, 5];
+let soma = 0;
+for (let i = 0; i < notas.length; i++) {
+  soma += notas[i];
+}
+let media = soma / notas.length;
+console.log("Média:", media);`
+  },
+  {
+    n:7, g:'vetor', title:'Encontrar o maior valor',
+    problem:'Dado o array [3, 17, 5, 22, 8, 11], encontre e exiba o maior elemento.',
+    hint:'maior = v[0]; se v[i] > maior → maior = v[i]',
+    code:`let v = [3, 17, 5, 22, 8, 11];
+let maior = v[0];
+for (let i = 1; i < v.length; i++) {
+  if (v[i] > maior) {
+    maior = v[i];
+  }
+}
+console.log("Maior valor:", maior);`
+  },
+  {
+    n:8, g:'vetor', title:'Encontrar o menor valor',
+    problem:'Dado o array [14, 3, 9, 1, 7, 20], encontre e exiba o menor elemento.',
+    hint:'menor = v[0]; se v[i] < menor → menor = v[i]',
+    code:`let v = [14, 3, 9, 1, 7, 20];
+let menor = v[0];
+for (let i = 1; i < v.length; i++) {
+  if (v[i] < menor) {
+    menor = v[i];
+  }
+}
+console.log("Menor valor:", menor);`
+  },
+  {
+    n:9, g:'vetor', title:'Contar elementos pares',
+    problem:'Dado o array [1, 2, 3, 4, 5, 6, 7, 8], conte e exiba quantos números são pares.',
+    hint:'se v[i] % 2 === 0 → contador++',
+    code:`let v = [1, 2, 3, 4, 5, 6, 7, 8];
+let pares = 0;
+for (let i = 0; i < v.length; i++) {
+  if (v[i] % 2 === 0) {
+    pares++;
+  }
+}
+console.log("Números pares:", pares);`
+  },
+  {
+    n:10, g:'vetor', title:'Contar elementos acima de 5',
+    problem:'Dado o array [2, 7, 1, 9, 3, 6, 4, 8], conte quantos números são maiores que 5.',
+    hint:'se v[i] > 5 → contador++',
+    code:`let v = [2, 7, 1, 9, 3, 6, 4, 8];
+let count = 0;
+for (let i = 0; i < v.length; i++) {
+  if (v[i] > 5) {
+    count++;
+  }
+}
+console.log("Elementos acima de 5:", count);`
+  },
+  {
+    n:11, g:'vetor', title:'Preencher array com prompt',
+    problem:'Peça ao usuário 3 números via prompt, armazene em um array e exiba todos os elementos.',
+    hint:`let v = []; v[0] = Number(prompt("1º"))`,
+    code:`let v = [];
+for (let i = 0; i < 3; i++) {
+  v[i] = Number(prompt("Digite o número " + (i+1) + ":"));
+}
+console.log("Seus números:", v[0], v[1], v[2]);`
+  },
+  {
+    n:12, g:'vetor', title:'Exibir em ordem inversa',
+    problem:'Dado o array ["a", "b", "c", "d", "e"], exiba todos os elementos do último para o primeiro.',
+    hint:'for (let i = v.length - 1; i >= 0; i--)',
+    code:`let letras = ["a", "b", "c", "d", "e"];
+for (let i = letras.length - 1; i >= 0; i--) {
+  console.log(letras[i]);
+}`
+  },
+  {
+    n:13, g:'vetor', title:'Verificar se valor existe',
+    problem:'Dado o array [10, 30, 50, 70, 90], verifique se o número 50 está no array e exiba uma mensagem.',
+    hint:'se v[i] === alvo → encontrou = true',
+    code:`let v = [10, 30, 50, 70, 90];
+let alvo = 50;
+let encontrou = false;
+for (let i = 0; i < v.length; i++) {
+  if (v[i] === alvo) {
+    encontrou = true;
+  }
+}
+if (encontrou) {
+  console.log(alvo + " está no array!");
+} else {
+  console.log(alvo + " não está no array.");
+}`
+  },
+  {
+    n:14, g:'vetor', title:'Dobrar todos os elementos',
+    problem:'Dado o array [1, 2, 3, 4, 5], exiba o dobro de cada elemento.',
+    hint:'console.log(v[i] * 2)',
+    code:`let v = [1, 2, 3, 4, 5];
+for (let i = 0; i < v.length; i++) {
+  console.log("Dobro de " + v[i] + ":", v[i] * 2);
+}`
+  },
+  {
+    n:15, g:'vetor', title:'Posição do maior elemento',
+    problem:'Dado o array [5, 3, 9, 1, 7], encontre e exiba em qual posição está o maior número.',
+    hint:'guarde o índice: posMaior = i quando v[i] > maior',
+    code:`let v = [5, 3, 9, 1, 7];
+let maior = v[0];
+let posMaior = 0;
+for (let i = 1; i < v.length; i++) {
+  if (v[i] > maior) {
+    maior = v[i];
+    posMaior = i;
+  }
+}
+console.log("Maior valor:", maior, "na posição", posMaior);`
+  },
+  {
+    n:16, g:'vetor', title:'Somar apenas os positivos',
+    problem:'Dado o array [-3, 5, -1, 8, -2, 4], some apenas os números positivos.',
+    hint:'se v[i] > 0 → soma += v[i]',
+    code:`let v = [-3, 5, -1, 8, -2, 4];
+let soma = 0;
+for (let i = 0; i < v.length; i++) {
+  if (v[i] > 0) {
+    soma += v[i];
+  }
+}
+console.log("Soma dos positivos:", soma);`
+  },
+  {
+    n:17, g:'vetor', title:'Array de quadrados',
+    problem:'Crie um array com os quadrados dos números de 1 a 6 e exiba cada um.',
+    hint:'v[i] = (i+1) * (i+1)',
+    code:`let quadrados = [];
+for (let i = 0; i < 6; i++) {
+  quadrados[i] = (i+1) * (i+1);
+}
+for (let i = 0; i < quadrados.length; i++) {
+  console.log((i+1) + "² =", quadrados[i]);
+}`
+  },
+  {
+    n:18, g:'vetor', title:'Turma aprovada ou reprovada',
+    problem:'Dado o array de médias [7, 5, 9, 4, 8, 3, 6], exiba para cada aluno se foi Aprovado (média ≥ 6) ou Reprovado.',
+    hint:'se medias[i] >= 6 → "Aprovado"',
+    code:`let medias = [7, 5, 9, 4, 8, 3, 6];
+for (let i = 0; i < medias.length; i++) {
+  let situacao = medias[i] >= 6 ? "Aprovado" : "Reprovado";
+  console.log("Aluno " + (i+1) + " (" + medias[i] + "):", situacao);
+}`
+  },
+  {
+    n:19, g:'vetor', title:'Contar aprovados e reprovados',
+    problem:'Dado o array [8, 5, 7, 4, 9, 3, 6], conte quantos alunos foram aprovados (≥ 6) e quantos reprovados.',
+    hint:'dois contadores: aprovados++ e reprovados++',
+    code:`let medias = [8, 5, 7, 4, 9, 3, 6];
+let aprovados = 0;
+let reprovados = 0;
+for (let i = 0; i < medias.length; i++) {
+  if (medias[i] >= 6) {
+    aprovados++;
+  } else {
+    reprovados++;
+  }
+}
+console.log("Aprovados:", aprovados);
+console.log("Reprovados:", reprovados);`
+  },
+  {
+    n:20, g:'vetor', title:'Receber notas e mostrar estatísticas',
+    problem:'Peça 5 notas via prompt e mostre: soma, média, maior e menor nota.',
+    hint:'combine acumulador, maior e menor num único for',
+    code:`let notas = [];
+for (let i = 0; i < 5; i++) {
+  notas[i] = Number(prompt("Nota " + (i+1) + ":"));
+}
+let soma = 0;
+let maior = notas[0];
+let menor = notas[0];
+for (let i = 0; i < notas.length; i++) {
+  soma += notas[i];
+  if (notas[i] > maior) maior = notas[i];
+  if (notas[i] < menor) menor = notas[i];
+}
+console.log("Soma:", soma);
+console.log("Média:", (soma / notas.length).toFixed(1));
+console.log("Maior:", maior);
+console.log("Menor:", menor);`
+  },
+
+  // ============================================================
+  // MATRIZES (21–25)
+  // ============================================================
+  {
+    n:21, g:'matriz', title:'Criar e exibir uma matriz 2×2',
+    problem:'Crie uma matriz 2×2 com os valores [[1,2],[3,4]] e exiba cada elemento com sua posição (linha, coluna).',
+    hint:'matriz[linha][coluna] — dois colchetes',
+    code:`let m = [[1, 2], [3, 4]];
+for (let i = 0; i < 2; i++) {
+  for (let j = 0; j < 2; j++) {
+    console.log("m[" + i + "][" + j + "] =", m[i][j]);
+  }
+}`
+  },
+  {
+    n:22, g:'matriz', title:'Soma de uma linha da matriz',
+    problem:'Dada a matriz [[5,3,2],[8,1,6],[4,7,9]], some e exiba os elementos da primeira linha (linha 0).',
+    hint:'percorra só j de 0 até 2; acesse m[0][j]',
+    code:`let m = [[5, 3, 2], [8, 1, 6], [4, 7, 9]];
+let soma = 0;
+for (let j = 0; j < 3; j++) {
+  soma += m[0][j];
+}
+console.log("Soma da linha 0:", soma);`
+  },
+  {
+    n:23, g:'matriz', title:'Exibir a diagonal principal',
+    problem:'Dada a matriz 3×3 [[1,2,3],[4,5,6],[7,8,9]], exiba os elementos da diagonal principal (onde linha === coluna).',
+    hint:'diagonal: m[i][i] onde i === j',
+    code:`let m = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+console.log("Diagonal principal:");
+for (let i = 0; i < 3; i++) {
+  console.log("m[" + i + "][" + i + "] =", m[i][i]);
+}`
+  },
+  {
+    n:24, g:'matriz', title:'Soma total de uma matriz',
+    problem:'Some todos os elementos da matriz [[2,4],[6,8],[10,12]] e exiba o total.',
+    hint:'dois for aninhados; soma += m[i][j]',
+    code:`let m = [[2, 4], [6, 8], [10, 12]];
+let soma = 0;
+for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 2; j++) {
+    soma += m[i][j];
+  }
+}
+console.log("Soma total:", soma);`
+  },
+  {
+    n:25, g:'matriz', title:'Tabela de multiplicação 3×3',
+    problem:'Gere e exiba uma tabela de multiplicação 3×3: para cada linha i e coluna j, mostre i×j.',
+    hint:'m[i][j] = (i+1) * (j+1)',
+    code:`let m = [];
+for (let i = 0; i < 3; i++) {
+  m[i] = [];
+  for (let j = 0; j < 3; j++) {
+    m[i][j] = (i+1) * (j+1);
+    console.log((i+1) + " × " + (j+1) + " = " + m[i][j]);
+  }
+}`
+  }
+];
+
+// ============================================================
+// RENDER
+// ============================================================
+function hl(code) {
+  return code
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/(\/\/[^\n]*)/g,'<span class="cm">$1</span>')
+    .replace(/("[^"]*")/g,'<span class="str">$1</span>')
+    .replace(/\b(\d+(?:\.\d+)?)\b/g,'<span class="num">$1</span>')
+    .replace(/\b(prompt|console\.log|Number|toFixed)\b/g,'<span class="fn">$1</span>')
+    .replace(/\b(let|const|var|if|else|for|return|true|false)\b/g,'<span class="kw">$1</span>');
+}
+
+function makeCard(ex) {
+  return `
+    <article class="card" data-group="${ex.g}" id="e${ex.n}">
+      <header class="card-head">
+        <span class="num">${String(ex.n).padStart(2,'0')}</span>
+        <div class="meta">
+          <div class="title">${ex.title}</div>
+          <span class="tag ${ex.g}">${ex.g === 'vetor' ? 'Vetor' : 'Matriz'}</span>
+        </div>
+      </header>
+      <p class="problem">${ex.problem}</p>
+      <div class="hint"><span class="lbl">dica:</span>${ex.hint}</div>
+      <div class="solution">
+        <div class="code-wrap">
+          <div class="code-head">
+            <span class="code-fname">ex${String(ex.n).padStart(2,'0')}.js</span>
+            <button class="copy-btn" onclick="copyCode(this,${ex.n})">copiar</button>
+          </div>
+          <pre>${hl(ex.code)}</pre>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn toggle" onclick="toggleSol(${ex.n},this)">Ver solução</button>
+        <button class="btn run" onclick="runEx(${ex.n})">Rodar agora</button>
+      </div>
+    </article>`;
+}
+
+document.getElementById('grid-vetor').innerHTML  = exercises.filter(e=>e.g==='vetor').map(makeCard).join('');
+document.getElementById('grid-matriz').innerHTML = exercises.filter(e=>e.g==='matriz').map(makeCard).join('');
+
+function toggleSol(n, btn) {
+  const card = document.getElementById('e'+n);
+  const isOpen = card.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  btn.textContent = isOpen ? 'Esconder' : 'Ver solução';
+  if (isOpen) btn.classList.add('open'); else btn.classList.remove('open');
+}
+
+function copyCode(btn, n) {
+  const ex = exercises.find(e=>e.n===n);
+  navigator.clipboard.writeText(ex.code).then(()=>{
+    btn.textContent = '✓ copiado'; btn.classList.add('ok');
+    setTimeout(()=>{ btn.textContent='copiar'; btn.classList.remove('ok'); }, 1800);
+  });
+}
+
+function runEx(n) {
+  const ex = exercises.find(e=>e.n===n);
+  try { new Function(ex.code)(); } catch(err) { alert('Erro: '+err.message); }
+}
+
+// Filters
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+    pill.classList.add('active');
+    const f = pill.dataset.f;
+    document.querySelectorAll('.card').forEach(c=>{
+      c.style.display = (f==='all' || c.dataset.group===f) ? '' : 'none';
+    });
+    document.querySelectorAll('.grp,.grid').forEach(el=>{
+      const g = el.dataset.g;
+      if (!g) return;
+      el.style.display = (f==='all' || g===f) ? '' : 'none';
+    });
+  });
+});
+</script>
+</body>
+</html>
