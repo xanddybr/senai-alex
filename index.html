@@ -3,18 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>30 Exercícios de Lógica · Aula 01 · Programador Front-End</title>
+<title>Programador Front-End · Portal do Curso · Firjan SENAI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-
-  .nao-selecionavel {
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none;      /* Internet Explorer/Edge */
-  user-select: none;          /* Padrão moderno (Chrome, Firefox, Opera) */
-  } 
-
   :root {
     --navy: #0a2540;
     --navy-soft: #14365b;
@@ -26,1047 +19,1225 @@
     --paper: #ffffff;
     --ink: #1a1a1a;
     --ink-soft: #4a4a4a;
+    --ink-light: #7a7468;
     --rule: #d4cbb8;
-    --easy: #2f8a3d;
-    --decision: #b8631a;
+    --success: #2f8a3d;
+    --warning: #b8631a;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   body {
     font-family: 'Inter', sans-serif;
     background: var(--bg);
     color: var(--ink);
     line-height: 1.6;
-    padding: 0;
   }
 
-  /* ============ HEADER ============ */
+  /* ============================================================
+     TOP NAVIGATION — sticky with dropdowns
+     ============================================================ */
+  .topnav {
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: box-shadow 0.2s;
+  }
+  .topnav.scrolled {
+    box-shadow: 0 4px 20px rgba(10, 37, 64, 0.07);
+  }
+  .topnav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--navy);
+  }
+  .brand-mark {
+    width: 36px; height: 36px;
+    background: var(--navy);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 3px;
+    letter-spacing: -0.5px;
+  }
+  .brand-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 17px;
+    letter-spacing: -0.3px;
+  }
+  .brand-name em {
+    font-style: italic;
+    color: var(--teal);
+    font-weight: 400;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .nav-links > li { position: relative; }
+  /* Extra hover-safe zone below the link, so moving towards the dropdown
+     doesn't break the hover state */
+  .has-dropdown::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 18px;
+    background: transparent;
+    pointer-events: none;
+  }
+  .has-dropdown:hover::after,
+  .has-dropdown.open::after { pointer-events: auto; }
+  .nav-links > li > a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    cursor: pointer;
+  }
+  .nav-links > li > a:hover {
+    background: var(--bg);
+    color: var(--teal);
+  }
+  .nav-links .caret {
+    display: inline-block;
+    font-size: 9px;
+    transition: transform 0.2s;
+  }
+  .has-dropdown.open > a .caret { transform: rotate(180deg); }
+
+  /* Dropdown panel */
+  .dropdown {
+    position: absolute;
+    top: 100%;           /* glued to bottom of parent — no gap to cross */
+    left: 0;
+    min-width: 280px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    box-shadow: 0 12px 36px rgba(10, 37, 64, 0.12);
+    list-style: none;
+    padding: 10px;
+    margin-top: 8px;     /* visual gap, but via margin so the parent's hover area covers it */
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.18s, transform 0.18s, visibility 0s linear 0.25s;
+    visibility: hidden;
+  }
+  /* Invisible bridge — covers the gap between the nav link and the dropdown,
+     so moving the mouse diagonally doesn't lose hover */
+  .dropdown::before {
+    content: "";
+    position: absolute;
+    top: -12px;
+    left: 0;
+    right: 0;
+    height: 14px;
+    background: transparent;
+  }
+  .has-dropdown:hover .dropdown,
+  .has-dropdown:focus-within .dropdown,
+  .has-dropdown.open .dropdown {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+    visibility: visible;
+    transition: opacity 0.18s, transform 0.18s, visibility 0s linear 0s;
+  }
+  .dropdown li a {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 14px;
+    text-decoration: none;
+    color: var(--ink);
+    border-radius: 4px;
+    transition: background 0.12s;
+  }
+  .dropdown li a:hover { background: var(--bg); }
+  .dropdown .item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .dropdown .item-meta {
+    font-size: 11.5px;
+    color: var(--ink-light);
+    letter-spacing: 0.3px;
+  }
+  .dropdown li.divider {
+    height: 1px;
+    background: var(--rule);
+    margin: 6px 8px;
+  }
+
+  /* Mobile nav toggle */
+  .mobile-toggle {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
   .hero {
     background: var(--navy);
     color: white;
-    padding: 60px 40px 50px;
+    padding: 100px 40px 110px;
     position: relative;
     overflow: hidden;
   }
   .hero::before {
     content: "";
     position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(103, 197, 214, 0.15) 0%, transparent 65%);
+    top: -30%;
+    right: -15%;
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(103, 197, 214, 0.16) 0%, transparent 60%);
     pointer-events: none;
   }
-  .hero-inner { max-width: 1200px; margin: 0 auto; position: relative; }
-  .eyebrow {
-    font-size: 12px;
+  .hero::after {
+    content: "";
+    position: absolute;
+    bottom: -50%;
+    left: -10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(232, 160, 4, 0.08) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .hero-left .eyebrow {
+    font-size: 11.5px;
     letter-spacing: 4px;
     text-transform: uppercase;
     color: var(--teal-light);
     font-weight: 500;
-    margin-bottom: 18px;
+    margin-bottom: 22px;
   }
-  .hero h1 {
+  .hero-left h1 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: clamp(2.2rem, 5vw, 3.6rem);
-    line-height: 1.05;
-    letter-spacing: -1px;
-    margin-bottom: 18px;
+    font-size: clamp(2.5rem, 5.5vw, 4.4rem);
+    line-height: 1.0;
+    letter-spacing: -1.5px;
+    margin-bottom: 26px;
   }
-  .hero h1 em {
+  .hero-left h1 em {
     font-style: italic;
     color: var(--teal-light);
     font-weight: 400;
   }
-  .hero-sub {
-    font-size: 1.05rem;
-    max-width: 700px;
+  .hero-left p.lead {
+    font-size: 1.1rem;
+    max-width: 580px;
     color: rgba(255, 255, 255, 0.78);
-    margin-bottom: 30px;
+    margin-bottom: 38px;
+    line-height: 1.5;
   }
-  .hero-meta {
+  .hero-actions {
     display: flex;
+    gap: 12px;
     flex-wrap: wrap;
-    gap: 28px;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    padding-top: 22px;
-    font-size: 13px;
   }
-  .hero-meta div { display: flex; flex-direction: column; gap: 2px; }
-  .hero-meta .label {
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 10.5px;
-    color: rgba(255, 255, 255, 0.5);
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14.5px;
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.15s;
   }
-  .hero-meta .value { font-weight: 500; color: white; }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .btn-primary:hover { background: #f7b21f; }
+  .btn-secondary {
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+  .btn-secondary:hover { border-color: white; background: rgba(255, 255, 255, 0.05); }
+  .btn:active { transform: scale(0.98); }
 
-  /* ============ INSTRUCTIONS ============ */
-  .instructions {
-    background: var(--paper);
-    padding: 36px 40px;
+  /* Hero right - stats card */
+  .stat-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 32px;
+    backdrop-filter: blur(8px);
+  }
+  .stat-card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: white;
+    margin-bottom: 6px;
+  }
+  .stat-card-sub {
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 24px;
+    letter-spacing: 0.3px;
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 16px;
+  }
+  .stat .num {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--teal-light);
+    letter-spacing: -1px;
+  }
+  .stat .label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.65);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 6px;
+  }
+
+  /* ============================================================
+     SECTION COMMON
+     ============================================================ */
+  section.zone {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 80px 40px 30px;
+  }
+  .zone-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 36px;
+    padding-bottom: 18px;
     border-bottom: 1px solid var(--rule);
   }
-  .instructions-inner {
-    max-width: 1200px;
-    margin: 0 auto;
+  .zone-eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .zone-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    color: var(--navy);
+    line-height: 1.05;
+    letter-spacing: -0.8px;
+  }
+  .zone-title em {
+    font-style: italic;
+    color: var(--teal);
+    font-weight: 400;
+  }
+  .zone-count {
+    margin-left: auto;
+    color: var(--ink-light);
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ============================================================
+     CARD GRID
+     ============================================================ */
+  .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 24px;
   }
-  .step {
-    border-left: 3px solid var(--teal);
-    padding: 8px 20px;
-  }
-  .step .num {
-    font-family: 'Fraunces', serif;
-    font-size: 28px;
-    font-weight: 500;
-    color: var(--teal);
-    line-height: 1;
-    margin-bottom: 6px;
-    display: block;
-  }
-  .step h3 {
-    font-size: 15px;
-    margin-bottom: 4px;
-    font-weight: 600;
-  }
-  .step p {
-    font-size: 13.5px;
-    color: var(--ink-soft);
-    line-height: 1.55;
-  }
-  .step code {
-    background: #f0ece2;
-    padding: 1px 5px;
-    border-radius: 3px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-  }
 
-  /* ============ NAV ============ */
-  .nav-section {
-    background: var(--bg);
-    padding: 30px 40px 0;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: linear-gradient(to bottom, var(--bg) 75%, transparent);
-  }
-  .nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .nav-label {
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-right: 8px;
-  }
-  .pill {
-    border: 1px solid var(--rule);
-    background: var(--paper);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
-    font-weight: 500;
-  }
-  .pill:hover { border-color: var(--navy); }
-  .pill.active { background: var(--navy); color: white; border-color: var(--navy); }
-
-  /* ============ EXERCISES ============ */
-  .exercises {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 30px 40px 80px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-    gap: 28px;
-  }
-
-  .exercise {
+  .card {
     background: var(--paper);
     border: 1px solid var(--rule);
     border-radius: 6px;
     padding: 28px;
     display: flex;
     flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     position: relative;
-    transition: box-shadow 0.2s, transform 0.2s;
+    overflow: hidden;
   }
-  .exercise:hover {
-    box-shadow: 0 4px 24px rgba(10, 37, 64, 0.08);
-    transform: translateY(-2px);
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(10, 37, 64, 0.09);
+    border-color: var(--navy-soft);
   }
-
-  .ex-header {
+  .card-top {
     display: flex;
+    justify-content: space-between;
     align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 16px;
-    padding-bottom: 16px;
-    border-bottom: 1px dashed var(--rule);
+    margin-bottom: 20px;
   }
-  .ex-number {
+  .card-number {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: 38px;
-    line-height: 1;
-    color: var(--navy);
-    flex-shrink: 0;
-    letter-spacing: -1px;
+    font-size: 14px;
+    color: var(--ink-light);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
   }
-  .ex-meta { flex: 1; }
-  .ex-title {
-    font-family: 'Fraunces', serif;
-    font-size: 22px;
-    font-weight: 500;
-    line-height: 1.15;
-    color: var(--ink);
-    margin-bottom: 6px;
-  }
-  .ex-tag {
-    display: inline-block;
+  .badge {
     font-size: 10px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     padding: 3px 9px;
     border-radius: 3px;
-    font-weight: 600;
+    font-weight: 700;
   }
-  .ex-tag.easy { background: #e3f1e5; color: var(--easy); }
-  .ex-tag.decision { background: #fbeede; color: var(--decision); }
+  .badge.ok { background: #e3f1e5; color: var(--success); }
+  .badge.soon { background: #f5edd5; color: var(--warning); }
+  .badge.new { background: #fbeede; color: var(--coral); }
+  .badge.open { background: #d5ecf2; color: var(--teal); }
 
-  .ex-problem {
-    font-size: 14.5px;
-    line-height: 1.6;
-    color: var(--ink-soft);
-    margin-bottom: 20px;
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--navy);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
   }
-
-  .ex-section-label {
-    font-size: 10.5px;
-    letter-spacing: 2px;
+  .card-subtitle {
+    font-size: 13px;
+    color: var(--ink-light);
+    font-weight: 500;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
-    font-weight: 600;
-    color: var(--teal);
-    margin-bottom: 10px;
+    margin-bottom: 14px;
+  }
+  .card-desc {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin-bottom: 22px;
+    flex: 1;
+  }
+  .card-meta {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--rule);
+    font-size: 12px;
+    color: var(--ink-light);
   }
-  .ex-section-label::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--rule);
+  .card-meta .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .card-cta {
+    margin-left: auto;
+    color: var(--teal);
+    font-weight: 600;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .card-cta::after {
+    content: "→";
+    transition: transform 0.2s;
+  }
+  .card:hover .card-cta::after {
+    transform: translateX(4px);
   }
 
-  .flow-steps {
-    list-style: none;
-    counter-reset: step;
+  /* Specific card variations */
+  .card.disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .card.disabled:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--rule);
+  }
+
+  /* Material cards have a stripe color */
+  .card.material::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--teal);
+  }
+  .card.aula::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--navy);
+  }
+  .card.trabalho::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+  }
+
+  /* ============================================================
+     ABOUT SECTION
+     ============================================================ */
+  .about-zone {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 80px 40px 100px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .about-zone .zone-eyebrow { margin-bottom: 14px; }
+  .about-zone h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.05;
+    color: var(--navy);
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+  }
+  .about-zone h2 em {
+    font-style: italic;
+    color: var(--teal);
+    font-weight: 400;
+  }
+  .about-zone p {
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.65;
     margin-bottom: 20px;
   }
-  .flow-steps li {
-    counter-increment: step;
-    padding-left: 32px;
-    position: relative;
-    margin-bottom: 7px;
-    font-size: 13.5px;
-    color: var(--ink-soft);
-    line-height: 1.5;
-  }
-  .flow-steps li::before {
-    content: counter(step);
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 22px;
-    height: 22px;
-    background: var(--bg);
+  .about-side {
+    background: var(--paper);
     border: 1px solid var(--rule);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
+    border-radius: 6px;
+    padding: 30px;
+  }
+  .about-side h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
     font-weight: 600;
     color: var(--navy);
-    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 18px;
   }
-  .flow-steps li strong { color: var(--ink); font-weight: 600; }
-
-  .code-wrap {
-    background: var(--navy);
-    border-radius: 5px;
-    margin-bottom: 16px;
-    position: relative;
-    overflow: hidden;
+  .info-list {
+    list-style: none;
   }
-  .code-header {
+  .info-list li {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 8px 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.2);
-  }
-  .code-filename {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.55);
-    letter-spacing: 0.5px;
-  }
-  .copy-btn {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.7);
-    padding: 3px 10px;
-    border-radius: 3px;
-    font-size: 11px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.15s;
-  }
-  .copy-btn:hover { background: rgba(255, 255, 255, 0.1); color: white; }
-  .copy-btn.copied { background: var(--teal); border-color: var(--teal); color: white; }
-  pre {
-    padding: 16px;
-    overflow-x: auto;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12.5px;
-    line-height: 1.65;
-    color: #e6e6e6;
-  }
-  .tk-kw { color: #ff7b9c; }
-  .tk-str { color: #c3e88d; }
-  .tk-num { color: #f78c6c; }
-  .tk-fn { color: #82aaff; }
-  .tk-cm { color: #5c7791; font-style: italic; }
-
-  .run-btn {
-    background: var(--gold);
-    color: var(--navy);
-    border: none;
-    padding: 11px 18px;
-    border-radius: 4px;
-    font-family: inherit;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--rule);
     font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.15s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
   }
-  .run-btn:hover { background: #f7b21f; }
-  .run-btn:active { transform: scale(0.98); }
-  .run-btn::before {
-    content: "▶";
-    font-size: 10px;
+  .info-list li:last-child { border-bottom: none; }
+  .info-list .key {
+    color: var(--ink-light);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+  .info-list .val {
+    color: var(--navy);
+    font-weight: 500;
+    text-align: right;
   }
 
-  /* ============ FOOTER ============ */
-  .footer {
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer {
     background: var(--navy);
     color: rgba(255, 255, 255, 0.7);
-    padding: 40px;
-    text-align: center;
+    padding: 60px 40px 40px;
+  }
+  .footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .footer-brand .brand {
+    color: white;
+    margin-bottom: 14px;
+  }
+  .footer-brand .brand-mark {
+    background: white;
+    color: var(--navy);
+  }
+  .footer-brand p {
     font-size: 13px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 320px;
   }
-  .footer strong { color: white; }
-
-  /* ============ PRINT ============ */
-  @media print {
-    body { background: white; }
-    .hero { background: white; color: var(--navy); border-bottom: 2px solid var(--navy); page-break-after: avoid; }
-    .hero::before { display: none; }
-    .hero h1 em { color: var(--teal); }
-    .hero-sub, .hero-meta .label, .hero-meta .value { color: var(--ink-soft); }
-    .nav-section, .run-btn, .copy-btn { display: none; }
-    .exercises { grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 20px; }
-    .exercise { border: 1px solid #ccc; break-inside: avoid; box-shadow: none; }
-    .code-wrap { background: #f5f5f5; border: 1px solid #ddd; }
-    .code-filename { color: #666; }
-    pre { color: #222; }
-    .tk-kw { color: #d33682; }
-    .tk-str { color: #2aa198; }
-    .tk-num { color: #cb4b16; }
-    .tk-fn { color: #268bd2; }
-    .footer { background: white; color: var(--ink-soft); border-top: 1px solid var(--rule); }
+  .footer-col h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    color: white;
+    font-weight: 600;
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 8px; }
+  .footer-col a {
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.15s;
+  }
+  .footer-col a:hover { color: var(--teal-light); }
+  .footer-bottom {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.45);
   }
 
-  @media (max-width: 600px) {
-    .hero, .instructions, .nav-section { padding-left: 20px; padding-right: 20px; }
-    .exercises { padding: 20px; grid-template-columns: 1fr; }
-    .exercise { padding: 20px; }
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 980px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+    .about-zone { grid-template-columns: 1fr; gap: 50px; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 720px) {
+    .topnav-inner { padding: 0 20px; }
+    .nav-links {
+      position: absolute;
+      top: 70px;
+      left: 0; right: 0;
+      flex-direction: column;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      padding: 12px 20px 18px;
+      gap: 0;
+      display: none;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links > li { width: 100%; }
+    .nav-links > li > a { width: 100%; padding: 12px 10px; }
+    .dropdown {
+      position: static;
+      box-shadow: none;
+      border: none;
+      background: var(--bg);
+      opacity: 1;
+      pointer-events: auto;
+      transform: none;
+      margin: 4px 0 8px 18px;
+      padding: 4px;
+      display: none;
+    }
+    .has-dropdown.open .dropdown { display: block; }
+    .mobile-toggle { display: inline-flex; align-items: center; gap: 6px; }
+    .hero, section.zone, .about-zone, footer { padding-left: 20px; padding-right: 20px; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
 <body>
 
-<header class="hero">
+<!-- ============================================================
+     NAVIGATION — TOP STICKY WITH DROPDOWNS
+     Edit dropdown items by copying <li> entries below.
+     ============================================================ -->
+<nav class="topnav" id="topnav">
+  <div class="topnav-inner">
+    <a href="#inicio" class="brand">
+      <span class="brand-mark">FE</span>
+      <span class="brand-name">Programador <em>Front-End</em></span>
+    </a>
+
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Abrir menu">
+      ☰ Menu
+    </button>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#inicio">Início</a></li>
+
+      <!-- AULAS dropdown -->
+      <li class="has-dropdown">
+        <a href="#aulas">Aulas <span class="caret">▼</span></a>
+        <ul class="dropdown">
+          <li><a href="Aula01_Logica_Programacao.pdf">
+            <span class="item-title">Aula 01 — Introdução à Lógica</span>
+            <span class="item-meta">Fluxogramas · Draw.io · 4h</span>
+          </a></li>
+          <li><a href="Aula02_Pseudocodigo.pdf">
+            <span class="item-title">Aula 02 — Pseudocódigo e Variáveis</span>
+            <span class="item-meta">VisuAlg · Tipos de dados · 4h</span>
+          </a></li>
+          <li><a href="Aula03_Operadores_Expressoes.pdf">
+            <span class="item-title">Aula 03 — Operadores e Expressões</span>
+            <span class="item-meta">Aritméticos · Relacionais · Lógicos · 4h</span>
+          </a></li>
+          <li><a href="Aula04_Estruturas_Condicionais.pdf">
+            <span class="item-title">Aula 04 — Estruturas Condicionais</span>
+            <span class="item-meta">if · else · switch · 4h</span>
+          </a></li>
+          <li class="divider"></li>
+          <li><a href="#aulas">
+            <span class="item-title">Ver todas as aulas</span>
+            <span class="item-meta">Cronograma completo do curso</span>
+          </a></li>
+        </ul>
+      </li>
+
+      <!-- MATERIAIS dropdown -->
+      <li class="has-dropdown">
+        <a href="#materiais">Materiais <span class="caret">▼</span></a>
+        <ul class="dropdown">
+          <li><a href="Aula01_30_Exercicios.html">
+            <span class="item-title">30 Exercícios — Aula 01</span>
+            <span class="item-meta">Fluxograma + JavaScript interativo</span>
+          </a></li>
+          <li><a href="30_Problemas_Aulas_02_04.html">
+            <span class="item-title">30 Problemas — Aulas 02 a 04</span>
+            <span class="item-meta">Pseudocódigo · Fluxograma · Console</span>
+          </a></li>
+          <li><a href="60_Problemas_Sequencia_Decisao.html">
+            <span class="item-title">60 Problemas — Banco Completo</span>
+            <span class="item-meta">30 sequência + 30 decisão · com soluções</span>
+          </a></li>
+          <!-- Adicione novos materiais aqui copiando o <li> acima -->
+        </ul>
+      </li>
+
+      <!-- TRABALHOS dropdown -->
+      <li class="has-dropdown">
+        <a href="#trabalhos">Trabalhos <span class="caret">▼</span></a>
+        <ul class="dropdown">
+          <li><a href="#trabalhos">
+            <span class="item-title">Trabalho 01 — Fluxogramas</span>
+            <span class="item-meta">Entrega: até 13/06</span>
+          </a></li>
+          <li><a href="#trabalhos">
+            <span class="item-title">Trabalho 02 — Calculadora</span>
+            <span class="item-meta">Entrega: até 20/06</span>
+          </a></li>
+          <!-- Adicione novos trabalhos aqui copiando o <li> acima -->
+        </ul>
+      </li>
+
+      <li><a href="#sobre">Sobre</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="hero" id="inicio">
   <div class="hero-inner">
-    <div class="eyebrow">Aula 01 · Módulo Específico Profissional</div>
-    <h1>Vamos pensar como um programador!</em></h1>
-    <p class="hero-sub">Cada exercício você fará duas vezes: primeiro como fluxograma no Draw.io para visualizar a lógica, depois como código JavaScript no VSCode para ver o computador executar. Mesma ideia, duas linguagens.</p>
-    <div class="hero-meta">
-      <div>
-        <span class="label">Curso</span>
-        <span class="value">Programador Front-End</span>
+    <div class="hero-left">
+      <div class="eyebrow">Curso · 180 horas · Módulo Específico Profissional</div>
+      <h1>Pense como um programador, <em>do zero à interface.</em></h1>
+      <p class="lead">Aqui você encontra todas as aulas, materiais de estudo e trabalhos do curso de Programador Front-End da Firjan SENAI. Slides, exercícios, fluxogramas e código — tudo em um só lugar.</p>
+      <div class="hero-actions">
+        <a href="#aulas" class="btn btn-primary">Ver aulas →</a>
+        <a href="#materiais" class="btn btn-secondary">Materiais de estudo</a>
       </div>
-      <div>
-        <span class="label">Unidade Curricular</span>
-        <span class="value">Lógica de Programação · 32h</span>
-      </div>
-      <div>
-        <span class="label">Professor</span>
-        <span class="value">Alexandre Santana</span>
-      </div>
-      <div>
-        <span class="label">Total de exercícios</span>
-        <span class="value">30 · cerca de 5 passos cada</span>
+    </div>
+    <div class="hero-right">
+      <div class="stat-card">
+        <div class="stat-card-title">Resumo do curso</div>
+        <div class="stat-card-sub">Atualizado em junho · 2026</div>
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="num">180h</div>
+            <div class="label">Carga total</div>
+          </div>
+          <div class="stat">
+            <div class="num">5</div>
+            <div class="label">Unidades</div>
+          </div>
+          <div class="stat">
+            <div class="num">31</div>
+            <div class="label">Alunos</div>
+          </div>
+          <div class="stat">
+            <div class="num">60</div>
+            <div class="label">Exercícios</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </header>
 
-<section class="instructions">
-  <div class="instructions-inner">
-    <div class="step">
-      <span class="num">01</span>
-      <h3>Abra o VSCode</h3>
-      <p>Crie um arquivo chamado <code>exercicio.html</code> em qualquer pasta do seu computador. Esse será o seu laboratório.</p>
+<!-- ============================================================
+     SECTION: AULAS
+     Cards for each class lecture. To add a new class, copy the
+     <a class="card aula"> block and update title/date/link.
+     ============================================================ -->
+<section class="zone" id="aulas">
+  <div class="zone-header">
+    <div>
+      <div class="zone-eyebrow">Conteúdo programático</div>
+      <h1 class="zone-title">Aulas do <em>curso</em></h1>
     </div>
-    <div class="step">
-      <span class="num">02</span>
-      <h3>Cole o esqueleto base</h3>
-      <p>Cole esta estrutura uma vez: <code>&lt;script&gt; … &lt;/script&gt;</code>. Dentro dela vai o código de cada exercício, um por vez.</p>
+    <span class="zone-count">4 publicadas · 1 em preparação</span>
+  </div>
+
+  <div class="card-grid">
+
+    <!-- AULA 01 -->
+    <a href="Aula01_Logica_Programacao.pdf" class="card aula">
+      <div class="card-top">
+        <span class="card-number">Aula 01 · 06 jun</span>
+        <span class="badge ok">Disponível</span>
+      </div>
+      <h3 class="card-title">Introdução à Lógica de Programação</h3>
+      <p class="card-subtitle">Fluxogramas · Algoritmos · Draw.io</p>
+      <p class="card-desc">Primeiros passos no pensamento algorítmico. Os 5 símbolos do fluxograma, abstração lógica e construção de diagramas no Draw.io.</p>
+      <div class="card-meta">
+        <span class="meta-item">📊 16 slides</span>
+        <span class="meta-item">⏱ 4h</span>
+        <span class="card-cta">Abrir PPT</span>
+      </div>
+    </a>
+
+    <!-- AULA 02 -->
+    <a href="Aula02_Pseudocodigo.pdf" class="card aula">
+      <div class="card-top">
+        <span class="card-number">Aula 02 · 13 jun</span>
+        <span class="badge ok">Disponível</span>
+      </div>
+      <h3 class="card-title">Pseudocódigo, Variáveis e Constantes</h3>
+      <p class="card-subtitle">VisuAlg · Tipos de dados · Nomeação</p>
+      <p class="card-desc">A ponte entre o fluxograma e o código real. Instalação do VisuAlg, declaração de variáveis e os 4 tipos de dados essenciais.</p>
+      <div class="card-meta">
+        <span class="meta-item">📊 16 slides</span>
+        <span class="meta-item">⏱ 4h</span>
+        <span class="card-cta">Abrir PPT</span>
+      </div>
+    </a>
+
+    <!-- AULA 03 -->
+    <a href="Aula03_Operadores_Expressoes.pdf" class="card aula">
+      <div class="card-top">
+        <span class="card-number">Aula 03 · 20 jun</span>
+        <span class="badge ok">Disponível</span>
+      </div>
+      <h3 class="card-title">Operadores e Expressões</h3>
+      <p class="card-subtitle">Aritméticos · Relacionais · Lógicos</p>
+      <p class="card-desc">A gramática do código. Cinco operadores aritméticos, comparações entre valores, álgebra booleana e precedência de avaliação.</p>
+      <div class="card-meta">
+        <span class="meta-item">📊 16 slides</span>
+        <span class="meta-item">⏱ 4h</span>
+        <span class="card-cta">Abrir PPT</span>
+      </div>
+    </a>
+
+    <!-- AULA 04 -->
+    <a href="Aula04_Estruturas_Condicionais.pdf" class="card aula">
+      <div class="card-top">
+        <span class="card-number">Aula 04 · 27 jun</span>
+        <span class="badge ok">Disponível</span>
+      </div>
+      <h3 class="card-title">Estruturas Condicionais</h3>
+      <p class="card-subtitle">if · else · else if · switch · ternário</p>
+      <p class="card-desc">O coração da lógica: como ensinar o computador a tomar decisões. Os 5 tipos de condicionais e quando usar cada um.</p>
+      <div class="card-meta">
+        <span class="meta-item">📊 16 slides</span>
+        <span class="meta-item">⏱ 4h</span>
+        <span class="card-cta">Abrir PPT</span>
+      </div>
+    </a>
+
+    <!-- AULA 05 (em preparação) -->
+    <div class="card aula disabled">
+      <div class="card-top">
+        <span class="card-number">Aula 05 · 04 jul</span>
+        <span class="badge soon">Em preparação</span>
+      </div>
+      <h3 class="card-title">Estruturas de Repetição</h3>
+      <p class="card-subtitle">while · for · do-while · loops aninhados</p>
+      <p class="card-desc">Como repetir comandos sem reescrever código. Contadores, acumuladores e os três tipos de laço.</p>
+      <div class="card-meta">
+        <span class="meta-item">📊 em breve</span>
+        <span class="meta-item">⏱ 4h</span>
+      </div>
     </div>
-    <div class="step">
-      <span class="num">03</span>
-      <h3>Desenhe primeiro no Draw.io</h3>
-      <p>Abra <code>app.diagrams.net</code> e desenhe o fluxograma seguindo os passos sugeridos. Só depois escreva o código.</p>
+
+    <!-- AULA 06 (em preparação) -->
+    <div class="card aula disabled">
+      <div class="card-top">
+        <span class="card-number">Aula 06 · 11 jul</span>
+        <span class="badge soon">Em preparação</span>
+      </div>
+      <h3 class="card-title">Vetores e Matrizes</h3>
+      <p class="card-subtitle">Estruturas de dados homogêneas</p>
+      <p class="card-desc">Trabalhando com conjuntos de valores. Declaração, percurso e manipulação de vetores e matrizes.</p>
+      <div class="card-meta">
+        <span class="meta-item">📊 em breve</span>
+        <span class="meta-item">⏱ 4h</span>
+      </div>
     </div>
-    <div class="step">
-      <span class="num">04</span>
-      <h3>Rode no navegador</h3>
-      <p>Duplo clique no arquivo HTML ou use a extensão Live Server. As caixas <code>prompt()</code> e <code>alert()</code> vão aparecer.</p>
-    </div>
+
   </div>
 </section>
 
-<nav class="nav-section">
-  <div class="nav-inner">
-    <span class="nav-label">Filtrar</span>
-    <button class="pill active" data-filter="all">Todos (30)</button>
-    <button class="pill" data-filter="easy">Sequência simples (15)</button>
-    <button class="pill" data-filter="decision">Com decisão (15)</button>
+<!-- ============================================================
+     SECTION: MATERIAIS DE ESTUDO
+     Cards for practice materials, exercises, references.
+     ============================================================ -->
+<section class="zone" id="materiais">
+  <div class="zone-header">
+    <div>
+      <div class="zone-eyebrow">Para praticar em casa</div>
+      <h1 class="zone-title">Materiais <em>de estudo</em></h1>
+    </div>
+    <span class="zone-count">3 publicados</span>
   </div>
-</nav>
 
-<main class="exercises" id="exercises">
-  <!-- Exercises injected by JS -->
-</main>
+  <div class="card-grid">
 
-<footer class="footer">
-  <p><strong>Programador Front-End · Firjan SENAI</strong></p>
-  <p style="margin-top: 6px;">Aula 01 · Introdução à Lógica de Programação · Distribuído para uso em sala de aula</p>
+    <a href="Aula01_30_Exercicios.html" class="card material">
+      <div class="card-top">
+        <span class="card-number">Material 01</span>
+        <span class="badge new">Interativo</span>
+      </div>
+      <h3 class="card-title">30 Exercícios — Aula 01</h3>
+      <p class="card-subtitle">Fluxograma + JavaScript no navegador</p>
+      <p class="card-desc">Trinta problemas com fluxograma sugerido, código JavaScript pronto para copiar e botão para rodar direto no navegador. 15 de sequência simples e 15 com decisão.</p>
+      <div class="card-meta">
+        <span class="meta-item">🎯 30 problemas</span>
+        <span class="meta-item">▶ rodar online</span>
+        <span class="card-cta">Acessar</span>
+      </div>
+    </a>
+
+    <a href="30_Problemas_Aulas_02_04.html" class="card material">
+      <div class="card-top">
+        <span class="card-number">Material 02</span>
+        <span class="badge new">Novo</span>
+      </div>
+      <h3 class="card-title">30 Problemas — Aulas 02 a 04</h3>
+      <p class="card-subtitle">Pseudocódigo · Fluxograma · Console</p>
+      <p class="card-desc">Trinta problemas para resolver em três formatos. Cada cartão traz o enunciado, a dica-chave e o checklist de entrega para o aluno marcar.</p>
+      <div class="card-meta">
+        <span class="meta-item">🎯 30 problemas</span>
+        <span class="meta-item">📝 3 formas</span>
+        <span class="card-cta">Acessar</span>
+      </div>
+    </a>
+
+    <a href="60_Problemas_Sequencia_Decisao.html" class="card material">
+      <div class="card-top">
+        <span class="card-number">Material 03</span>
+        <span class="badge new">Banco completo</span>
+      </div>
+      <h3 class="card-title">60 Problemas — Sequência e Decisão</h3>
+      <p class="card-subtitle">30 + 30 · Soluções escondidas · Run online</p>
+      <p class="card-desc">Banco completo de exercícios. Trinta de sequência simples e trinta com decisão. Cada um tem dica, solução escondida atrás de botão e execução direta no navegador.</p>
+      <div class="card-meta">
+        <span class="meta-item">🎯 60 problemas</span>
+        <span class="meta-item">▶ rodar online</span>
+        <span class="card-cta">Acessar</span>
+      </div>
+    </a>
+
+    <!-- COPIE ESTE BLOCO PARA ADICIONAR UM MATERIAL NOVO
+    <a href="#" class="card material">
+      <div class="card-top">
+        <span class="card-number">Material XX</span>
+        <span class="badge new">Novo</span>
+      </div>
+      <h3 class="card-title">Título do material</h3>
+      <p class="card-subtitle">Descrição curta · em maiúsculas</p>
+      <p class="card-desc">Descrição mais longa do material e do que o aluno vai praticar.</p>
+      <div class="card-meta">
+        <span class="meta-item">🎯 X itens</span>
+        <span class="card-cta">Acessar</span>
+      </div>
+    </a>
+    -->
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION: TRABALHOS
+     Cards for assignments students need to submit.
+     ============================================================ -->
+<section class="zone" id="trabalhos">
+  <div class="zone-header">
+    <div>
+      <div class="zone-eyebrow">Avaliação contínua</div>
+      <h1 class="zone-title">Trabalhos <em>a entregar</em></h1>
+    </div>
+    <span class="zone-count">2 abertos</span>
+  </div>
+
+  <div class="card-grid">
+
+    <a href="#" class="card trabalho">
+      <div class="card-top">
+        <span class="card-number">Trabalho 01 · até 13 jun</span>
+        <span class="badge open">Aberto</span>
+      </div>
+      <h3 class="card-title">Cinco Fluxogramas Originais</h3>
+      <p class="card-subtitle">Aula 01 · Lógica e Draw.io</p>
+      <p class="card-desc">Cada aluno deve criar cinco fluxogramas originais (não vistos em aula) no Draw.io e exportar como PNG. Tema livre, mas precisam usar pelo menos um losango cada.</p>
+      <div class="card-meta">
+        <span class="meta-item">⏱ peso 1,0</span>
+        <span class="meta-item">📤 Drive turma</span>
+        <span class="card-cta">Detalhes</span>
+      </div>
+    </a>
+
+    <a href="#" class="card trabalho">
+      <div class="card-top">
+        <span class="card-number">Trabalho 02 · até 20 jun</span>
+        <span class="badge open">Aberto</span>
+      </div>
+      <h3 class="card-title">Calculadora em Pseudocódigo</h3>
+      <p class="card-subtitle">Aula 02 · VisuAlg</p>
+      <p class="card-desc">Implementar uma calculadora simples no VisuAlg que receba dois números e a operação desejada. Deve fazer soma, subtração, multiplicação e divisão.</p>
+      <div class="card-meta">
+        <span class="meta-item">⏱ peso 1,5</span>
+        <span class="meta-item">📤 Drive turma</span>
+        <span class="card-cta">Detalhes</span>
+      </div>
+    </a>
+
+    <!-- COPIE ESTE BLOCO PARA ADICIONAR UM TRABALHO NOVO
+    <a href="#" class="card trabalho">
+      <div class="card-top">
+        <span class="card-number">Trabalho XX · até DD mmm</span>
+        <span class="badge open">Aberto</span>
+      </div>
+      <h3 class="card-title">Título do trabalho</h3>
+      <p class="card-subtitle">Aula XX · Tema</p>
+      <p class="card-desc">Descrição do que o aluno precisa fazer e entregar.</p>
+      <div class="card-meta">
+        <span class="meta-item">⏱ peso X,X</span>
+        <span class="meta-item">📤 Drive turma</span>
+        <span class="card-cta">Detalhes</span>
+      </div>
+    </a>
+    -->
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION: SOBRE
+     ============================================================ -->
+<section class="about-zone" id="sobre">
+  <div>
+    <div class="zone-eyebrow">Sobre o curso</div>
+    <h2>Formar profissionais que <em>entendem o que estão fazendo</em>.</h2>
+    <p>O curso de Programador Front-End da Firjan SENAI tem 180 horas distribuídas em cinco unidades curriculares. Aqui o foco está na base que sustenta tudo: lógica de programação. Antes de aprender HTML, CSS, JavaScript ou React, o aluno aprende a pensar como um programador.</p>
+    <p>A metodologia é 100% prática: cada aula combina micro-doses de teoria com longas sessões de mão na massa no computador. Fluxogramas, pseudocódigo e código real — três formas de expressar a mesma ideia, em ordem crescente de formalidade.</p>
+    <p>O material é todo construído com ferramentas gratuitas e padrão de mercado: <strong>Draw.io</strong> para diagramas, <strong>VisuAlg</strong> para pseudocódigo, <strong>VSCode</strong> para JavaScript e o <strong>console do Chrome</strong> para testes rápidos.</p>
+  </div>
+
+  <aside class="about-side">
+    <h3>Informações do curso</h3>
+    <ul class="info-list">
+      <li><span class="key">Eixo</span><span class="val">Informação e Comunicação</span></li>
+      <li><span class="key">Área</span><span class="val">TI · Software</span></li>
+      <li><span class="key">Carga total</span><span class="val">180 horas</span></li>
+      <li><span class="key">Módulo Básico</span><span class="val">16h</span></li>
+      <li><span class="key">Módulo Profissional</span><span class="val">164h</span></li>
+      <li><span class="key">Nível</span><span class="val">Qualificação</span></li>
+      <li><span class="key">Modalidade</span><span class="val">Presencial</span></li>
+      <li><span class="key">CBO</span><span class="val">3171-05</span></li>
+      <li><span class="key">Professor</span><span class="val">Alexandre Santana</span></li>
+      <li><span class="key">Turma</span><span class="val">31 alunos · 2026</span></li>
+    </ul>
+  </aside>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#inicio" class="brand">
+        <span class="brand-mark">FE</span>
+        <span class="brand-name">Programador <em>Front-End</em></span>
+      </a>
+      <p>Portal do curso de Programador Front-End da Firjan SENAI. Material didático produzido para uso em sala de aula.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Aulas</h4>
+      <ul>
+        <li><a href="Aula01_Logica_Programacao.pdf">Aula 01</a></li>
+        <li><a href="Aula02_Pseudocodigo.pdf">Aula 02</a></li>
+        <li><a href="Aula03_Operadores_Expressoes.pdf">Aula 03</a></li>
+        <li><a href="Aula04_Estruturas_Condicionais.pdf">Aula 04</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Materiais</h4>
+      <ul>
+        <li><a href="Aula01_30_Exercicios.html">30 Exercícios — Aula 01</a></li>
+        <li><a href="30_Problemas_Aulas_02_04.html">30 Problemas — Aulas 02-04</a></li>
+        <li><a href="60_Problemas_Sequencia_Decisao.html">60 Problemas — Banco completo</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Ferramentas</h4>
+      <ul>
+        <li><a href="https://app.diagrams.net" target="_blank">Draw.io</a></li>
+        <li><a href="https://visualg3.com.br" target="_blank">VisuAlg</a></li>
+        <li><a href="https://code.visualstudio.com" target="_blank">VSCode</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 · Firjan SENAI · Programador Front-End</span>
+    <span>Curso QUA0300.01 · Eixo TI Software</span>
+  </div>
 </footer>
 
 <script>
-// ============================================================
-// EXERCÍCIOS — 30 problemas para a Aula 01
-// ============================================================
-const exercises = [
-  // ====== SEQUÊNCIA SIMPLES (sem decisão) ======
-  {
-    n: 1, tag: 'easy', title: 'Olá, aluno!',
-    problem: 'Peça o nome do usuário e mostre uma saudação personalizada na tela.',
-    steps: [
-      'Início',
-      'Ler o <strong>nome</strong> do usuário',
-      'Montar a frase "Olá, [nome]!"',
-      'Mostrar a frase na tela',
-      'Fim'
-    ],
-    code: `let nome = prompt("Qual é o seu nome?");
-let mensagem = "Olá, " + nome + "!";
-alert(mensagem);`
-  },
-  {
-    n: 2, tag: 'easy', title: 'Dobro de um número',
-    problem: 'Receba um número do usuário e mostre o dobro dele.',
-    steps: [
-      'Início',
-      'Ler o <strong>número</strong>',
-      'Calcular dobro = número × 2',
-      'Mostrar o resultado',
-      'Fim'
-    ],
-    code: `let numero = Number(prompt("Digite um número:"));
-let dobro = numero * 2;
-alert("O dobro de " + numero + " é " + dobro);`
-  },
-  {
-    n: 3, tag: 'easy', title: 'Soma de dois números',
-    problem: 'Receba dois números e mostre a soma dos dois.',
-    steps: [
-      'Início',
-      'Ler o <strong>primeiro número</strong>',
-      'Ler o <strong>segundo número</strong>',
-      'Calcular soma = a + b',
-      'Mostrar e Fim'
-    ],
-    code: `let a = Number(prompt("Digite o primeiro número:"));
-let b = Number(prompt("Digite o segundo número:"));
-let soma = a + b;
-alert("A soma é " + soma);`
-  },
-  {
-    n: 4, tag: 'easy', title: 'Idade em meses',
-    problem: 'Receba a idade do usuário em anos e converta para meses.',
-    steps: [
-      'Início',
-      'Ler a <strong>idade em anos</strong>',
-      'Calcular meses = idade × 12',
-      'Mostrar o resultado',
-      'Fim'
-    ],
-    code: `let anos = Number(prompt("Quantos anos você tem?"));
-let meses = anos * 12;
-alert("Você tem aproximadamente " + meses + " meses de vida.");`
-  },
-  {
-    n: 5, tag: 'easy', title: 'Área do retângulo',
-    problem: 'Receba a base e a altura de um retângulo e calcule a área.',
-    steps: [
-      'Início',
-      'Ler a <strong>base</strong>',
-      'Ler a <strong>altura</strong>',
-      'Calcular área = base × altura',
-      'Mostrar e Fim'
-    ],
-    code: `let base = Number(prompt("Digite a base:"));
-let altura = Number(prompt("Digite a altura:"));
-let area = base * altura;
-alert("A área do retângulo é " + area);`
-  },
-  {
-    n: 6, tag: 'easy', title: 'Perímetro do quadrado',
-    problem: 'Receba o tamanho do lado de um quadrado e calcule o perímetro.',
-    steps: [
-      'Início',
-      'Ler o <strong>lado</strong>',
-      'Calcular perímetro = lado × 4',
-      'Mostrar o resultado',
-      'Fim'
-    ],
-    code: `let lado = Number(prompt("Digite o lado do quadrado:"));
-let perimetro = lado * 4;
-alert("O perímetro é " + perimetro);`
-  },
-  {
-    n: 7, tag: 'easy', title: 'Real para dólar',
-    problem: 'Receba um valor em reais e converta para dólares (cotação: R$ 5,00 = US$ 1,00).',
-    steps: [
-      'Início',
-      'Ler o <strong>valor em reais</strong>',
-      'Calcular dólares = reais ÷ 5',
-      'Mostrar o resultado',
-      'Fim'
-    ],
-    code: `let reais = Number(prompt("Valor em reais:"));
-let dolares = reais / 5;
-alert("R$ " + reais + " equivalem a US$ " + dolares);`
-  },
-  {
-    n: 8, tag: 'easy', title: 'Média de duas notas',
-    problem: 'Receba duas notas e calcule a média simples entre elas.',
-    steps: [
-      'Início',
-      'Ler a <strong>primeira nota</strong>',
-      'Ler a <strong>segunda nota</strong>',
-      'Calcular média = (n1 + n2) ÷ 2',
-      'Mostrar e Fim'
-    ],
-    code: `let n1 = Number(prompt("Primeira nota:"));
-let n2 = Number(prompt("Segunda nota:"));
-let media = (n1 + n2) / 2;
-alert("Sua média é " + media);`
-  },
-  {
-    n: 9, tag: 'easy', title: 'Horas em minutos',
-    problem: 'Receba uma quantidade de horas e converta para minutos.',
-    steps: [
-      'Início',
-      'Ler <strong>horas</strong>',
-      'Calcular minutos = horas × 60',
-      'Mostrar resultado',
-      'Fim'
-    ],
-    code: `let horas = Number(prompt("Quantas horas?"));
-let minutos = horas * 60;
-alert(horas + " horas = " + minutos + " minutos");`
-  },
-  {
-    n: 10, tag: 'easy', title: 'Quadrado de um número',
-    problem: 'Receba um número e mostre o quadrado dele (n × n).',
-    steps: [
-      'Início',
-      'Ler o <strong>número</strong>',
-      'Calcular quadrado = número × número',
-      'Mostrar o resultado',
-      'Fim'
-    ],
-    code: `let num = Number(prompt("Digite um número:"));
-let quadrado = num * num;
-alert("O quadrado de " + num + " é " + quadrado);`
-  },
-  {
-    n: 11, tag: 'easy', title: 'Calorias totais do dia',
-    problem: 'Receba o número de refeições e as calorias médias por refeição. Calcule o total diário.',
-    steps: [
-      'Início',
-      'Ler <strong>número de refeições</strong>',
-      'Ler <strong>calorias por refeição</strong>',
-      'Calcular total = refeições × calorias',
-      'Mostrar e Fim'
-    ],
-    code: `let refeicoes = Number(prompt("Quantas refeições por dia?"));
-let calorias = Number(prompt("Calorias médias por refeição?"));
-let total = refeicoes * calorias;
-alert("Total diário: " + total + " kcal");`
-  },
-  {
-    n: 12, tag: 'easy', title: 'Distância percorrida',
-    problem: 'Receba a velocidade média (km/h) e o tempo de viagem (h). Calcule a distância.',
-    steps: [
-      'Início',
-      'Ler <strong>velocidade</strong>',
-      'Ler <strong>tempo</strong>',
-      'Calcular distância = velocidade × tempo',
-      'Mostrar e Fim'
-    ],
-    code: `let velocidade = Number(prompt("Velocidade em km/h:"));
-let tempo = Number(prompt("Tempo em horas:"));
-let distancia = velocidade * tempo;
-alert("Você percorrerá " + distancia + " km");`
-  },
-  {
-    n: 13, tag: 'easy', title: 'Salário com bônus',
-    problem: 'Receba o salário do funcionário e adicione um bônus fixo de R$ 200.',
-    steps: [
-      'Início',
-      'Ler o <strong>salário</strong>',
-      'Calcular total = salário + 200',
-      'Mostrar o resultado',
-      'Fim'
-    ],
-    code: `let salario = Number(prompt("Qual seu salário?"));
-let total = salario + 200;
-alert("Com o bônus de R$ 200: R$ " + total);`
-  },
-  {
-    n: 14, tag: 'easy', title: 'Volume do cubo',
-    problem: 'Receba o tamanho do lado de um cubo e calcule o volume (lado × lado × lado).',
-    steps: [
-      'Início',
-      'Ler o <strong>lado</strong>',
-      'Calcular volume = lado × lado × lado',
-      'Mostrar resultado',
-      'Fim'
-    ],
-    code: `let lado = Number(prompt("Lado do cubo:"));
-let volume = lado * lado * lado;
-alert("Volume do cubo: " + volume);`
-  },
-  {
-    n: 15, tag: 'easy', title: 'Troco do caixa',
-    problem: 'Receba o valor da compra e o valor pago pelo cliente. Calcule o troco.',
-    steps: [
-      'Início',
-      'Ler <strong>valor da compra</strong>',
-      'Ler <strong>valor pago</strong>',
-      'Calcular troco = pago − compra',
-      'Mostrar e Fim'
-    ],
-    code: `let compra = Number(prompt("Valor da compra:"));
-let pago = Number(prompt("Valor pago pelo cliente:"));
-let troco = pago - compra;
-alert("Troco: R$ " + troco);`
-  },
-
-  // ====== COM DECISÃO (1 losango) ======
-  {
-    n: 16, tag: 'decision', title: 'Par ou ímpar?',
-    problem: 'Receba um número e diga se ele é par ou ímpar. Dica: número par tem resto zero quando dividido por 2.',
-    steps: [
-      'Início',
-      'Ler um <strong>número</strong>',
-      'Decisão: número % 2 == 0?',
-      'Sim → "É PAR" / Não → "É ÍMPAR"',
-      'Fim'
-    ],
-    code: `let num = Number(prompt("Digite um número:"));
-if (num % 2 === 0) {
-  alert("O número " + num + " é PAR");
-} else {
-  alert("O número " + num + " é ÍMPAR");
-}`
-  },
-  {
-    n: 17, tag: 'decision', title: 'Maior que 100?',
-    problem: 'Receba um número e diga se ele é maior que 100.',
-    steps: [
-      'Início',
-      'Ler um <strong>número</strong>',
-      'Decisão: número > 100?',
-      'Sim → "Maior" / Não → "Menor ou igual"',
-      'Fim'
-    ],
-    code: `let num = Number(prompt("Digite um número:"));
-if (num > 100) {
-  alert(num + " é MAIOR que 100");
-} else {
-  alert(num + " NÃO é maior que 100");
-}`
-  },
-  {
-    n: 18, tag: 'decision', title: 'Aprovado ou reprovado',
-    problem: 'Receba a nota final do aluno. Se for maior ou igual a 6, está aprovado; senão, reprovado.',
-    steps: [
-      'Início',
-      'Ler a <strong>nota</strong>',
-      'Decisão: nota ≥ 6?',
-      'Sim → "APROVADO" / Não → "REPROVADO"',
-      'Fim'
-    ],
-    code: `let nota = Number(prompt("Digite sua nota final:"));
-if (nota >= 6) {
-  alert("APROVADO! Parabéns!");
-} else {
-  alert("Reprovado. Estude mais!");
-}`
-  },
-  {
-    n: 19, tag: 'decision', title: 'Positivo ou negativo',
-    problem: 'Receba um número e diga se ele é positivo (≥0) ou negativo.',
-    steps: [
-      'Início',
-      'Ler um <strong>número</strong>',
-      'Decisão: número ≥ 0?',
-      'Sim → "Positivo" / Não → "Negativo"',
-      'Fim'
-    ],
-    code: `let num = Number(prompt("Digite um número:"));
-if (num >= 0) {
-  alert(num + " é positivo (ou zero)");
-} else {
-  alert(num + " é negativo");
-}`
-  },
-  {
-    n: 20, tag: 'decision', title: 'Maior de idade?',
-    problem: 'Receba a idade da pessoa. Se for 18 ou mais, é maior de idade.',
-    steps: [
-      'Início',
-      'Ler a <strong>idade</strong>',
-      'Decisão: idade ≥ 18?',
-      'Sim → "Maior de idade" / Não → "Menor"',
-      'Fim'
-    ],
-    code: `let idade = Number(prompt("Qual sua idade?"));
-if (idade >= 18) {
-  alert("Você é maior de idade");
-} else {
-  alert("Você é menor de idade");
-}`
-  },
-  {
-    n: 21, tag: 'decision', title: 'Pode votar?',
-    problem: 'No Brasil, o voto é facultativo a partir dos 16 anos. Receba a idade e diga se pode votar.',
-    steps: [
-      'Início',
-      'Ler a <strong>idade</strong>',
-      'Decisão: idade ≥ 16?',
-      'Sim → "Pode votar" / Não → "Ainda não"',
-      'Fim'
-    ],
-    code: `let idade = Number(prompt("Qual sua idade?"));
-if (idade >= 16) {
-  alert("Você já pode votar!");
-} else {
-  alert("Ainda não pode votar.");
-}`
-  },
-  {
-    n: 22, tag: 'decision', title: 'Pode tirar CNH?',
-    problem: 'A CNH só pode ser tirada com 18 anos ou mais. Se ainda não, diga quantos anos faltam.',
-    steps: [
-      'Início',
-      'Ler a <strong>idade</strong>',
-      'Decisão: idade ≥ 18?',
-      'Sim → "Pode tirar" / Não → mostrar quantos anos faltam',
-      'Fim'
-    ],
-    code: `let idade = Number(prompt("Qual sua idade?"));
-if (idade >= 18) {
-  alert("Você já pode tirar CNH!");
-} else {
-  let falta = 18 - idade;
-  alert("Faltam " + falta + " anos para tirar CNH.");
-}`
-  },
-  {
-    n: 23, tag: 'decision', title: 'Múltiplo de 3?',
-    problem: 'Receba um número e diga se ele é múltiplo de 3 (resto zero ao dividir por 3).',
-    steps: [
-      'Início',
-      'Ler um <strong>número</strong>',
-      'Decisão: número % 3 == 0?',
-      'Sim → "É múltiplo" / Não → "Não é"',
-      'Fim'
-    ],
-    code: `let num = Number(prompt("Digite um número:"));
-if (num % 3 === 0) {
-  alert(num + " é múltiplo de 3");
-} else {
-  alert(num + " NÃO é múltiplo de 3");
-}`
-  },
-  {
-    n: 24, tag: 'decision', title: 'Múltiplo de 7?',
-    problem: 'Receba um número e diga se ele é múltiplo de 7.',
-    steps: [
-      'Início',
-      'Ler um <strong>número</strong>',
-      'Decisão: número % 7 == 0?',
-      'Sim → "É múltiplo" / Não → "Não é"',
-      'Fim'
-    ],
-    code: `let num = Number(prompt("Digite um número:"));
-if (num % 7 === 0) {
-  alert(num + " é múltiplo de 7");
-} else {
-  alert(num + " NÃO é múltiplo de 7");
-}`
-  },
-  {
-    n: 25, tag: 'decision', title: 'Senha correta?',
-    problem: 'A senha é "senai2026". Peça uma senha ao usuário e diga se está correta.',
-    steps: [
-      'Início',
-      'Ler a <strong>senha</strong>',
-      'Decisão: senha == "senai2026"?',
-      'Sim → "Acesso liberado" / Não → "Negado"',
-      'Fim'
-    ],
-    code: `let senha = prompt("Digite a senha:");
-if (senha === "senai2026") {
-  alert("Acesso liberado! Bem-vindo.");
-} else {
-  alert("Senha incorreta!");
-}`
-  },
-  {
-    n: 26, tag: 'decision', title: 'Letra A digitada?',
-    problem: 'Receba uma letra do usuário e diga se foi a letra A (maiúscula ou minúscula).',
-    steps: [
-      'Início',
-      'Ler uma <strong>letra</strong>',
-      'Decisão: letra == "a" OU letra == "A"?',
-      'Sim → "É a letra A" / Não → "Outra letra"',
-      'Fim'
-    ],
-    code: `let letra = prompt("Digite uma letra:");
-if (letra === "a" || letra === "A") {
-  alert("Você digitou a letra A!");
-} else {
-  alert("Você digitou: " + letra);
-}`
-  },
-  {
-    n: 27, tag: 'decision', title: 'Está entre 1 e 10?',
-    problem: 'Receba um número e diga se ele está no intervalo de 1 a 10 (inclusive).',
-    steps: [
-      'Início',
-      'Ler um <strong>número</strong>',
-      'Decisão: número ≥ 1 E número ≤ 10?',
-      'Sim → "Está no intervalo" / Não → "Fora"',
-      'Fim'
-    ],
-    code: `let num = Number(prompt("Digite um número:"));
-if (num >= 1 && num <= 10) {
-  alert(num + " está entre 1 e 10");
-} else {
-  alert(num + " está FORA do intervalo");
-}`
-  },
-  {
-    n: 28, tag: 'decision', title: 'Maior entre dois números',
-    problem: 'Receba dois números e mostre qual é o maior (ou se são iguais).',
-    steps: [
-      'Início',
-      'Ler <strong>A</strong> e <strong>B</strong>',
-      'Decisão: A > B?',
-      'Sim → "A é maior" / Não → comparar de novo',
-      'Fim'
-    ],
-    code: `let a = Number(prompt("Primeiro número:"));
-let b = Number(prompt("Segundo número:"));
-if (a > b) {
-  alert(a + " é o maior");
-} else if (b > a) {
-  alert(b + " é o maior");
-} else {
-  alert("Os dois números são iguais");
-}`
-  },
-  {
-    n: 29, tag: 'decision', title: 'Altura mínima do brinquedo',
-    problem: 'No parque, só pode entrar no brinquedo quem tem 1,40m ou mais. Peça a altura e responda.',
-    steps: [
-      'Início',
-      'Ler a <strong>altura</strong> em metros',
-      'Decisão: altura ≥ 1,40?',
-      'Sim → "Pode entrar" / Não → "Não pode"',
-      'Fim'
-    ],
-    code: `let altura = Number(prompt("Sua altura em metros (ex: 1.65):"));
-if (altura >= 1.40) {
-  alert("Pode entrar no brinquedo! Boa diversão!");
-} else {
-  alert("Você ainda não tem a altura mínima (1,40m).");
-}`
-  },
-  {
-    n: 30, tag: 'decision', title: 'Está quente ou frio?',
-    problem: 'Receba a temperatura em graus Celsius. Acima de 25°C está quente, abaixo está agradável/frio.',
-    steps: [
-      'Início',
-      'Ler a <strong>temperatura</strong>',
-      'Decisão: temperatura > 25?',
-      'Sim → "Quente" / Não → "Agradável"',
-      'Fim'
-    ],
-    code: `let temp = Number(prompt("Temperatura em °C:"));
-if (temp > 25) {
-  alert("Está QUENTE (" + temp + "°C)!");
-} else {
-  alert("Está agradável ou frio (" + temp + "°C).");
-}`
-  }
-];
-
-// ============================================================
-// RENDERING + INTERACTIVITY
-// ============================================================
-
-// Simple JS syntax highlighting
-function highlight(code) {
-  const keywords = /\b(let|const|var|if|else|return|true|false|null|undefined)\b/g;
-  const escaped = code
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-  return escaped
-    .replace(/(\/\/[^\n]*)/g, '<span class="tk-cm">$1</span>')
-    .replace(/("[^"]*")/g, '<span class="tk-str">$1</span>')
-    .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="tk-num">$1</span>')
-    .replace(/\b(prompt|alert|Number|String|console\.log)\b/g, '<span class="tk-fn">$1</span>')
-    .replace(keywords, '<span class="tk-kw">$1</span>');
-}
-
-const tagLabels = {
-  easy: 'Sequência',
-  decision: 'Com decisão'
-};
-
-function renderExercise(ex) {
-  const stepsHtml = ex.steps.map(s => `<li>${s}</li>`).join('');
-  return `
-    <article class="exercise" data-tag="${ex.tag}">
-      <header class="ex-header">
-        <span class="ex-number">${String(ex.n).padStart(2, '0')}</span>
-        <div class="ex-meta">
-          <h2 class="ex-title">${ex.title}</h2>
-          <span class="ex-tag ${ex.tag}">${tagLabels[ex.tag]}</span>
-        </div>
-      </header>
-      <p class="ex-problem">${ex.problem}</p>
-
-      <div class="ex-section-label">Fluxograma sugerido (Draw.io)</div>
-      <ol class="flow-steps">${stepsHtml}</ol>
-
-      <div class="ex-section-label">JavaScript (VSCode)</div>
-      <div class="code-wrap nao-selecionavel">
-        <div class="code-header">
-          <span class="code-filename">exercicio${String(ex.n).padStart(2, '0')}.js</span>
-          <button class="copy-btn" onclick="copyCode(this, ${ex.n})" style="display:none;">copiar</button>
-        </div>
-        <pre id="code-${ex.n}">${highlight(ex.code)}</pre>
-      </div>
-
-      <button class="run-btn" style="display:none;" onclick="runCode(${ex.n})" >Rodar agora no navegador</button>
-    </article>
-  `;
-}
-
-document.getElementById('exercises').innerHTML = exercises.map(renderExercise).join('');
-
-// Copy code
-function copyCode(btn, n) {
-  const ex = exercises.find(e => e.n === n);
-  navigator.clipboard.writeText(ex.code).then(() => {
-    btn.textContent = '✓ copiado';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'copiar';
-      btn.classList.remove('copied');
-    }, 1800);
+  // Sticky nav shadow on scroll
+  const nav = document.getElementById('topnav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 8) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
   });
-}
 
-// Run code in browser (uses real prompt/alert)
-function runCode(n) {
-  const ex = exercises.find(e => e.n === n);
-  try {
-    // eslint-disable-next-line no-new-func
-    new Function(ex.code)();
-  } catch (err) {
-    alert('Erro ao executar: ' + err.message);
-  }
-}
+  // Mobile menu toggle
+  const mobileToggle = document.getElementById('mobileToggle');
+  const navLinks = document.getElementById('navLinks');
+  mobileToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
 
-// Filter pills
-document.querySelectorAll('.pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    pill.classList.add('active');
-    const f = pill.dataset.filter;
-    document.querySelectorAll('.exercise').forEach(card => {
-      if (f === 'all' || card.dataset.tag === f) {
-        card.style.display = '';
-      } else {
-        card.style.display = 'none';
+  // Dropdown — delayed close (200ms) so the user has time to reach
+  // the submenu items without it snapping shut.
+  const closeDelay = 200; // ms
+  document.querySelectorAll('.has-dropdown').forEach(parent => {
+    let closeTimer = null;
+
+    const open = () => {
+      clearTimeout(closeTimer);
+      // Close other open dropdowns
+      document.querySelectorAll('.has-dropdown').forEach(d => {
+        if (d !== parent) d.classList.remove('open');
+      });
+      parent.classList.add('open');
+    };
+    const scheduleClose = () => {
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(() => parent.classList.remove('open'), closeDelay);
+    };
+
+    parent.addEventListener('mouseenter', open);
+    parent.addEventListener('mouseleave', scheduleClose);
+    // Also handle focus for keyboard navigation
+    parent.addEventListener('focusin', open);
+    parent.addEventListener('focusout', (e) => {
+      // Only close if focus left the parent entirely
+      if (!parent.contains(e.relatedTarget)) scheduleClose();
+    });
+
+    // Mobile / touch: click toggles
+    const trigger = parent.querySelector(':scope > a');
+    trigger.addEventListener('click', (e) => {
+      const isMobile = window.innerWidth <= 720;
+      if (isMobile) {
+        e.preventDefault();
+        document.querySelectorAll('.has-dropdown').forEach(d => {
+          if (d !== parent) d.classList.remove('open');
+        });
+        parent.classList.toggle('open');
       }
     });
   });
-});
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.has-dropdown')) {
+      document.querySelectorAll('.has-dropdown').forEach(d => d.classList.remove('open'));
+    }
+  });
 </script>
+
 </body>
 </html>
