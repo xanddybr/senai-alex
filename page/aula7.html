@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercícios JavaScript — Lógica de Programação</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul-escuro: #0d2340;
+    --azul-medio: #1a3f6f;
+    --ciano: #1e8fa8;
+    --dourado: #c4973a;
+    --dourado-claro: #f5d48a;
+    --cinza-claro: #f4f2ee;
+    --cinza-borda: #dedad3;
+    --texto: #1a1a1a;
+    --texto-sec: #555550;
+    --branco: #ffffff;
+    --verde: #1a7a52;
+    --laranja: #c4621a;
+    --roxo: #5a3fa0;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--cinza-claro);
+    color: var(--texto);
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ─────────────────────────────── */
+  header {
+    background: var(--azul-escuro);
+    color: var(--branco);
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '{ }';
+    font-family: var(--mono);
+    font-size: 9rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.04);
+    position: absolute;
+    right: -1rem;
+    top: -1.5rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .header-inner { max-width: 900px; margin: 0 auto; }
+  .header-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ciano);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  header h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.4rem;
+  }
+  header p {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+  }
+  .header-meta {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    font-family: var(--mono);
+  }
+  .meta-pill span {
+    background: rgba(255,255,255,0.08);
+    border: 0.5px solid rgba(255,255,255,0.12);
+    padding: 3px 10px;
+    border-radius: 20px;
+    color: rgba(255,255,255,0.85);
+    font-size: 11px;
+  }
+
+  /* ── LAYOUT ─────────────────────────────── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ── SEÇÕES ─────────────────────────────── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 2.5rem 0 1.25rem;
+  }
+  .section-nivel {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .nivel-basico { background: #e8f5ee; color: var(--verde); border: 0.5px solid #b0ddc4; }
+  .nivel-intermediario { background: #fef3e2; color: var(--laranja); border: 0.5px solid #f5d0a0; }
+  .nivel-avancado { background: #ede8f8; color: var(--roxo); border: 0.5px solid #c9bbee; }
+
+  .section-header h2 {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--texto-sec);
+  }
+  .section-line {
+    flex: 1;
+    height: 0.5px;
+    background: var(--cinza-borda);
+  }
+
+  /* ── CARD DO EXERCÍCIO ───────────────────── */
+  .ex-card {
+    background: var(--branco);
+    border: 0.5px solid var(--cinza-borda);
+    border-radius: 10px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .ex-card:hover {
+    box-shadow: 0 4px 18px rgba(13,35,64,0.08);
+  }
+
+  .ex-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 1rem 1.25rem 0.85rem;
+    border-bottom: 0.5px solid var(--cinza-borda);
+    background: #fafaf8;
+  }
+  .ex-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--branco);
+    background: var(--azul-medio);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .ex-num.nivel-i { background: var(--laranja); }
+  .ex-num.nivel-a { background: var(--roxo); }
+
+  .ex-header-text { flex: 1; }
+  .ex-titulo {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--azul-escuro);
+    margin-bottom: 2px;
+  }
+  .ex-objetivo-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ciano);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1px;
+  }
+  .ex-objetivo {
+    font-size: 0.8rem;
+    color: var(--texto-sec);
+    font-style: italic;
+  }
+
+  .ex-body { padding: 1rem 1.25rem; }
+
+  .ex-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ciano);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    margin-top: 0.75rem;
+  }
+  .ex-label:first-child { margin-top: 0; }
+
+  .ex-enunciado {
+    font-size: 0.875rem;
+    color: var(--texto);
+    line-height: 1.75;
+  }
+  .ex-enunciado code {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    background: #f0ede8;
+    color: var(--azul-medio);
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 0.5px solid #dedad3;
+  }
+  .ex-enunciado ul {
+    margin: 0.5rem 0 0 1.2rem;
+  }
+  .ex-enunciado li {
+    font-size: 0.875rem;
+    color: var(--texto);
+    line-height: 1.75;
+  }
+  .ex-enunciado li::marker {
+    color: var(--ciano);
+  }
+
+  /* bloco de código */
+  .code-block {
+    background: var(--azul-escuro);
+    border-radius: 7px;
+    padding: 0.85rem 1rem;
+    margin-top: 0.75rem;
+    position: relative;
+    overflow-x: auto;
+  }
+  .code-block pre {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: #c8d8f0;
+    white-space: pre;
+  }
+  .code-block .kw  { color: #7dc8ea; }
+  .code-block .str { color: #f5d48a; }
+  .code-block .cm  { color: #5a7a9a; font-style: italic; }
+  .code-block .fn  { color: #9ed09e; }
+  .code-block .nm  { color: #e0a060; }
+  .code-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    position: absolute;
+    top: 7px;
+    right: 10px;
+  }
+
+  /* exemplo de saída */
+  .ex-saida {
+    background: #f4f2ee;
+    border-left: 3px solid var(--dourado);
+    border-radius: 0 6px 6px 0;
+    padding: 0.6rem 0.9rem;
+    margin-top: 0.6rem;
+  }
+  .ex-saida p {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--texto-sec);
+    line-height: 1.6;
+  }
+  .ex-saida p strong {
+    color: var(--dourado);
+    font-weight: 500;
+  }
+
+  /* ── FOOTER ─────────────────────────────── */
+  footer {
+    background: var(--azul-escuro);
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    padding: 1.25rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  footer span { color: var(--ciano); }
+
+  @media (max-width: 600px) {
+    header { padding: 1.5rem 1rem 1.25rem; }
+    main { padding: 1.25rem 1rem 3rem; }
+    header h1 { font-size: 1.35rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-tag">Firjan SENAI · Programador Front-End · Lógica de Programação</div>
+    <h1>Lista de Exercícios — JavaScript</h1>
+    <p>Vetores, Condicionais e Laços de Repetição</p>
+    <div class="header-meta">
+      <div class="meta-pill">Nível <span>Básico ao Avançado</span></div>
+      <div class="meta-pill">Exercícios <span>10</span></div>
+      <div class="meta-pill">Conceitos <span>Array · if/else · for · while · do-while · Matriz</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── NÍVEL BÁSICO ─────────────────────── -->
+  <div class="section-header">
+    <span class="section-nivel nivel-basico">Nível Básico</span>
+    <h2>Fixando Vetores e Condicionais</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Ex 1 -->
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num">01</div>
+      <div class="ex-header-text">
+        <div class="ex-titulo">O Array de Convidados</div>
+        <div class="ex-objetivo-label">Objetivo</div>
+        <div class="ex-objetivo">Criar um vetor simples e acessar suas posições.</div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-label">Enunciado</div>
+      <div class="ex-enunciado">
+        Crie um vetor chamado <code>convidados</code> contendo 4 nomes. Use o <code>console.log</code> para exibir apenas o segundo e o quarto nome da lista. Depois, use o <code>console.table(convidados)</code> para ver a estrutura completa no console.
+      </div>
+      <div class="ex-label">Dica</div>
+      <div class="ex-saida">
+        <p>Lembre-se que em JavaScript os índices de um array começam em <strong>0</strong>. O segundo elemento está na posição <strong>[1]</strong> e o quarto em <strong>[3]</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 2 -->
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num">02</div>
+      <div class="ex-header-text">
+        <div class="ex-titulo">Validador de Acesso — <code>if/else</code> com <code>alert</code></div>
+        <div class="ex-objetivo-label">Objetivo</div>
+        <div class="ex-objetivo">Utilizar condicionais para retornar respostas booleanas via alerta.</div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-label">Enunciado</div>
+      <div class="ex-enunciado">
+        Peça para o usuário digitar uma senha através de um <code>prompt</code>. Se a senha for igual a <code>"1234"</code>, exiba um <code>alert(true)</code>. Caso contrário, exiba um <code>alert(false)</code>.
+      </div>
+      <div class="ex-label">Dica</div>
+      <div class="ex-saida">
+        <p>Use o operador de comparação <strong>===</strong> (triplo igual) para comparar strings com segurança. O <strong>==</strong> pode causar conversões de tipo inesperadas.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 3 -->
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num">03</div>
+      <div class="ex-header-text">
+        <div class="ex-titulo">O Menu de Cores — <code>for</code></div>
+        <div class="ex-objetivo-label">Objetivo</div>
+        <div class="ex-objetivo">Iterar sobre um vetor utilizando o laço <code>for</code>.</div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-label">Enunciado</div>
+      <div class="ex-enunciado">
+        Crie um vetor chamado <code>cores</code> com as strings <code>"Azul"</code>, <code>"Verde"</code>, <code>"Vermelho"</code>. Utilize um laço <code>for</code> para percorrer esse vetor e exibir cada uma das cores em um <code>alert()</code> individual.
+      </div>
+      <div class="ex-label">Dica</div>
+      <div class="ex-saida">
+        <p>Use <code><strong>cores.length</strong></code> como condição do <code>for</code> para que o laço se adapte automaticamente ao tamanho do vetor, sem precisar digitar o número de elementos na mão.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NÍVEL INTERMEDIÁRIO ──────────────── -->
+  <div class="section-header">
+    <span class="section-nivel nivel-intermediario">Nível Intermediário</span>
+    <h2>Laços de Repetição Dinâmicos</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Ex 4 -->
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num nivel-i">04</div>
+      <div class="ex-header-text">
+        <div class="ex-titulo">Tabuada Dinâmica com <code>for</code></div>
+        <div class="ex-objetivo-label">Objetivo</div>
+        <div class="ex-objetivo">Criar lógica aritmética dentro de um laço determinado.</div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-label">Enunciado</div>
+      <div class="ex-enunciado">
+        Peça ao usuário um número de 1 a 10 via <code>prompt</code>. Utilize um laço <code>for</code> para calcular e exibir no <code>console.log</code> a tabuada desse número (de 1 a 10).
+      </div>
+      <div class="ex-label">Saída esperada (se o usuário digitar 5)</div>
+      <div class="code-block">
+        <div class="code-label">console</div>
+        <pre><span class="nm">5</span> x <span class="nm">1</span>  = <span class="nm">5</span>
+<span class="nm">5</span> x <span class="nm">2</span>  = <span class="nm">10</span>
+<span class="nm">5</span> x <span class="nm">3</span>  = <span class="nm">15</span>
+<span class="cm">... (até 5 x 10 = 50)</span></pre>
+      </div>
+      <div class="ex-label">Dica</div>
+      <div class="ex-saida">
+        <p>O retorno do <code>prompt</code> é uma <strong>string</strong>. Converta o valor para número com <strong>Number()</strong> ou <strong>parseInt()</strong> antes de usar em cálculos.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 5 -->
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num nivel-i">05</div>
+      <div class="ex-header-text">
+        <div class="ex-titulo">O Somador Infinito — <code>while</code></div>
+        <div class="ex-objetivo-label">Objetivo</div>
+        <div class="ex-objetivo">Usar o <code>while</code> com uma condição de parada controlada pelo usuário.</div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-label">Enunciado</div>
+      <div class="ex-enunciado">
+        Crie uma variável <code>total = 0</code>. Use um laço <code>while</code> que pede para o usuário digitar um número. Vá somando esses números na variável <code>total</code>. O loop só deve parar se o usuário digitar <code>0</code>. No final, mostre o resultado com um <code>alert</code>.
+      </div>
+      <div class="ex-label">Dica</div>
+      <div class="ex-saida">
+        <p>Lembre de converter o valor do <code>prompt</code> para número antes de comparar com <strong>0</strong>. A comparação <code>"0" === 0</code> retorna <strong>false</strong> porque os tipos são diferentes.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 6 -->
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num nivel-i">06</div>
+      <div class="ex-header-text">
+        <div class="ex-titulo">Cadastro Obrigatório — <code>do while</code></div>
+        <div class="ex-objetivo-label">Objetivo</div>
+        <div class="ex-objetivo">Garantir que o bloco rode pelo menos uma vez usando <code>do while</code>.</div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-label">Enunciado</div>
+      <div class="ex-enunciado">
+        Crie um programa que pede a confirmação do e-mail do usuário. O <code>do while</code> deve continuar pedindo o e-mail enquanto o campo estiver vazio ou o texto digitado não contiver o caractere <code>"@"</code>. Quando for um e-mail válido, exiba <code>alert("E-mail salvo com sucesso!")</code>.
+      </div>
+      <div class="ex-label">Dica</div>
+      <div class="ex-saida">
+        <p>Use o método <strong>.includes("@")</strong> para verificar se a string contém o símbolo de arroba. Para checar se está vazio, teste se o valor é <strong>""</strong> ou <strong>null</strong> (quando o usuário cancela o prompt).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NÍVEL AVANÇADO ───────────────────── -->
+  <div class="section-header">
+    <span class="section-nivel nivel-avancado">Nível Avançado</span>
+    <h2>Trabalhando com Matrizes (Arrays Bidimensionais)</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Ex 7 -->
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num nivel-a">07</div>
+      <div class="ex-header-text">
+        <div class="ex-titulo">A Batalha Naval Simplificada</div>
+        <div class="ex-objetivo-label">Objetivo</div>
+        <div class="ex-objetivo">Localizar elementos dentro de uma matriz estática usando índices.</div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-label">Enunciado</div>
+      <div class="ex-enunciado">
+        Crie uma matriz 3×3 representando um mapa de água (<code>"~"</code>) e navios (<code>"X"</code>). Peça para o usuário digitar a linha (0 a 2) e a coluna (0 a 2) via <code>prompt</code>. Se na posição escolhida tiver um <code>"X"</code>, dê um <code>alert(true)</code>. Se tiver <code>"~"</code>, dê um <code>alert(false)</code>.
+      </div>
+      <div class="ex-label">Matriz inicial</div>
+      <div class="code-block">
+        <div class="code-label">javascript</div>
+        <pre><span class="kw">const</span> mapa = [
+  [<span class="str">"~"</span>, <span class="str">"~"</span>, <span class="str">"X"</span>],   <span class="cm">// linha 0</span>
+  [<span class="str">"~"</span>, <span class="str">"X"</span>, <span class="str">"~"</span>],   <span class="cm">// linha 1</span>
+  [<span class="str">"X"</span>, <span class="str">"~"</span>, <span class="str">"~"</span>]    <span class="cm">// linha 2</span>
+];</pre>
+      </div>
+      <div class="ex-label">Dica</div>
+      <div class="ex-saida">
+        <p>Para acessar um elemento da matriz use <strong>mapa[linha][coluna]</strong>. Não esqueça de converter os valores do <code>prompt</code> para número antes de usar como índice.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 8 -->
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num nivel-a">08</div>
+      <div class="ex-header-text">
+        <div class="ex-titulo">O Diário de Notas</div>
+        <div class="ex-objetivo-label">Objetivo</div>
+        <div class="ex-objetivo">Alimentar uma matriz dinamicamente usando laços e condicionais.</div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-label">Enunciado</div>
+      <div class="ex-enunciado">
+        Crie um vetor vazio chamado <code>boletim</code>. Utilizando um laço <code>for</code> que rode 3 vezes, peça ao aluno o seu <code>Nome</code> e a sua <code>Nota final</code>. Insira essas duas informações como uma linha dentro da matriz <code>boletim</code> usando <code>.push([nome, nota])</code>. No final, exiba a matriz usando <code>console.table(boletim)</code>.
+      </div>
+      <div class="ex-label">Estrutura esperada no console</div>
+      <div class="code-block">
+        <div class="code-label">console.table</div>
+        <pre><span class="cm">// boletim após 3 cadastros:</span>
+[
+  [<span class="str">"Ana"</span>,    <span class="nm">8.5</span>],
+  [<span class="str">"Bruno"</span>,  <span class="nm">7.0</span>],
+  [<span class="str">"Carla"</span>,  <span class="nm">9.2</span>]
+]</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 9 -->
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num nivel-a">09</div>
+      <div class="ex-header-text">
+        <div class="ex-titulo">Validador de Matriz — Campos Vazios</div>
+        <div class="ex-objetivo-label">Objetivo</div>
+        <div class="ex-objetivo">Validar dados inseridos em uma matriz e retornar alertas baseados no sucesso do cadastro.</div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-label">Enunciado</div>
+      <div class="ex-enunciado">
+        Modifique o exercício anterior (Exercício 8). Durante o laço, se o aluno deixar o Nome ou a Nota em branco, o programa deve dar um <code>alert(false)</code> e não adicionar os dados na matriz. Se ambos estiverem preenchidos, dá um <code>alert(true)</code> e adiciona no boletim.
+      </div>
+      <div class="ex-label">Dica</div>
+      <div class="ex-saida">
+        <p>Use <strong>if (nome === "" || nota === "")</strong> para detectar campos vazios. Lembre que o <code>prompt</code> retorna <strong>null</strong> se o usuário clicar em Cancelar — também vale validar esse caso.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 10 -->
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num nivel-a">10</div>
+      <div class="ex-header-text">
+        <div class="ex-titulo">Desafio Master — O Carrinho de Compras</div>
+        <div class="ex-objetivo-label">Objetivo</div>
+        <div class="ex-objetivo">Unificar matrizes, acúmulo de valores e condição de saída com string.</div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-label">Enunciado</div>
+      <div class="ex-enunciado">
+        Crie uma matriz vazia chamada <code>carrinho</code>. Usando a estrutura que preferir (<code>while</code> ou <code>do while</code>), crie um loop que pede o <code>Nome do Produto</code> e o <code>Preço</code>:
+        <ul>
+          <li>Se o usuário digitar <code>"fim"</code> no nome do produto, o programa para.</li>
+          <li>Caso contrário, adiciona o produto e o preço na matriz <code>carrinho</code>.</li>
+          <li>Ao encerrar, exiba a tabela final com <code>console.table(carrinho)</code>.</li>
+          <li>Use um laço para somar o valor total de todos os produtos e exibir o total no final.</li>
+        </ul>
+      </div>
+      <div class="ex-label">Estrutura esperada</div>
+      <div class="code-block">
+        <div class="code-label">console.table</div>
+        <pre><span class="cm">// carrinho após as entradas:</span>
+[
+  [<span class="str">"Notebook"</span>,  <span class="nm">3500</span>],
+  [<span class="str">"Mouse"</span>,      <span class="nm">89.9</span>],
+  [<span class="str">"Teclado"</span>,    <span class="nm">150</span>]
+]
+<span class="cm">// Total: R$ 3739.90</span></pre>
+      </div>
+      <div class="ex-label">Dica</div>
+      <div class="ex-saida">
+        <p>Para somar os preços, percorra o <code>carrinho</code> com um <code>for</code> e acumule <strong>carrinho[i][1]</strong> (o índice 1 é onde está o preço). Converta cada preço para número com <strong>parseFloat()</strong> para aceitar valores com casas decimais.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Firjan SENAI · Programador Front-End · Lógica de Programação &nbsp;|&nbsp; <span>Professor Alexandre Santana</span>
+</footer>
+
+</body>
+</html>

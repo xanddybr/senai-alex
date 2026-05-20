@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exemplos JavaScript — Banco de Dados</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --azul:#0d2340;--azul-m:#1a3f6f;--ciano:#1e8fa8;--dourado:#c4973a;
+  --verde:#1a7a52;--laranja:#c4621a;--roxo:#5a3fa0;--vermelho:#b03030;
+  --fundo:#f4f2ee;--borda:#dedad3;--branco:#fff;
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+}
+body{font-family:var(--sans);background:var(--fundo);color:#1a1a1a;min-height:100vh;}
+
+/* HEADER */
+header{background:var(--azul);color:#fff;padding:2rem 2rem 1.75rem;position:relative;overflow:hidden;}
+header::after{content:'</>';font-family:var(--mono);font-size:9rem;color:rgba(255,255,255,.04);
+  position:absolute;right:1rem;bottom:-2rem;line-height:1;pointer-events:none;}
+.h-inner{max-width:980px;margin:0 auto;}
+.h-tag{font-family:var(--mono);font-size:11px;color:var(--ciano);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;}
+header h1{font-size:1.6rem;font-weight:600;margin-bottom:.3rem;}
+header p{font-size:.9rem;color:rgba(255,255,255,.5);font-weight:300;}
+.h-pills{display:flex;gap:.6rem;margin-top:1.25rem;flex-wrap:wrap;}
+.pill{font-family:var(--mono);font-size:11px;background:rgba(255,255,255,.07);
+  border:.5px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75);padding:3px 11px;border-radius:20px;}
+
+/* MAIN */
+main{max-width:980px;margin:0 auto;padding:1.75rem 1.5rem 4rem;}
+
+/* SECTION DIV */
+.sec{display:flex;align-items:center;gap:10px;margin:2.25rem 0 1.1rem;}
+.sb{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;padding:3px 11px;border-radius:20px;white-space:nowrap;}
+.sb-for{background:#e8f5ee;color:var(--verde);border:.5px solid #b0ddc4;}
+.sb-while{background:#fef3e2;color:var(--laranja);border:.5px solid #f5d0a0;}
+.sb-cond{background:#ede8f8;color:var(--roxo);border:.5px solid #c9bbee;}
+.st{font-size:.95rem;font-weight:400;color:#666;}
+.sl{flex:1;height:.5px;background:var(--borda);}
+
+/* CARD */
+.card{background:var(--branco);border:.5px solid var(--borda);border-radius:10px;
+  margin-bottom:1.4rem;overflow:hidden;transition:box-shadow .2s;}
+.card:hover{box-shadow:0 3px 16px rgba(13,35,64,.07);}
+
+.card-head{display:flex;align-items:flex-start;gap:12px;padding:.9rem 1.25rem;
+  background:#fafaf8;border-bottom:.5px solid var(--borda);}
+.cnum{font-family:var(--mono);font-size:12px;font-weight:600;color:#fff;
+  min-width:28px;height:28px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;margin-top:1px;}
+.n-for{background:var(--verde);}
+.n-while{background:var(--laranja);}
+.n-cond{background:var(--roxo);}
+.ctxt{flex:1;}
+.cttl{font-size:.88rem;font-weight:600;color:var(--azul);margin-bottom:2px;}
+.cdesc{font-size:.77rem;color:#666;line-height:1.5;}
+.ctag{font-family:var(--mono);font-size:10px;background:#f0ede8;color:#888;
+  padding:2px 8px;border-radius:4px;align-self:flex-start;margin-top:2px;
+  flex-shrink:0;border:.5px solid var(--borda);}
+
+/* CODE */
+.code-block{background:#0d2340;padding:1rem 1.25rem;font-family:var(--mono);
+  font-size:.78rem;line-height:1.75;color:#c8d8f0;white-space:pre;overflow-x:auto;
+  border-bottom:.5px solid rgba(255,255,255,.05);}
+.kw{color:#7dc8ea}.str{color:#f5d48a}.cm{color:#4a6680;font-style:italic}
+.fn{color:#9ed09e}.nm{color:#e0a060}.bl{color:#bd93f9}
+
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;justify-content:space-between;
+  padding:.45rem .9rem;background:#0a1a2e;border-bottom:.5px solid rgba(255,255,255,.05);}
+.toolbar-left{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.25);letter-spacing:.08em;}
+.toolbar-right{display:flex;gap:7px;}
+.btn-run{font-family:var(--mono);font-size:12px;font-weight:500;background:var(--ciano);
+  color:#fff;border:none;border-radius:6px;padding:5px 13px;cursor:pointer;
+  display:flex;align-items:center;gap:5px;transition:background .15s;}
+.btn-run:hover{background:#1a7a98;}
+.btn-run.running{background:#3a5a6a;cursor:not-allowed;}
+.btn-clr{font-family:var(--mono);font-size:11px;background:transparent;
+  color:rgba(255,255,255,.3);border:.5px solid rgba(255,255,255,.1);border-radius:6px;
+  padding:5px 10px;cursor:pointer;transition:color .15s;}
+.btn-clr:hover{color:rgba(255,255,255,.6);}
+
+/* CONSOLE */
+.console{background:#050e1a;display:none;border-top:.5px solid rgba(255,255,255,.05);}
+.console.on{display:block;}
+.con-hdr{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.25);
+  letter-spacing:.1em;text-transform:uppercase;padding:.5rem 1rem .25rem;
+  border-bottom:.5px solid rgba(255,255,255,.04);}
+.con-body{padding:.5rem .75rem .75rem;min-height:30px;}
+.c-log{font-family:var(--mono);font-size:.77rem;color:#c8d8f0;padding:1px 0;line-height:1.6;}
+.c-log::before{content:'› ';color:rgba(255,255,255,.2);}
+.c-err{font-family:var(--mono);font-size:.77rem;color:#f08080;padding:1px 0;line-height:1.6;}
+.c-err::before{content:'✕ ';}
+.c-sep{font-family:var(--mono);font-size:.7rem;color:rgba(255,255,255,.15);
+  padding:4px 0;border-top:.5px dashed rgba(255,255,255,.06);margin:4px 0;}
+.ctable{margin:5px 0;overflow-x:auto;}
+.ctable table{border-collapse:collapse;font-family:var(--mono);font-size:.74rem;color:#c8d8f0;}
+.ctable th{background:rgba(255,255,255,.07);padding:3px 10px;text-align:left;
+  border:.5px solid rgba(255,255,255,.09);color:var(--ciano);font-weight:500;}
+.ctable td{padding:3px 10px;border:.5px solid rgba(255,255,255,.07);}
+.ctable tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+
+/* MODAL */
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);
+  z-index:999;align-items:center;justify-content:center;}
+#overlay.on{display:flex;}
+#mbox{background:var(--branco);border-radius:12px;width:390px;max-width:calc(100vw - 2rem);
+  overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.mhd{padding:.8rem 1.25rem;background:var(--azul);display:flex;align-items:center;gap:8px;}
+.mtype{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;padding:2px 9px;border-radius:4px;
+  background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);}
+.mstep{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);margin-left:auto;}
+.mbody{padding:1.1rem 1.25rem;}
+.mmsg{font-size:.875rem;color:#333;line-height:1.6;margin-bottom:.8rem;}
+.mval{font-family:var(--mono);font-size:2rem;font-weight:600;text-align:center;
+  padding:.9rem;border-radius:8px;margin-bottom:.8rem;}
+.mv-t{background:#e8f5ee;color:var(--verde);}
+.mv-f{background:#fce8e8;color:var(--vermelho);}
+.mv-s{background:#f0ede8;color:var(--azul-m);font-size:1.1rem;word-break:break-all;}
+.minput{width:100%;padding:.6rem .8rem;font-family:var(--mono);font-size:.875rem;
+  border:.5px solid var(--borda);border-radius:6px;outline:none;color:#1a1a1a;
+  background:#fafaf8;transition:border-color .15s;}
+.minput:focus{border-color:var(--ciano);}
+.mft{padding:.7rem 1.25rem 1rem;display:flex;justify-content:flex-end;gap:8px;
+  border-top:.5px solid var(--borda);}
+.m-cancel{font-family:var(--sans);font-size:.85rem;background:transparent;
+  border:.5px solid var(--borda);border-radius:6px;padding:.4rem .9rem;cursor:pointer;color:#555;}
+.m-cancel:hover{background:var(--fundo);}
+.m-ok{font-family:var(--sans);font-size:.85rem;font-weight:500;background:var(--azul-m);
+  border:none;border-radius:6px;padding:.4rem 1.1rem;cursor:pointer;color:#fff;}
+.m-ok:hover{background:var(--azul);}
+
+/* FOOTER */
+footer{background:var(--azul);color:rgba(255,255,255,.4);text-align:center;
+  padding:1rem;font-family:var(--mono);font-size:11px;}
+footer span{color:var(--ciano);}
+@media(max-width:600px){
+  header{padding:1.25rem 1rem 1rem;}
+  main{padding:1rem 1rem 3rem;}
+  header h1{font-size:1.3rem;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-inner">
+    <div class="h-tag">Firjan SENAI · Programador Front-End · Lógica de Programação</div>
+    <h1>Exemplos JavaScript — Banco de Dados</h1>
+    <p>Matrizes, Laços e Condicionais — execute e observe o resultado no console integrado</p>
+    <div class="h-pills">
+      <span class="pill">for</span>
+      <span class="pill">while</span>
+      <span class="pill">do while</span>
+      <span class="pill">break</span>
+      <span class="pill">if / else</span>
+      <span class="pill">Ternário ?:</span>
+      <span class="pill">Array 2D</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- FOR -->
+  <div class="sec">
+    <span class="sb sb-for">for</span>
+    <span class="st">Loop com contador fixo</span>
+    <div class="sl"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="cnum n-for">01</div>
+      <div class="ctxt">
+        <div class="cttl">Cadastro com for — Validação de Campos</div>
+        <div class="cdesc">Loop com 3 iterações fixas. Valida se nome e CPF foram preenchidos antes de inserir na matriz.</div>
+      </div>
+      <div class="ctag">for</div>
+    </div>
+    <div class="code-block" id="src-1"></div>
+    <div class="toolbar">
+      <span class="toolbar-left">javascript</span>
+      <div class="toolbar-right">
+        <button class="btn-clr" onclick="clearCon(1)">Limpar</button>
+        <button class="btn-run" id="btn-1" onclick="run(1)">▶ Executar</button>
+      </div>
+    </div>
+    <div class="console" id="con-1">
+      <div class="con-hdr">console output</div>
+      <div class="con-body" id="cbody-1"></div>
+    </div>
+  </div>
+
+  <!-- WHILE / DO WHILE -->
+  <div class="sec">
+    <span class="sb sb-while">while · do while</span>
+    <span class="st">Loops com condição dinâmica</span>
+    <div class="sl"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="cnum n-while">02</div>
+      <div class="ctxt">
+        <div class="cttl">Cadastro com do while — Condição de Saída</div>
+        <div class="cdesc">do while executa ao menos uma vez. O loop continua enquanto o usuário não digitar "sair".</div>
+      </div>
+      <div class="ctag">do while</div>
+    </div>
+    <div class="code-block" id="src-2"></div>
+    <div class="toolbar">
+      <span class="toolbar-left">javascript</span>
+      <div class="toolbar-right">
+        <button class="btn-clr" onclick="clearCon(2)">Limpar</button>
+        <button class="btn-run" id="btn-2" onclick="run(2)">▶ Executar</button>
+      </div>
+    </div>
+    <div class="console" id="con-2">
+      <div class="con-hdr">console output</div>
+      <div class="con-body" id="cbody-2"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="cnum n-while">03</div>
+      <div class="ctxt">
+        <div class="cttl">Cadastro com while + break — Loop Infinito Controlado</div>
+        <div class="cdesc">while(true) cria um loop sem fim. O break é o único ponto de saída — ativado quando o usuário digita "sair" ou cancela.</div>
+      </div>
+      <div class="ctag">while + break</div>
+    </div>
+    <div class="code-block" id="src-3"></div>
+    <div class="toolbar">
+      <span class="toolbar-left">javascript</span>
+      <div class="toolbar-right">
+        <button class="btn-clr" onclick="clearCon(3)">Limpar</button>
+        <button class="btn-run" id="btn-3" onclick="run(3)">▶ Executar</button>
+      </div>
+    </div>
+    <div class="console" id="con-3">
+      <div class="con-hdr">console output</div>
+      <div class="con-body" id="cbody-3"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="cnum n-while">04</div>
+      <div class="ctxt">
+        <div class="cttl">Cadastro com do while — Variação para Fixação</div>
+        <div class="cdesc">Repetição do exemplo 02 para leitura comparada. Observe como a condição do while espelha a condição do if interno.</div>
+      </div>
+      <div class="ctag">do while</div>
+    </div>
+    <div class="code-block" id="src-4"></div>
+    <div class="toolbar">
+      <span class="toolbar-left">javascript</span>
+      <div class="toolbar-right">
+        <button class="btn-clr" onclick="clearCon(4)">Limpar</button>
+        <button class="btn-run" id="btn-4" onclick="run(4)">▶ Executar</button>
+      </div>
+    </div>
+    <div class="console" id="con-4">
+      <div class="con-hdr">console output</div>
+      <div class="con-body" id="cbody-4"></div>
+    </div>
+  </div>
+
+  <!-- CONDICIONAIS -->
+  <div class="sec">
+    <span class="sb sb-cond">if / else · ternário</span>
+    <span class="st">Condicionais</span>
+    <div class="sl"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="cnum n-cond">05</div>
+      <div class="ctxt">
+        <div class="cttl">Verificação de Idade — if / else</div>
+        <div class="cdesc">Condicional clássica: alert(true) se maior ou igual a 18, alert(false) caso contrário.</div>
+      </div>
+      <div class="ctag">if / else</div>
+    </div>
+    <div class="code-block" id="src-5"></div>
+    <div class="toolbar">
+      <span class="toolbar-left">javascript</span>
+      <div class="toolbar-right">
+        <button class="btn-clr" onclick="clearCon(5)">Limpar</button>
+        <button class="btn-run" id="btn-5" onclick="run(5)">▶ Executar</button>
+      </div>
+    </div>
+    <div class="console" id="con-5">
+      <div class="con-hdr">console output</div>
+      <div class="con-body" id="cbody-5"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="cnum n-cond">06</div>
+      <div class="ctxt">
+        <div class="cttl">Verificação de Idade — Operador Ternário</div>
+        <div class="cdesc">Mesma lógica do exemplo 05 condensada em uma linha. O ternário (? :) substitui o if/else quando há apenas dois caminhos simples.</div>
+      </div>
+      <div class="ctag">ternário ?:</div>
+    </div>
+    <div class="code-block" id="src-6"></div>
+    <div class="toolbar">
+      <span class="toolbar-left">javascript</span>
+      <div class="toolbar-right">
+        <button class="btn-clr" onclick="clearCon(6)">Limpar</button>
+        <button class="btn-run" id="btn-6" onclick="run(6)">▶ Executar</button>
+      </div>
+    </div>
+    <div class="console" id="con-6">
+      <div class="con-hdr">console output</div>
+      <div class="con-body" id="cbody-6"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Firjan SENAI · Programador Front-End · Lógica de Programação &nbsp;|&nbsp; <span>Professor Alexandre Santana</span>
+</footer>
+
+<!-- MODAL -->
+<div id="overlay">
+  <div id="mbox">
+    <div class="mhd">
+      <span class="mtype" id="mtype">prompt</span>
+      <span class="mstep" id="mstep"></span>
+    </div>
+    <div class="mbody">
+      <div class="mmsg" id="mmsg"></div>
+      <div class="mval" id="mval" style="display:none"></div>
+      <input class="minput" id="minput" type="text" placeholder="Digite aqui..." style="display:none">
+    </div>
+    <div class="mft">
+      <button class="m-cancel" id="m-cancel" style="display:none">Cancelar</button>
+      <button class="m-ok" id="m-ok">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CÓDIGO-FONTE DOS EXEMPLOS ────────────────────────────────────────────────
+const SRC = {};
+
+SRC[1] =
+`let bancoDeDados = [];
+// O loop vai rodar 3 vezes (i começa em 0, depois 1, depois 2)
+for (let i = 0; i < 3; i++) {
+
+    let vnome = prompt(\`[Cadastro \${i + 1} de 3] Digite um nome:\`);
+    let cpf   = prompt(\`Digite o CPF de \${vnome}:\`);
+
+    // Testamos se o usuário preencheu ambos os campos
+    if (vnome && cpf) {
+        alert(true);  // Condição satisfeita (sucesso)
+        bancoDeDados.push([vnome, cpf]);
+    } else {
+        alert(false); // Algum campo ficou vazio
+        alert("Cadastro cancelado por falta de dados.");
+    }
+
+    console.clear();
+    console.table(bancoDeDados);
+}`;
+
+SRC[2] =
+`let bancoDeDados = [];
+let vnome;
+do {
+    vnome = prompt("Digite um nome (ou 'sair' para encerrar):");
+
+    // Se válido e diferente de 'sair', pede o CPF e salva
+    if (vnome && vnome.toLowerCase() !== "sair") {
+        let cpf = prompt("Digite o CPF para " + vnome + ":");
+        bancoDeDados.push([vnome, cpf]);
+        console.clear();
+        console.table(bancoDeDados);
+    }
+
+// Loop continua ENQUANTO o nome for digitado e diferente de 'sair'
+} while (vnome && vnome.toLowerCase() !== "sair");
+
+console.log("Programa encerrado. Dados finais:");
+console.table(bancoDeDados);`;
+
+SRC[3] =
+`// Lista vazia para armazenar os usuários
+let bancoDeDados = [];
+
+while (true) {
+    let vnome = prompt("Digite um nome (ou 'sair' para encerrar):");
+
+    // Digitar 'sair' ou cancelar o prompt para o loop imediatamente
+    if (!vnome || vnome.toLowerCase() === "sair") {
+        break;
+    }
+
+    let cpf = prompt("Digite o CPF para " + vnome + ":");
+
+    // Adiciona uma nova "linha" (vetor) dentro da matriz
+    bancoDeDados.push([vnome, cpf]);
+
+    console.clear(); // Limpa para não acumular tabelas antigas
+    console.table(bancoDeDados);
+}
+
+console.log("Programa encerrado. Dados finais:");
+console.table(bancoDeDados);`;
+
+SRC[4] =
+`let bancoDeDados = [];
+let vnome;
+do {
+    vnome = prompt("Digite um nome (ou 'sair' para encerrar):");
+
+    if (vnome && vnome.toLowerCase() !== "sair") {
+        let cpf = prompt("Digite o CPF para " + vnome + ":");
+        bancoDeDados.push([vnome, cpf]);
+        console.clear();
+        console.table(bancoDeDados);
+    }
+
+} while (vnome && vnome.toLowerCase() !== "sair");
+
+console.log("Programa encerrado. Dados finais:");
+console.table(bancoDeDados);`;
+
+SRC[5] =
+`let idade = prompt("Digite sua idade:");
+
+// Condição: Se a idade for maior ou igual a 18
+if (idade >= 18) {
+    alert(true);  // Retorna true se a condição for satisfeita
+} else {
+    alert(false); // Retorna false se NÃO for satisfeita
+}`;
+
+SRC[6] =
+`let idade = prompt("Digite sua idade:");
+
+// Condição ? Se_Verdadeiro : Se_Falso
+alert(idade >= 18 ? true : false);`;
+
+// ── SYNTAX HIGHLIGHTER ───────────────────────────────────────────────────────
+function hl(code) {
+  let s = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // template literals
+  s = s.replace(/(`(?:[^`\\]|\\.)*`)/g,'<span class="str">$1</span>');
+  // comments
+  s = s.replace(/(\/\/[^\n]*)/g,'<span class="cm">$1</span>');
+  // double-quoted strings
+  s = s.replace(/"([^"\\]*)"/g,'<span class="str">"$1"</span>');
+  // single-quoted strings
+  s = s.replace(/'([^'\\]*)'/g,"<span class=\"str\">'$1'</span>");
+  // booleans first (before keywords to avoid double-wrap)
+  s = s.replace(/\b(true|false|null|undefined)\b/g,'<span class="bl">$1</span>');
+  // keywords
+  ['let','const','var','if','else','for','while','do','break','function','return','new'].forEach(k=>{
+    s = s.replace(new RegExp('\\b('+k+')\\b','g'),'<span class="kw">$1</span>');
+  });
+  // numbers
+  s = s.replace(/\b(\d+(\.\d+)?)\b/g,'<span class="nm">$1</span>');
+  // built-ins
+  ['prompt','alert','push','toLowerCase','console\\.log','console\\.table','console\\.clear',
+   'parseInt','Number','parseFloat'].forEach(f=>{
+    s = s.replace(new RegExp('('+f+')','g'),'<span class="fn">$1</span>');
+  });
+  return s;
+}
+
+// Render all code blocks
+for (let i = 1; i <= 6; i++) {
+  document.getElementById('src-'+i).innerHTML = hl(SRC[i]);
+}
+
+// ── MODAL ────────────────────────────────────────────────────────────────────
+const overlay   = document.getElementById('overlay');
+const mtype     = document.getElementById('mtype');
+const mstep     = document.getElementById('mstep');
+const mmsg      = document.getElementById('mmsg');
+const mval      = document.getElementById('mval');
+const minput    = document.getElementById('minput');
+const mOk       = document.getElementById('m-ok');
+const mCancel   = document.getElementById('m-cancel');
+let _resolve    = null;
+let _stepN      = 0;
+
+function openPrompt(msg) {
+  return new Promise(res => {
+    _resolve = res;
+    mtype.textContent = 'prompt';
+    mstep.textContent = 'entrada ' + (++_stepN);
+    mmsg.textContent = msg;
+    mval.style.display = 'none';
+    minput.style.display = 'block';
+    minput.value = '';
+    mCancel.style.display = 'inline-block';
+    overlay.classList.add('on');
+    setTimeout(()=> minput.focus(), 40);
+  });
+}
+
+function openAlert(value) {
+  return new Promise(res => {
+    _resolve = res;
+    mtype.textContent = 'alert';
+    mstep.textContent = 'saída ' + (++_stepN);
+    mmsg.textContent = '';
+    minput.style.display = 'none';
+    mCancel.style.display = 'none';
+    const v = String(value);
+    mval.textContent = v;
+    mval.className = 'mval ' + (v === 'true' ? 'mv-t' : v === 'false' ? 'mv-f' : 'mv-s');
+    mval.style.display = 'block';
+    overlay.classList.add('on');
+    setTimeout(()=> mOk.focus(), 40);
+  });
+}
+
+function closeModal(v) {
+  overlay.classList.remove('on');
+  if (_resolve) { _resolve(v); _resolve = null; }
+}
+
+mOk.addEventListener('click', ()=> {
+  const isP = minput.style.display !== 'none';
+  closeModal(isP ? (minput.value.trim() || null) : undefined);
+});
+mCancel.addEventListener('click', ()=> closeModal(null));
+minput.addEventListener('keydown', e => {
+  if (e.key === 'Enter')  closeModal(minput.value.trim() || null);
+  if (e.key === 'Escape') closeModal(null);
+});
+overlay.addEventListener('click', e => {
+  if (e.target === overlay) closeModal(
+    minput.style.display !== 'none' ? null : undefined
+  );
+});
+
+// ── CONSOLE HELPERS ──────────────────────────────────────────────────────────
+function showCon(id) {
+  document.getElementById('con-'+id).classList.add('on');
+}
+function cbody(id) { return document.getElementById('cbody-'+id); }
+
+function conLog(id, args) {
+  showCon(id);
+  const d = document.createElement('div');
+  d.className = 'c-log';
+  d.textContent = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+  cbody(id).appendChild(d);
+}
+
+function conTable(id, data) {
+  showCon(id);
+  const wrap = document.createElement('div');
+  wrap.className = 'ctable';
+  if (!Array.isArray(data) || data.length === 0) {
+    wrap.innerHTML = '<div class="c-log">[] (vazio)</div>';
+    cbody(id).appendChild(wrap); return;
+  }
+  const isAoA = Array.isArray(data[0]);
+  let html = '<table>';
+  if (isAoA) {
+    const cols = Math.max(...data.map(r => r.length));
+    html += '<thead><tr><th>(índice)</th>';
+    for (let c = 0; c < cols; c++) html += `<th>${c}</th>`;
+    html += '</tr></thead><tbody>';
+    data.forEach((row, i) => {
+      html += `<tr><td>${i}</td>`;
+      for (let c = 0; c < cols; c++) html += `<td>${row[c] !== undefined ? row[c] : ''}</td>`;
+      html += '</tr>';
+    });
+  } else {
+    html += '<thead><tr><th>(índice)</th><th>valor</th></tr></thead><tbody>';
+    data.forEach((v,i) => { html += `<tr><td>${i}</td><td>${v}</td></tr>`; });
+  }
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+  cbody(id).appendChild(wrap);
+}
+
+function conClear(id) {
+  const b = cbody(id);
+  const sep = document.createElement('div');
+  sep.className = 'c-sep';
+  sep.textContent = '— console.clear() —';
+  b.innerHTML = '';
+  b.appendChild(sep);
+}
+
+function conErr(id, msg) {
+  showCon(id);
+  const d = document.createElement('div');
+  d.className = 'c-err';
+  d.textContent = msg;
+  cbody(id).appendChild(d);
+}
+
+function clearCon(id) {
+  cbody(id).innerHTML = '';
+  document.getElementById('con-'+id).classList.remove('on');
+}
+
+// ── TRANSFORM & RUN ──────────────────────────────────────────────────────────
+function transform(code) {
+  return code
+    .replace(/\bconsole\.log\b/g,   '__cl')
+    .replace(/\bconsole\.table\b/g, '__ct')
+    .replace(/\bconsole\.clear\b/g, '__cc')
+    .replace(/\bprompt\s*\(/g,      'await __p(')
+    .replace(/\balert\s*\(/g,       'await __a(');
+}
+
+async function run(id) {
+  const btn = document.getElementById('btn-'+id);
+  if (btn.classList.contains('running')) return;
+  clearCon(id); showCon(id); _stepN = 0;
+  btn.classList.add('running'); btn.textContent = '⏸ Rodando…';
+
+  const wrapped = `return (async function(){\n${transform(SRC[id])}\n})()`;
+  const __p  = async (m)  => openPrompt(String(m || ''));
+  const __a  = async (v)  => openAlert(v);
+  const __cl = (...a)     => conLog(id, a);
+  const __ct = (d)        => conTable(id, d);
+  const __cc = ()         => conClear(id);
+
+  try {
+    const fn = new Function('__p','__a','__cl','__ct','__cc', wrapped);
+    await fn(__p, __a, __cl, __ct, __cc);
+  } catch(e) {
+    conErr(id, 'Erro de execução: ' + e.message);
+  } finally {
+    btn.classList.remove('running');
+    btn.textContent = '▶ Executar';
+  }
+}
+</script>
+</body>
+</html>
