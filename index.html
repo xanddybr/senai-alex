@@ -77,6 +77,12 @@
     border-radius: 3px;
     letter-spacing: -0.5px;
   }
+  .brand-logo {
+    height: 50px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+  }
   .brand-name {
     font-family: 'Fraunces', serif;
     font-weight: 500;
@@ -723,7 +729,7 @@
 <nav class="topnav" id="topnav">
   <div class="topnav-inner">
     <a href="#inicio" class="brand">
-      <span class="brand-mark">FE</span>
+      <img src="image/logo_firjan2.png" alt="Firjan" class="brand-logo">
       <span class="brand-name">Programador <em>Front-End</em></span>
     </a>
 
@@ -799,7 +805,7 @@
       </li>
 
       <!-- TRABALHOS dropdown -->
-      <li class="has-dropdown">
+      <li class="has-dropdown" style="display: none;">
         <a href="#trabalhos">Trabalhos <span class="caret">▼</span></a>
         <ul class="dropdown">
           <li><a href="#trabalhos">
@@ -844,13 +850,13 @@
           </div>
           <div class="stat">
             <div class="num">5</div>
-            <div class="label">Unidades</div>
+            <div class="label">Modulos</div>
           </div>
-          <div class="stat">
+          <div class="stat" style="display: none;">
             <div class="num">31</div>
             <div class="label">Alunos</div>
           </div>
-          <div class="stat">
+          <div class="stat" style="display: none;">
             <div class="num">60</div>
             <div class="label">Exercícios</div>
           </div>
@@ -1202,7 +1208,7 @@
   <div class="footer-inner">
     <div class="footer-brand">
       <a href="#inicio" class="brand">
-        <span class="brand-mark">FE</span>
+        <img src="image/logo_firjan.png" alt="Firjan" class="brand-logo">
         <span class="brand-name">Programador <em>Front-End</em></span>
       </a>
       <p>Portal do curso de Programador Front-End da Firjan SENAI. Material didático produzido para uso em sala de aula.</p>
@@ -1229,7 +1235,7 @@
       <ul>
         <li><a href="https://draw.io" target="_blank">Draw.io</a></li>
         <li><a href="https://visualg3.com.br" target="_blank">VisuAlg</a></li>
-        <li><a href="https://code.visualstudio.com" target="_blank">VSCode</a></li>
+        <li><a href="https://cuddly-trout-r4p9xpr95v3pxqg.github.dev/" target="_blank">VSCode</a></li>
       </ul>
     </div>
   </div>
