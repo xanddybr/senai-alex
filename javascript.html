@@ -8,16 +8,42 @@
 <script >
     async function myFunction() {
     let cep = document.getElementById("myInput")
-    let div = document.getElementById("myDiv")
+    let myTable = document.getElementById("myTable")
     
     const response = await fetch(`https://viacep.com.br/ws/${cep.value}/json/`) 
     const data = await response.json()
-    div.innerHTML = `CEP: ${data.cep} <br> Logradouro: ${data.logradouro} <br> Bairro: ${data.bairro} <br> Cidade: ${data.localidade} <br> Estado: ${data.uf}`
+    myTable.innerHTML = `<tr><td>${data.cep}</td><td>${data.logradouro}</td><td>${data.bairro}</td><td>${data.localidade}</td><td>${data.uf}</td></tr>`+
+    `<tr><td><input type="radio" value="Color"></td><td>Radio Button</td></tr>`+
+    `<tr><td><input type="button" value="Color"></td><td>Button</td></tr>`+
+    `<tr><td><input type="checkbox" value="Color"></td><td>Checkbox</td></tr>`
+
 }
   </script>
 <body>
     <button onclick="myFunction()">Chamar</button>
     <input type="text" id="myInput" placeholder="Digite seu o CEP">
     <div id="myDiv"></div>
+    <select type="select" value="Color">
+        <option value="brasil">Br</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+        <option>Option 4</option>
+        <option>Option 5</option>
+    </select>
+    
+<textarea id="w3review" name="w3review" rows="4" cols="50">
+At w3schools.com you will learn how to make a website. They offer free tutorials in all web development technologies.
+</textarea>
+
 </body>
+
+<table border="1" style="width:100%" id="myTable">
+<thead>
+
+</thead>
+
+
+</table>
+
+
 </html>
