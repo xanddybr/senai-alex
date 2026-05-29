@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firjan SENAI — Visualização de Conteúdo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ── TOKENS ─────────────────────────────────────────────────── */
+  :root {
+    --bg-dark:    #0D2E6E;
+    --bg-deep:    #081D48;
+    --blue:       #1A56DB;
+    --blue-mid:   #1A4BB0;
+    --blue-light: #EBF0F8;
+    --cyan:       #00B4D8;
+    --gold:       #E9A018;
+    --gold-light: #FFF3D0;
+    --white:      #FFFFFF;
+    --text-dark:  #0D1B3E;
+    --text-gray:  #4B5563;
+    --border:     #CBD5E1;
+    --protected:  #F7FAFF;
+    --font-title: 'Barlow Condensed', sans-serif;
+    --font-body:  'Barlow', sans-serif;
+    --radius:     10px;
+    --shadow:     0 4px 24px rgba(13,46,110,.13);
+    --shadow-lg:  0 8px 40px rgba(13,46,110,.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100vh;
+    font-family: var(--font-body);
+    background: var(--bg-dark);
+    color: var(--white);
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse 80% 50% at 110% -10%, #1A56DB44 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at -10% 110%, #00B4D822 0%, transparent 55%),
+      var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ── TOPBAR ─────────────────────────────────────────────────── */
+  .topbar {
+    background: var(--bg-deep);
+    border-bottom: 3px solid var(--gold);
+    padding: 0 2.5rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .topbar-brand { display: flex; align-items: center; gap: 1rem; }
+
+  .topbar-logo { display: flex; align-items: center; gap: .55rem; }
+
+  .logo-wordmark {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 1.55rem;
+    letter-spacing: .01em;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .logo-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-left: .35rem;
+    border-left: 2px solid var(--blue);
+  }
+
+  .logo-lines span { display: flex; gap: 5px; align-items: center; }
+
+  .logo-lines span em {
+    display: block;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--cyan);
+  }
+
+  .logo-lines span em:nth-child(1) { width: 28px; }
+  .logo-lines span em:nth-child(2) { width: 20px; opacity: .7; }
+
+  .logo-tag {
+    font-family: var(--font-body);
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-left: .2rem;
+    opacity: .85;
+  }
+
+  .topbar-right {
+    font-family: var(--font-title);
+    font-size: .78rem;
+    font-weight: 500;
+    letter-spacing: .1em;
+    color: rgba(255,255,255,.45);
+    text-transform: uppercase;
+  }
+
+  /* ── MAIN ────────────────────────────────────────────────────── */
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 2.5rem 2.5rem;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 900px) {
+    main { padding: 1.2rem; }
+    .topbar { padding: 0 1.2rem; }
+  }
+
+  /* ── PANEL ───────────────────────────────────────────────────── */
+  .panel {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .panel-header {
+    padding: .75rem 1.25rem .65rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+
+  .panel-header-left { display: flex; align-items: center; gap: .65rem; }
+
+  .panel-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .panel-dot.cyan { background: var(--cyan); }
+
+  .panel-title {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: .82rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.75);
+  }
+
+  .panel-badge {
+    font-size: .65rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: .18rem .55rem;
+    border-radius: 20px;
+  }
+
+  .panel-badge.prot {
+    background: rgba(0,180,216,.12);
+    color: var(--cyan);
+    border: 1px solid rgba(0,180,216,.3);
+  }
+
+  /* ── OUTPUT DISPLAY ─────────────────────────────────────────── */
+  .output-overlay {
+    flex: 1;
+    padding: 1.5rem 1.25rem;
+    overflow: auto;
+  }
+
+  .output-display {
+    width: 100%;
+    min-height: 420px;
+    background: rgba(8,29,72,.55);
+    border: 1.5px solid rgba(255,255,255,.1);
+    border-radius: 8px;
+    padding: 1.4rem 1.5rem;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    cursor: default;
+  }
+
+  /* Exibe o conteúdo como texto puro, preservando quebras e espaços */
+  .output-content {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--white);
+    white-space: pre-wrap;   /* preserva quebras de linha e espaços */
+    word-break: break-word;
+    pointer-events: none;    /* impede interação direta com o texto */
+  }
+
+  /* ── RODAPÉ DO PAINEL ───────────────────────────────────────── */
+  .shield-row {
+    padding: .6rem 1.25rem;
+    border-top: 1px solid rgba(255,255,255,.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .shield-left {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .7rem;
+    color: rgba(255,255,255,.3);
+    letter-spacing: .06em;
+  }
+
+  .shield-icon {
+    width: 11px; height: 11px;
+    fill: var(--cyan);
+    opacity: .5;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--cyan);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: .9; transform: scale(1); }
+    50%       { opacity: .4; transform: scale(.85); }
+  }
+
+  /* ── FOOTER ─────────────────────────────────────────────────── */
+  footer {
+    padding: 1rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,.07);
+    flex-shrink: 0;
+  }
+
+  .footer-text {
+    font-size: .7rem;
+    color: rgba(255,255,255,.3);
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+
+  .footer-line {
+    height: 1px;
+    width: 40px;
+    background: rgba(255,255,255,.12);
+    border-radius: 2px;
+    opacity: .5;
+  }
+
+  /* ── SCROLLBAR ──────────────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(26,86,219,.4); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(26,86,219,.65); }
+
+  /* ── TOAST ───────────────────────────────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 1.6rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(12px);
+    background: var(--bg-deep);
+    border: 1px solid rgba(0,180,216,.35);
+    color: var(--cyan);
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    padding: .55rem 1.2rem;
+    border-radius: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    z-index: 99;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ── TOPBAR ─────────────────────────────────────── -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">
+      <span class="logo-wordmark">Firjan</span>
+      <div class="logo-lines">
+        <span><em></em><em></em></span>
+        <span><em></em><em></em></span>
+        <span><em></em><em></em></span>
+      </div>
+    </div>
+    <span class="logo-tag">SENAI&nbsp;•&nbsp;Visualização de Conteúdo</span>
+  </div>
+  <span class="topbar-right">Programador Front-End&nbsp;&nbsp;|&nbsp;&nbsp;180h</span>
+</header>
+
+<!-- ── MAIN ───────────────────────────────────────── -->
+<main>
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-header-left">
+        <span class="panel-dot cyan"></span>
+        <span class="panel-title">Conteúdo da Aula</span>
+      </div>
+      <span class="panel-badge prot">
+        <svg style="vertical-align:middle;margin-right:3px" width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        Protegido
+      </span>
+    </div>
+
+    <div class="output-overlay">
+      <div class="output-display" id="outputDisplay">
+        <div class="output-content" id="outputContent">
+
+- Escolha uma área da indústria tecnológica, empresa de preferencia conhecida (cores e tema)
+- Faça a função login com base no código abaixo, validando o usuário e senha, e caso o login seja inválido mostrar msg
+- Apos logar com sucesso informações referentes a empresa (nixo escolhido), Coloque um material relevante sobre a empresa, pode ser um texto, imagem, vídeo ou link
+- Insira algum tipo de cadastro, recurso que exiba na tela uma mensagem na tela
+- Faça a função logout 
+
+
+
+  function login(){
+    let usuario = document.getElementById("usuario").value;
+    let senha = document.getElementById("senha").value;
+
+    if(usuario == "professor" && senha == "1234"){
+        alert("Login realizado com sucesso!");
+        mostrarHome();
+        esconderLogin();
+    }
+}
+
+function logout(){
+    let telaHome = document.getElementById("home").style.display = "none";
+    let telaLogin = document.getElementById("login").style.display = "block";
+}
+
+function mostrarHome(){
+    let telaHome = document.getElementById("home").style.display = "block";
+}
+
+function esconderLogin(){
+    let telaLogin = document.getElementById("login").style.display = "none";
+} 
+
+
+
+        </div>
+      </div>
+    </div>
+
+    <div class="shield-row">
+      <div class="shield-left">
+        <svg class="shield-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+        </svg>
+        Seleção e cópia desabilitadas
+      </div>
+      <div style="display:flex;align-items:center;gap:.4rem">
+        <div class="status-dot"></div>
+        <span style="font-size:.7rem;color:rgba(255,255,255,.3);letter-spacing:.06em">Ativo</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ── FOOTER ──────────────────────────────────────── -->
+<footer>
+  <span class="footer-text">Firjan SENAI&nbsp;&nbsp;·&nbsp;&nbsp;Serviço Nacional de Aprendizagem Industrial&nbsp;&nbsp;·&nbsp;&nbsp;Rio de Janeiro</span>
+  <div class="footer-line"></div>
+  <span class="footer-text">Programador Front-End — 180h</span>
+</footer>
+
+<!-- ── TOAST ───────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ──────────────────────────────────────────────── *
+   *  O conteúdo vem direto do HTML — sem input.      *
+   *  O script apenas garante a proteção de cópia.    *
+   * ──────────────────────────────────────────────── */
+  const outputDisplay = document.getElementById('outputDisplay');
+  const toast = document.getElementById('toast');
+
+  let toastTimer;
+  function showToast(msg) {
+    clearTimeout(toastTimer);
+    toast.textContent = msg;
+    toast.classList.add('show');
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+  }
+
+  /* bloqueia contextmenu (botão direito) */
+  outputDisplay.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    showToast('⛔  Cópia desabilitada neste painel');
+    return false;
+  });
+
+  /* bloqueia drag */
+  outputDisplay.addEventListener('dragstart', e => {
+    e.preventDefault();
+    return false;
+  });
+
+  /* bloqueia Ctrl+C / Cmd+C */
+  document.addEventListener('keydown', e => {
+    const inside = outputDisplay.contains(document.activeElement)
+                || outputDisplay === document.activeElement;
+    if (inside && (e.ctrlKey || e.metaKey) && e.key === 'c') {
+      e.preventDefault();
+      showToast('⛔  Cópia desabilitada neste painel');
+    }
+  });
+
+  /* captura copy global e cancela se dentro do output */
+  document.addEventListener('copy', e => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    if (outputDisplay.contains(range.commonAncestorContainer)) {
+      e.preventDefault();
+      sel.removeAllRanges();
+      showToast('⛔  Cópia desabilitada neste painel');
+    }
+  });
+
+  /* bloqueia seleção por mouse */
+  outputDisplay.addEventListener('mousedown', e => {
+    e.preventDefault();
+    return false;
+  });
+
+  /* remove seleção que escape para o output */
+  document.addEventListener('selectionchange', () => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    if (outputDisplay.contains(range.commonAncestorContainer)
+        && range.toString().length > 0) {
+      sel.removeAllRanges();
+    }
+  });
+</script>
+</body>
+</html>
