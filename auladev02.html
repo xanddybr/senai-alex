@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 02 — React Router | Firjan SENAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & BASE ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:      #0D2248;
+  --navy-dark: #0A1628;
+  --navy-mid:  #1A3A6B;
+  --cyan:      #00B4D8;
+  --cyan-l:    #90E0EF;
+  --gold:      #F2A900;
+  --green:     #10B981;
+  --red:       #EF4444;
+  --bg:        #F4F7FC;
+  --white:     #FFFFFF;
+  --text:      #1E2A3A;
+  --muted:     #5A6880;
+  --border:    #DDE3EE;
+  --code-bg:   #0F1E2E;
+  --code-text: #90E0EF;
+  --slide-w:   900px;
+}
+
+html { font-size: 16px; }
+body {
+  background: #E8ECF4;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  padding: 2rem 1rem 4rem;
+}
+
+/* ─── NAVEGAÇÃO FIXA ───────────────────────────────────── */
+.nav-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--navy-dark);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1.5rem; gap: 1rem;
+  box-shadow: 0 2px 12px #00000040;
+}
+.nav-bar h1 {
+  font-size: 0.75rem; font-weight: 600;
+  color: var(--gold); letter-spacing: 2px; text-transform: uppercase;
+  white-space: nowrap;
+}
+.nav-pills {
+  display: flex; gap: 4px; flex-wrap: wrap; justify-content: center;
+}
+.nav-pill {
+  font-size: 0.65rem; font-weight: 600; padding: 4px 9px;
+  border-radius: 20px; border: 1px solid #ffffff20; color: #ffffff80;
+  background: transparent; cursor: pointer; transition: all 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+.nav-pill:hover, .nav-pill.active {
+  background: var(--cyan); border-color: var(--cyan); color: var(--navy-dark);
+}
+.nav-print {
+  font-size: 0.65rem; font-weight: 600; padding: 5px 12px;
+  border-radius: 20px; border: 1px solid var(--gold); color: var(--gold);
+  background: transparent; cursor: pointer; white-space: nowrap;
+  font-family: 'Inter', sans-serif; transition: all 0.15s;
+}
+.nav-print:hover { background: var(--gold); color: var(--navy-dark); }
+
+/* ─── WRAPPER ──────────────────────────────────────────── */
+.slides { margin-top: 3.5rem; display: flex; flex-direction: column; gap: 2rem; align-items: center; }
+
+/* ─── SLIDE BASE ───────────────────────────────────────── */
+.slide {
+  width: 100%; max-width: var(--slide-w);
+  background: var(--white); border-radius: 12px;
+  box-shadow: 0 4px 24px #00000018;
+  overflow: hidden; scroll-margin-top: 4rem;
+}
+
+/* ─── HEADER DO SLIDE ──────────────────────────────────── */
+.slide-header {
+  background: var(--navy-dark);
+  padding: 1.25rem 1.5rem 1rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  border-bottom: 3px solid var(--gold);
+}
+.slide-header-left { display: flex; align-items: center; gap: 0.75rem; }
+.slide-logo {
+  background: white; border-radius: 6px; padding: 4px 8px;
+  font-size: 0.6rem; font-weight: 700; color: var(--navy-dark);
+  line-height: 1.2; white-space: nowrap;
+}
+.slide-title {
+  font-size: 1.25rem; font-weight: 700; color: var(--white);
+  line-height: 1.25; letter-spacing: -0.01em;
+}
+.slide-badge {
+  font-size: 0.72rem; font-weight: 700;
+  padding: 5px 14px; border-radius: 20px;
+  white-space: nowrap; flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+}
+.badge-gold  { background: var(--gold); color: var(--navy-dark); }
+.badge-green { background: var(--green); color: white; }
+.badge-cyan  { background: var(--cyan); color: var(--navy-dark); }
+.badge-navy  { background: var(--navy-mid); color: var(--cyan); border: 1px solid var(--cyan); }
+
+/* ─── SLIDE BODY ───────────────────────────────────────── */
+.slide-body { padding: 1.5rem; }
+.slide-body.dark { background: var(--navy); }
+
+/* ─── CAPA ─────────────────────────────────────────────── */
+.capa {
+  background: var(--navy-dark);
+  min-height: 260px;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 2rem 2rem 1.5rem;
+  position: relative; overflow: hidden;
+}
+.capa::before {
+  content: ''; position: absolute; right: -60px; top: -60px;
+  width: 280px; height: 280px; border-radius: 50%;
+  border: 1px solid #00B4D820;
+  background: radial-gradient(circle, #00B4D810, transparent 70%);
+}
+.capa-tag {
+  display: inline-block; background: var(--gold); color: var(--navy-dark);
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 4px; margin-bottom: 1rem; width: fit-content;
+}
+.capa-title {
+  font-size: 2.4rem; font-weight: 700; color: var(--white); line-height: 1.1;
+  margin-bottom: 0.5rem; letter-spacing: -1px;
+}
+.capa-sub {
+  font-size: 1.1rem; color: var(--cyan-l); margin-bottom: 1.25rem;
+  font-weight: 400;
+}
+.capa-divider {
+  width: 80px; height: 3px; background: var(--gold); border-radius: 2px;
+  margin-bottom: 1.25rem;
+}
+.capa-meta { font-size: 0.8rem; color: #7090B0; }
+.capa-meta strong { color: var(--gold); font-style: italic; }
+.capa-footer {
+  background: var(--navy-mid);
+  text-align: center; font-size: 0.7rem; color: #4A6080;
+  padding: 0.5rem; letter-spacing: 1px;
+}
+
+/* ─── AGENDA ───────────────────────────────────────────── */
+.agenda-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.agenda-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  background: var(--bg); border-radius: 8px; padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+}
+.agenda-num {
+  width: 32px; height: 32px; border-radius: 6px; flex-shrink: 0;
+  background: var(--navy-mid); color: var(--gold);
+  font-size: 0.75rem; font-weight: 700; display: flex;
+  align-items: center; justify-content: center;
+}
+.agenda-text { flex: 1; font-size: 0.95rem; font-weight: 500; color: var(--text); }
+.agenda-time {
+  font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+}
+
+/* ─── GRID 2 COLUNAS ───────────────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.grid-2-wide { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem; }
+
+/* ─── CARD ─────────────────────────────────────────────── */
+.card {
+  border-radius: 8px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.card-header {
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px;
+}
+.card-body { padding: 0.75rem 1rem; }
+
+.card.navy .card-header { background: var(--navy-mid); color: var(--cyan-l); }
+.card.navy .card-body   { background: #0D2045; }
+
+.card.dark-blue .card-header { background: #0E3060; color: var(--gold); }
+.card.dark-blue .card-body   { background: #091830; }
+
+.card.teal .card-header { background: #0D9488; color: white; }
+.card.teal .card-body   { background: #042F2E; }
+
+.card.plain .card-header { background: var(--navy); color: var(--cyan-l); }
+.card.plain .card-body   { background: var(--bg); }
+
+/* ─── BLOCO DE CÓDIGO ──────────────────────────────────── */
+.code-wrap {
+  background: var(--code-bg); border-radius: 8px; overflow: hidden;
+  border: 1px solid #1A2A4A;
+}
+.code-wrap-accent { border-left: 4px solid var(--cyan); }
+.code-wrap-gold   { border-left: 4px solid var(--gold); }
+.code-wrap-green  { border-left: 4px solid var(--green); }
+
+.code-label {
+  background: #1A2A3A; padding: 0.4rem 0.8rem;
+  font-size: 0.68rem; font-weight: 600; color: #6080A0;
+  letter-spacing: 1px; font-family: 'JetBrains Mono', monospace;
+  border-bottom: 1px solid #1A2A4A;
+}
+pre, code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem; line-height: 1.65;
+}
+pre {
+  padding: 1rem; color: var(--code-text);
+  white-space: pre; overflow-x: auto;
+}
+code {
+  background: #1A2A3A; color: var(--cyan);
+  padding: 1px 6px; border-radius: 4px; font-size: 0.85em;
+}
+
+/* ─── PASSOS NUMERADOS ─────────────────────────────────── */
+.steps { display: flex; flex-direction: column; gap: 1.25rem; }
+.step { display: flex; gap: 1rem; align-items: flex-start; }
+.step-num {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+  background: var(--navy); color: var(--gold);
+  font-size: 0.85rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-content { flex: 1; }
+.step-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+
+/* ─── CALLOUT CARDS ────────────────────────────────────── */
+.callouts { display: flex; flex-direction: column; gap: 0.6rem; }
+.callout {
+  border-radius: 6px; padding: 0.7rem 0.9rem;
+  border-left: 3px solid var(--cyan);
+  background: var(--bg); border: 1px solid var(--border);
+  border-left: 3px solid var(--cyan);
+}
+.callout-title { font-size: 0.8rem; font-weight: 700; color: var(--navy); margin-bottom: 0.2rem; font-family: 'JetBrains Mono', monospace; }
+.callout-desc  { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+
+/* ─── LISTA COM BULLET ─────────────────────────────────── */
+.bullet-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.bullet-list li {
+  font-size: 0.875rem; color: var(--code-text);
+  padding-left: 1.25rem; position: relative; line-height: 1.5;
+}
+.bullet-list li::before {
+  content: '•'; position: absolute; left: 0;
+  color: var(--cyan); font-weight: 700;
+}
+
+/* ─── TAG TECNOLOGIA ───────────────────────────────────── */
+.tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; padding: 3px 10px; border-radius: 4px;
+  background: #0D2045; color: var(--cyan);
+  border: 1px solid #1A3060;
+}
+
+/* ─── DESAFIO TASKS ────────────────────────────────────── */
+.task-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.task {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  background: #0E1E38; border-radius: 8px; padding: 0.8rem 1rem;
+}
+.task-badge {
+  min-width: 28px; height: 28px; border-radius: 6px;
+  background: var(--gold); color: var(--navy-dark);
+  font-size: 0.72rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px; flex-shrink: 0;
+}
+.task-name { font-size: 0.8rem; font-weight: 700; color: var(--gold); margin-bottom: 0.2rem; }
+.task-desc { font-size: 0.82rem; color: #90A0C0; line-height: 1.4; }
+
+/* ─── BONUS BOX ─────────────────────────────────────────── */
+.bonus {
+  background: var(--code-bg); border: 1px solid #1A2A4A;
+  border-left: 4px solid var(--cyan);
+  border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem;
+  font-size: 0.8rem; color: var(--cyan-l);
+}
+.bonus strong { color: var(--cyan); }
+
+/* ─── DICA / RODAPÉ DO SLIDE ───────────────────────────── */
+.slide-tip {
+  background: var(--navy-mid); margin: 1.5rem -1.5rem -1.5rem;
+  padding: 0.7rem 1.5rem; font-size: 0.8rem; color: var(--gold);
+  text-align: center;
+}
+.slide-tip.green { background: #064E3B; color: #6EE7B7; border-top: 1px solid #065F46; }
+
+/* ─── RESUMO GRID ──────────────────────────────────────── */
+.resumo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.resumo-item {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  padding: 0.65rem 0.75rem; border-radius: 6px; background: #0D1E38;
+}
+.resumo-bar { width: 3px; height: 100%; min-height: 20px; border-radius: 2px; background: var(--cyan); flex-shrink: 0; }
+.resumo-text { font-size: 0.82rem; color: var(--cyan-l); line-height: 1.4; }
+
+/* ─── PRÓXIMA AULA ─────────────────────────────────────── */
+.next-aula {
+  border: 1px solid #1A3060; border-left: 4px solid var(--gold);
+  border-radius: 8px; padding: 0.85rem 1rem; margin-top: 1.25rem;
+  background: #0D1E38;
+}
+.next-label { font-size: 0.7rem; font-weight: 700; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.25rem; }
+.next-text  { font-size: 0.9rem; color: var(--white); }
+
+/* ─── NUMERO DE SLIDE ──────────────────────────────────── */
+.slide-number {
+  display: inline-block; font-size: 0.65rem; font-weight: 700;
+  color: var(--muted); letter-spacing: 1px; margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+/* ─── INFO BOX ─────────────────────────────────────────── */
+.info-box {
+  background: #0D1E38; border: 1px solid #1A3060;
+  border-left: 4px solid var(--cyan);
+  border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1rem;
+  font-size: 0.85rem; color: var(--cyan-l); line-height: 1.5;
+}
+
+/* ─── COMPARATIVO ──────────────────────────────────────── */
+.compare-header {
+  padding: 0.6rem 1rem; border-radius: 8px 8px 0 0;
+  font-size: 0.8rem; font-weight: 700;
+}
+.compare-body {
+  border-radius: 0 0 8px 8px;
+  border: 1px solid #1A2A4A; border-top: none; overflow: hidden;
+}
+
+/* ─── PRINT ────────────────────────────────────────────── */
+@media print {
+  body { background: white; padding: 0; }
+  .nav-bar { display: none; }
+  .slides { margin-top: 0; gap: 0; }
+  .slide {
+    box-shadow: none; border-radius: 0; max-width: 100%;
+    page-break-after: always; break-after: page;
+    border: none;
+  }
+  .slide:last-child { page-break-after: auto; }
+  .nav-print { display: none; }
+}
+
+/* ─── RESPONSIVE ───────────────────────────────────────── */
+@media (max-width: 640px) {
+  .grid-2, .grid-2-wide, .resumo-grid { grid-template-columns: 1fr; }
+  .capa-title { font-size: 1.8rem; }
+  .slide-title { font-size: 1rem; }
+  .nav-pills { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV FIXA -->
+<nav class="nav-bar">
+  <h1>Aula 02 — React Router</h1>
+  <div class="nav-pills">
+    <button class="nav-pill" onclick="ir('s1')">Capa</button>
+    <button class="nav-pill" onclick="ir('s2')">Agenda</button>
+    <button class="nav-pill" onclick="ir('s3')">SPA</button>
+    <button class="nav-pill" onclick="ir('s4')">Setup</button>
+    <button class="nav-pill" onclick="ir('s5')">Rotas</button>
+    <button class="nav-pill" onclick="ir('s6')">Dinâmicas</button>
+    <button class="nav-pill" onclick="ir('s7')">404/Outlet</button>
+    <button class="nav-pill" onclick="ir('s8')">Navigate</button>
+    <button class="nav-pill" onclick="ir('s9')">Desafio</button>
+    <button class="nav-pill" onclick="ir('s10')">Resumo</button>
+  </div>
+  <button class="nav-print" onclick="window.print()">🖨 Imprimir</button>
+</nav>
+
+<div class="slides">
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 1 — CAPA
+═══════════════════════════════════════════════════════════ -->
+<article class="slide" id="s1">
+  <div class="capa">
+    <div class="capa-tag">Programador Front-End · Aula 02/20</div>
+    <div class="capa-title">Desenvolvimento Web</div>
+    <div class="capa-sub">React Router — Rotas, Navegação e SPA</div>
+    <div class="capa-divider"></div>
+    <div class="capa-meta">
+      80h &nbsp;|&nbsp; Módulo Específico Profissional<br>
+      <strong>Prof. Alexandre de Santana de Souza</strong>
+    </div>
+  </div>
+  <div class="capa-footer">Firjan SENAI &nbsp;·&nbsp; Rio de Janeiro &nbsp;·&nbsp; 2024</div>
+</article>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 2 — AGENDA
+═══════════════════════════════════════════════════════════ -->
+<article class="slide" id="s2">
+  <div class="slide-header">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Agenda da Aula 02</div>
+    </div>
+  </div>
+  <div class="slide-body">
+    <div class="agenda-list">
+      <div class="agenda-item">
+        <div class="agenda-num">01</div>
+        <div class="agenda-text">O que é uma SPA e por que usar rotas?</div>
+        <span class="agenda-time badge-cyan" style="background:#00B4D820;color:#00B4D8;border:1px solid #00B4D840;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">5 min</span>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-num">02</div>
+        <div class="agenda-text">Instalação e configuração do React Router v6</div>
+        <span class="agenda-time" style="background:#F2A90020;color:#F2A900;border:1px solid #F2A90040;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">10 min</span>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-num">03</div>
+        <div class="agenda-text">Prática: criando rotas básicas com Routes e Link</div>
+        <span class="agenda-time" style="background:#10B98120;color:#10B981;border:1px solid #10B98140;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">15 min</span>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-num">04</div>
+        <div class="agenda-text">Rotas dinâmicas e parâmetros de URL com useParams</div>
+        <span class="agenda-time" style="background:#00B4D820;color:#00B4D8;border:1px solid #00B4D840;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">15 min</span>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-num">05</div>
+        <div class="agenda-text">Navegação programática com useNavigate + Desafio</div>
+        <span class="agenda-time" style="background:#10B98120;color:#10B981;border:1px solid #10B98140;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">15 min</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 3 — SPA vs MPA (teoria)
+═══════════════════════════════════════════════════════════ -->
+<article class="slide" id="s3">
+  <div class="slide-header" style="border-bottom-color: var(--cyan);">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">SPA e Roteamento no Front-End</div>
+    </div>
+  </div>
+  <div class="slide-body">
+
+    <div class="grid-2" style="margin-bottom:1.25rem;">
+      <!-- MPA -->
+      <div class="card navy">
+        <div class="card-header" style="background:#1A3A6B;color:#90E0EF;">MPA — Multi-Page App</div>
+        <div class="card-body" style="background:#0D2248;">
+          <ul class="bullet-list">
+            <li>Cada página = nova requisição ao servidor</li>
+            <li>O browser recarrega completamente a cada clique</li>
+            <li>Exemplo: sites em PHP, HTML estático</li>
+          </ul>
+        </div>
+      </div>
+      <!-- SPA -->
+      <div class="card" style="border:1px solid #1A3060;">
+        <div class="card-header" style="background:#0E3060;color:#F2A900;">SPA — Single-Page App</div>
+        <div class="card-body" style="background:#091830;">
+          <ul class="bullet-list">
+            <li>Uma única página HTML é carregada</li>
+            <li>O conteúdo muda via JavaScript, sem reload</li>
+            <li>Exemplo: React, Vue, Angular</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- React Router box -->
+    <div class="code-wrap code-wrap-gold" style="margin-bottom:0.75rem;">
+      <div class="code-label">React Router v6 — biblioteca oficial de roteamento</div>
+      <div style="padding:1rem;background:#0F1E2E;">
+        <p style="font-size:0.875rem;color:#90E0EF;margin-bottom:0.75rem;">
+          Permite criar rotas <strong style="color:#F2A900;">declarativas</strong> dentro do componente React,
+          sem recarregar a página. O React Router "engana" o browser, trocando componentes enquanto a URL muda.
+        </p>
+        <div class="tag-list">
+          <span class="tag">BrowserRouter</span>
+          <span class="tag">Routes</span>
+          <span class="tag">Route</span>
+          <span class="tag">Link</span>
+          <span class="tag">useNavigate</span>
+          <span class="tag">useParams</span>
+          <span class="tag">Outlet</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 4 — PRÁTICA 1: SETUP
+═══════════════════════════════════════════════════════════ -->
+<article class="slide" id="s4">
+  <div class="slide-header">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Prática 1 — Instalando o React Router v6</div>
+    </div>
+    <span class="slide-badge badge-gold">10 min</span>
+  </div>
+  <div class="slide-body">
+    <div class="steps">
+
+      <!-- Passo 1 -->
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Instalar o pacote</div>
+          <div class="code-wrap code-wrap-accent">
+            <pre>npm install react-router-dom</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 2 -->
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Envolver o app com <code>BrowserRouter</code> em <code>main.jsx</code></div>
+          <div class="code-wrap code-wrap-gold">
+            <div class="code-label">src/main.jsx</div>
+<pre>import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+
+ReactDOM.createRoot(
+  document.getElementById('root')
+).render(
+  &lt;BrowserRouter&gt;
+    &lt;App /&gt;
+  &lt;/BrowserRouter&gt;
+);</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 3 -->
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Criar a estrutura de páginas</div>
+          <div class="code-wrap code-wrap-green">
+            <div class="code-label">Estrutura de pastas recomendada</div>
+<pre>src/
+  pages/
+    Home.jsx       ← página principal
+    Sobre.jsx      ← página "Sobre nós"
+    Contato.jsx    ← página de contato
+  App.jsx          ← define as rotas
+  main.jsx         ← ponto de entrada</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="slide-tip">💡 Crie as três páginas como componentes vazios antes de continuar — só com um <code>&lt;h1&gt;</code> no return!</div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 5 — PRÁTICA 2: ROTAS BÁSICAS
+═══════════════════════════════════════════════════════════ -->
+<article class="slide" id="s5">
+  <div class="slide-header" style="border-bottom-color:var(--green);">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Prática 2 — Criando Rotas Básicas</div>
+    </div>
+    <span class="slide-badge badge-green">15 min</span>
+  </div>
+  <div class="slide-body">
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem;font-style:italic;">App.jsx — definindo as rotas da aplicação</p>
+
+    <div class="grid-2-wide">
+      <!-- código -->
+      <div class="code-wrap code-wrap-accent">
+        <div class="code-label">src/App.jsx</div>
+<pre>import { Routes, Route, Link }
+  from 'react-router-dom';
+import Home    from './pages/Home';
+import Sobre   from './pages/Sobre';
+import Contato from './pages/Contato';
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;nav&gt;
+        &lt;Link to="/"&gt;Home&lt;/Link&gt;
+        &lt;Link to="/sobre"&gt;Sobre&lt;/Link&gt;
+        &lt;Link to="/contato"&gt;Contato&lt;/Link&gt;
+      &lt;/nav&gt;
+
+      &lt;Routes&gt;
+        &lt;Route path="/"
+          element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/sobre"
+          element={&lt;Sobre /&gt;} /&gt;
+        &lt;Route path="/contato"
+          element={&lt;Contato /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;</pre>
+      </div>
+
+      <!-- callouts -->
+      <div class="callouts">
+        <div class="callout">
+          <div class="callout-title">&lt;Routes&gt;</div>
+          <div class="callout-desc">Container que avalia qual <code>&lt;Route&gt;</code> ativar com base na URL atual.</div>
+        </div>
+        <div class="callout">
+          <div class="callout-title">&lt;Route path&gt;</div>
+          <div class="callout-desc">Define o caminho de URL que ativa o componente. <code>path="/"</code> é a raiz.</div>
+        </div>
+        <div class="callout">
+          <div class="callout-title">element={}</div>
+          <div class="callout-desc">Recebe o componente JSX que será renderizado quando a rota casar.</div>
+        </div>
+        <div class="callout">
+          <div class="callout-title">&lt;Link to&gt;</div>
+          <div class="callout-desc">Substitui o <code>&lt;a href&gt;</code>. Navega sem recarregar a página — essencial na SPA.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-tip green">🚀 Teste cada rota no browser: <code>/</code>, <code>/sobre</code> e <code>/contato</code> — observe que não há reload!</div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 6 — PRÁTICA 3: ROTAS DINÂMICAS
+═══════════════════════════════════════════════════════════ -->
+<article class="slide" id="s6">
+  <div class="slide-header" style="border-bottom-color:var(--cyan);">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Prática 3 — Rotas Dinâmicas e useParams</div>
+    </div>
+    <span class="slide-badge badge-cyan">15 min</span>
+  </div>
+  <div class="slide-body">
+    <div class="info-box">
+      <strong>Caso de uso:</strong> ao clicar em um produto de uma lista, a URL muda para <code>/produto/42</code>
+      e a página de detalhe carrega os dados daquele produto específico.
+    </div>
+
+    <div class="grid-2">
+      <!-- Definindo a rota -->
+      <div>
+        <p style="font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:0.5rem;">1. Definindo a rota com parâmetro <code>:id</code></p>
+        <div class="code-wrap code-wrap-gold">
+          <div class="code-label">src/App.jsx</div>
+<pre>&lt;Route
+  path="/produto/:id"
+  element={&lt;Produto /&gt;}
+/&gt;</pre>
+        </div>
+
+        <p style="font-size:0.85rem;font-weight:600;color:var(--text);margin:1rem 0 0.5rem;">2. Criando links com id dinâmico</p>
+        <div class="code-wrap code-wrap-gold">
+          <div class="code-label">src/pages/Produtos.jsx</div>
+<pre>const produtos = [
+  { id: 1, nome: 'Teclado' },
+  { id: 2, nome: 'Mouse' },
+  { id: 3, nome: 'Monitor' },
+];
+
+{produtos.map(p =&gt; (
+  &lt;Link to={`/produto/${p.id}`}&gt;
+    {p.nome}
+  &lt;/Link&gt;
+))}</pre>
+        </div>
+      </div>
+
+      <!-- Lendo o parâmetro -->
+      <div>
+        <p style="font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:0.5rem;">3. Lendo o parâmetro com <code>useParams</code></p>
+        <div class="code-wrap code-wrap-accent">
+          <div class="code-label">src/pages/Produto.jsx</div>
+<pre>import { useParams }
+  from 'react-router-dom';
+
+function Produto() {
+  // id vem da URL: /produto/42
+  const { id } = useParams();
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Produto #{id}&lt;/h1&gt;
+      &lt;p&gt;
+        Carregando dados
+        do produto {id}...
+      &lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Produto;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-tip">🎯 Crie links para <code>/produto/1</code>, <code>/produto/2</code>, <code>/produto/3</code> e exiba o id em cada página!</div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 7 — PRÁTICA 4: ROTA 404 + OUTLET
+═══════════════════════════════════════════════════════════ -->
+<article class="slide" id="s7">
+  <div class="slide-header">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Prática 4 — Rota 404 e Rotas Aninhadas</div>
+    </div>
+    <span class="slide-badge badge-gold">15 min</span>
+  </div>
+  <div class="slide-body">
+
+    <!-- 404 -->
+    <p style="font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">Capturando URLs inexistentes com <code>path="*"</code></p>
+    <div class="grid-2" style="margin-bottom:1.25rem;">
+      <div class="code-wrap code-wrap-accent">
+        <div class="code-label">src/App.jsx — adicionar dentro de &lt;Routes&gt;</div>
+<pre>&lt;Routes&gt;
+  &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+  &lt;Route path="/sobre" element={&lt;Sobre /&gt;} /&gt;
+  &lt;!-- SEMPRE por último: captura tudo --&gt;
+  &lt;Route
+    path="*"
+    element={&lt;PaginaNaoEncontrada /&gt;}
+  /&gt;
+&lt;/Routes&gt;</pre>
+      </div>
+      <div style="background:#0D1E38;border-radius:8px;padding:1rem;border:1px solid #1A3060;">
+        <p style="font-size:0.85rem;color:#90E0EF;line-height:1.6;">
+          O asterisco <code style="color:#F2A900;">*</code> casa com qualquer URL que não bateu nas rotas anteriores.
+          É a "rota coringa" — deve ser sempre a <strong style="color:white;">última</strong> dentro do <code>&lt;Routes&gt;</code>.
+        </p>
+      </div>
+    </div>
+
+    <!-- Rotas aninhadas -->
+    <p style="font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">Rotas aninhadas com <code>&lt;Outlet /&gt;</code></p>
+    <div class="grid-2">
+      <div class="code-wrap code-wrap-accent">
+        <div class="code-label">src/App.jsx — rota pai com filhas</div>
+<pre>&lt;Route
+  path="/painel"
+  element={&lt;Painel /&gt;}
+&gt;
+  &lt;Route
+    path="perfil"
+    element={&lt;Perfil /&gt;}
+  /&gt;
+  &lt;Route
+    path="config"
+    element={&lt;Config /&gt;}
+  /&gt;
+&lt;/Route&gt;</pre>
+      </div>
+      <div class="code-wrap code-wrap-gold">
+        <div class="code-label">src/pages/Painel.jsx — componente pai</div>
+<pre>import { Outlet, Link }
+  from 'react-router-dom';
+
+function Painel() {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Painel&lt;/h2&gt;
+      &lt;nav&gt;
+        &lt;Link to="perfil"&gt;
+          Meu Perfil
+        &lt;/Link&gt;
+        &lt;Link to="config"&gt;
+          Configurações
+        &lt;/Link&gt;
+      &lt;/nav&gt;
+
+      {/* filho renderiza aqui */}
+      &lt;Outlet /&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+      </div>
+    </div>
+
+    <div class="slide-tip">⚙️ Adicione a rota <code>path="*"</code> ao seu projeto e teste digitar uma URL que não existe!</div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 8 — PRÁTICA 5: useNavigate
+═══════════════════════════════════════════════════════════ -->
+<article class="slide" id="s8">
+  <div class="slide-header" style="border-bottom-color:var(--green);">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Prática 5 — Navegação Programática com useNavigate</div>
+    </div>
+    <span class="slide-badge badge-green">15 min</span>
+  </div>
+  <div class="slide-body">
+    <div class="info-box" style="margin-bottom:1rem;">
+      <strong>Quando usar:</strong> redirecionar após o submit de um formulário, após login bem-sucedido, ou ao clicar em um botão — casos em que <code>&lt;Link&gt;</code> não é suficiente.
+    </div>
+
+    <div class="grid-2-wide">
+      <!-- código completo -->
+      <div class="code-wrap code-wrap-green">
+        <div class="code-label">src/pages/FormLogin.jsx</div>
+<pre>import { useNavigate }
+  from 'react-router-dom';
+
+function FormLogin() {
+  const navigate = useNavigate();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    // ... lógica de autenticação ...
+
+    // redireciona para o painel
+    navigate('/painel');
+
+    // navegar para trás (voltar)
+    // navigate(-1);
+
+    // substituir entrada no histórico
+    // navigate('/home', { replace: true });
+  }
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        type="text"
+        placeholder="Usuário"
+      /&gt;
+      &lt;input
+        type="password"
+        placeholder="Senha"
+      /&gt;
+      &lt;button type="submit"&gt;
+        Entrar
+      &lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+
+export default FormLogin;</pre>
+      </div>
+
+      <!-- opções -->
+      <div>
+        <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.75rem;">Opções do <code>navigate()</code></p>
+        <div class="callouts">
+          <div class="callout">
+            <div class="callout-title">navigate('/rota')</div>
+            <div class="callout-desc">Empurra uma nova entrada no histórico do browser. O usuário pode voltar com o botão ←.</div>
+          </div>
+          <div class="callout">
+            <div class="callout-title">navigate(-1)</div>
+            <div class="callout-desc">Volta uma página — equivale ao botão Voltar do browser.</div>
+          </div>
+          <div class="callout">
+            <div class="callout-title">navigate(1)</div>
+            <div class="callout-desc">Avança uma página no histórico.</div>
+          </div>
+          <div class="callout">
+            <div class="callout-title">{ replace: true }</div>
+            <div class="callout-desc">Substitui a entrada atual do histórico. O usuário <strong>não</strong> consegue voltar para a rota anterior. Útil após logout.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-tip green">🧪 Desafio: crie um formulário de login que redireciona para <code>/painel</code> ao submeter!</div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 9 — DESAFIO DE INTEGRAÇÃO
+═══════════════════════════════════════════════════════════ -->
+<article class="slide" id="s9">
+  <div class="slide-header">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Desafio de Integração — Aula 02</div>
+    </div>
+    <span class="slide-badge badge-gold">20 min</span>
+  </div>
+  <div class="slide-body" style="background:var(--navy);">
+
+    <p style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:1rem;">
+      Construa um mini-site de produtos com React Router
+    </p>
+
+    <div class="task-list">
+      <div class="task">
+        <div class="task-badge">1</div>
+        <div>
+          <div class="task-name">Estrutura de páginas</div>
+          <div class="task-desc">Crie 4 páginas: <code>Home</code>, <code>Produtos</code>, <code>Produto/:id</code> e <code>NaoEncontrada</code>. Configure todas no <code>App.jsx</code> com <code>&lt;Routes&gt;</code> e <code>&lt;Route&gt;</code>.</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-badge">2</div>
+        <div>
+          <div class="task-name">Navegação</div>
+          <div class="task-desc">Barra de navegação com <code>&lt;Link&gt;</code> para <em>Home</em> e <em>Produtos</em>. Estilize o link da rota ativa usando <code>NavLink</code> e a prop <code>className</code>.</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-badge">3</div>
+        <div>
+          <div class="task-name">Lista de produtos</div>
+          <div class="task-desc">Página <em>Produtos</em>: renderize um array de 5 produtos usando <code>.map()</code>. Cada item deve ter um <code>&lt;Link to={`/produto/${p.id}`}&gt;</code>.</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-badge">4</div>
+        <div>
+          <div class="task-name">Detalhe do produto</div>
+          <div class="task-desc">Página <em>Produto/:id</em>: use <code>useParams</code> para ler o id da URL. Exiba o nome do produto filtrando o array pelo id recebido.</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-badge">5</div>
+        <div>
+          <div class="task-name">Página 404</div>
+          <div class="task-desc">Rota <code>path="*"</code> com uma página personalizada. Deve ter um botão "Voltar para Home" que usa <code>useNavigate()</code> para redirecionar.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bonus">
+      <strong>🌟 Bônus:</strong> use <code>useState</code> para guardar o array de produtos no <code>App.jsx</code> e passe-o como prop para as páginas — ou armazene em um arquivo <code>data/produtos.js</code> e importe onde precisar.
+    </div>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 10 — RESUMO
+═══════════════════════════════════════════════════════════ -->
+<article class="slide" id="s10">
+  <div class="slide-header" style="border-bottom-color:var(--gold);">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Resumo da Aula 02</div>
+    </div>
+    <img src="https://i.imgur.com/placeholder.png" alt="" style="display:none">
+  </div>
+  <div class="slide-body" style="background:var(--navy-dark);">
+
+    <div class="resumo-grid" style="margin-bottom:1.25rem;">
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text">SPA vs MPA — o browser não recarrega entre páginas numa SPA</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text">Rota dinâmica com <code>:parâmetro</code> na URL</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text"><code>BrowserRouter</code> envolve toda a aplicação no <code>main.jsx</code></div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text"><code>useParams()</code> lê o valor do parâmetro da URL</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text"><code>Routes</code> e <code>Route</code> definem os caminhos da aplicação</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text"><code>useNavigate()</code> redireciona via código JavaScript</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text"><code>Link</code> substitui o <code>&lt;a&gt;</code> sem causar reload da página</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text">Rotas aninhadas com <code>&lt;Outlet /&gt;</code> como "slot" do filho</div>
+      </div>
+    </div>
+
+    <div class="next-aula">
+      <div class="next-label">Próxima Aula 03/20</div>
+      <div class="next-text">Requisições HTTP com Fetch API e Axios — integração com API REST (GET, POST, PUT, DELETE)</div>
+    </div>
+
+    <p style="text-align:center;font-size:0.7rem;color:#3A5070;margin-top:1rem;letter-spacing:1px;">
+      Firjan SENAI · Programador Front-End · 2024
+    </p>
+  </div>
+</article>
+
+</div><!-- /slides -->
+
+<script>
+function ir(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Highlight active nav pill on scroll
+const slides = document.querySelectorAll('.slide');
+const pills  = document.querySelectorAll('.nav-pill');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = [...slides].indexOf(e.target);
+      pills.forEach(p => p.classList.remove('active'));
+      if (pills[idx]) pills[idx].classList.add('active');
+    }
+  });
+}, { threshold: 0.4 });
+slides.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
