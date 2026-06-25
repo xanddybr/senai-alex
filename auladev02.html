@@ -538,17 +538,20 @@ code {
           <div class="step-title">Envolver o app com <code>BrowserRouter</code> em <code>main.jsx</code></div>
           <div class="code-wrap code-wrap-gold">
             <div class="code-label">src/main.jsx</div>
-<pre>import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
+<pre>import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom' <span style="color:#4A6080">// 1. Importa o router</span>
+import App from './App.jsx'
+import './index.css'
 
-ReactDOM.createRoot(
+createRoot(
   document.getElementById('root')
 ).render(
-  &lt;BrowserRouter&gt;
-    &lt;App /&gt;
-  &lt;/BrowserRouter&gt;
+  &lt;StrictMode&gt;
+    &lt;BrowserRouter&gt;          <span style="color:#4A6080">{/* 2. Envolve o App */}</span>
+      &lt;App /&gt;
+    &lt;/BrowserRouter&gt;
+  &lt;/StrictMode&gt;,
 );</pre>
           </div>
         </div>
