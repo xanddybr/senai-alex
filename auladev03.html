@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 03 — Fetch API e Axios | Firjan SENAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D2248;--navy-dark:#0A1628;--navy-mid:#1A3A6B;
+  --cyan:#00B4D8;--cyan-l:#90E0EF;--gold:#F2A900;
+  --green:#10B981;--red:#EF4444;--orange:#F97316;
+  --bg:#F4F7FC;--white:#FFFFFF;--text:#1E2A3A;
+  --muted:#5A6880;--border:#DDE3EE;
+  --code-bg:#0F1E2E;--code-text:#90E0EF;--slide-w:900px;
+}
+html{font-size:16px}
+body{background:#E8ECF4;font-family:'Inter',sans-serif;color:var(--text);padding:2rem 1rem 4rem}
+
+/* NAV */
+.nav-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--navy-dark);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.5rem 1.5rem;gap:1rem;box-shadow:0 2px 12px #00000040}
+.nav-bar h1{font-size:0.75rem;font-weight:600;color:var(--gold);
+  letter-spacing:2px;text-transform:uppercase;white-space:nowrap}
+.nav-pills{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.nav-pill{font-size:0.65rem;font-weight:600;padding:4px 9px;border-radius:20px;
+  border:1px solid #ffffff20;color:#ffffff80;background:transparent;
+  cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.nav-pill:hover,.nav-pill.active{background:var(--cyan);border-color:var(--cyan);color:var(--navy-dark)}
+.nav-print{font-size:0.65rem;font-weight:600;padding:5px 12px;border-radius:20px;
+  border:1px solid var(--gold);color:var(--gold);background:transparent;
+  cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;transition:all .15s}
+.nav-print:hover{background:var(--gold);color:var(--navy-dark)}
+
+/* SLIDES */
+.slides{margin-top:3.5rem;display:flex;flex-direction:column;gap:2rem;align-items:center}
+.slide{width:100%;max-width:var(--slide-w);background:var(--white);
+  border-radius:12px;box-shadow:0 4px 24px #00000018;
+  overflow:hidden;scroll-margin-top:4rem}
+
+/* CAPA */
+.capa{background:var(--navy-dark);min-height:260px;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+.capa::before{content:'';position:absolute;right:-60px;top:-60px;
+  width:280px;height:280px;border-radius:50%;
+  border:1px solid #00B4D820;
+  background:radial-gradient(circle,#00B4D810,transparent 70%)}
+.capa-tag{display:inline-block;background:var(--cyan);color:var(--navy-dark);
+  font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 12px;border-radius:4px;margin-bottom:1rem;width:fit-content}
+.capa-title{font-size:2.4rem;font-weight:700;color:var(--white);
+  line-height:1.1;margin-bottom:0.5rem;letter-spacing:-1px}
+.capa-sub{font-size:1.05rem;color:var(--cyan-l);margin-bottom:1.25rem;font-weight:400}
+.capa-divider{width:80px;height:3px;background:var(--cyan);border-radius:2px;margin-bottom:1.25rem}
+.capa-meta{font-size:0.8rem;color:#7090B0}
+.capa-meta strong{color:var(--gold);font-style:italic}
+.capa-footer{background:var(--navy-mid);text-align:center;
+  font-size:0.7rem;color:#4A6080;padding:0.5rem;letter-spacing:1px}
+
+/* HEADER */
+.slide-header{background:var(--navy-dark);padding:1.1rem 1.5rem 0.9rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  border-bottom:3px solid var(--gold)}
+.slide-header.cyan{border-bottom-color:var(--cyan)}
+.slide-header.green{border-bottom-color:var(--green)}
+.slide-header-left{display:flex;align-items:center;gap:0.75rem}
+.slide-logo{background:white;border-radius:6px;padding:4px 8px;
+  font-size:0.6rem;font-weight:700;color:var(--navy-dark);line-height:1.2;white-space:nowrap}
+.slide-title{font-size:1.18rem;font-weight:700;color:var(--white);line-height:1.25}
+.slide-badge{font-size:0.72rem;font-weight:700;padding:5px 14px;
+  border-radius:20px;white-space:nowrap;flex-shrink:0;font-family:'Inter',sans-serif}
+.bg-gold{background:var(--gold);color:var(--navy-dark)}
+.bg-green{background:var(--green);color:white}
+.bg-cyan{background:var(--cyan);color:var(--navy-dark)}
+
+/* BODY */
+.slide-body{padding:1.5rem}
+.slide-body.dark{background:var(--navy)}
+
+/* AGENDA */
+.agenda-list{display:flex;flex-direction:column;gap:0.6rem}
+.agenda-item{display:flex;align-items:center;gap:0.75rem;
+  background:var(--bg);border-radius:8px;padding:0.75rem 1rem;
+  border:1px solid var(--border)}
+.agenda-num{width:32px;height:32px;border-radius:6px;flex-shrink:0;
+  background:var(--navy-mid);color:var(--gold);
+  font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.agenda-text{flex:1;font-size:0.95rem;font-weight:500;color:var(--text)}
+.time-pill{font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px}
+
+/* GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.grid-2-wide{display:grid;grid-template-columns:1.45fr 1fr;gap:1rem}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.75rem}
+
+/* CODE */
+.code-wrap{background:var(--code-bg);border-radius:8px;overflow:hidden;border:1px solid #1A2A4A}
+.code-wrap.accent{border-left:4px solid var(--cyan)}
+.code-wrap.gold  {border-left:4px solid var(--gold)}
+.code-wrap.green {border-left:4px solid var(--green)}
+.code-wrap.red   {border-left:4px solid var(--red)}
+.code-label{background:#1A2A3A;padding:0.4rem 0.8rem;
+  font-size:0.68rem;font-weight:600;color:#6080A0;letter-spacing:1px;
+  font-family:'JetBrains Mono',monospace;border-bottom:1px solid #1A2A4A}
+pre,code{font-family:'JetBrains Mono',monospace;font-size:0.82rem;line-height:1.65}
+pre{padding:1rem;color:var(--code-text);white-space:pre;overflow-x:auto}
+code{background:#1A2A3A;color:var(--cyan);padding:1px 6px;border-radius:4px;font-size:0.85em}
+.cm{color:#4A6080}/* comment */
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:1.25rem}
+.step{display:flex;gap:1rem;align-items:flex-start}
+.step-num{width:32px;height:32px;border-radius:50%;flex-shrink:0;margin-top:2px;
+  background:var(--navy);color:var(--gold);font-size:0.85rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+.step-title{font-size:0.92rem;font-weight:700;color:var(--text);margin-bottom:0.5rem}
+
+/* CALLOUTS */
+.callouts{display:flex;flex-direction:column;gap:0.6rem}
+.callout{border-radius:6px;padding:0.7rem 0.9rem;border:1px solid var(--border);
+  border-left:3px solid var(--cyan);background:var(--bg)}
+.callout-title{font-size:0.8rem;font-weight:700;color:var(--navy);
+  margin-bottom:0.25rem;font-family:'JetBrains Mono',monospace}
+.callout-desc{font-size:0.8rem;color:var(--muted);line-height:1.45}
+
+/* VERBOS HTTP */
+.verbo{border-radius:8px;overflow:hidden;text-align:center;padding:1rem 0.5rem}
+.verbo-name{font-size:1.5rem;font-weight:700;font-family:'JetBrains Mono',monospace;margin-bottom:0.4rem}
+.verbo-desc{font-size:0.78rem;line-height:1.4;color:#C0D0E0}
+
+/* STATUS CODES */
+.status-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-top:0.75rem}
+.status-item{background:#0D1E38;border-radius:6px;padding:0.6rem 0.75rem}
+.status-code{font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:700;color:var(--gold)}
+.status-desc{font-size:0.75rem;color:#90A0C0;margin-top:2px}
+
+/* COMPARE CARD */
+.compare-card{border-radius:8px;overflow:hidden;border:1px solid #1A2A4A}
+.compare-hdr{padding:0.65rem 1rem;font-size:0.82rem;font-weight:700}
+.compare-body{background:var(--navy);padding:0;}
+
+/* INFO BOX */
+.info-box{background:#0D1E38;border:1px solid #1A3060;border-left:4px solid var(--cyan);
+  border-radius:8px;padding:0.85rem 1rem;margin-bottom:1rem;
+  font-size:0.85rem;color:var(--cyan-l);line-height:1.5}
+
+/* BULLET LIST */
+.blist{list-style:none;display:flex;flex-direction:column;gap:0.45rem}
+.blist li{font-size:0.875rem;color:var(--code-text);padding-left:1.25rem;
+  position:relative;line-height:1.5}
+.blist li::before{content:'•';position:absolute;left:0;color:var(--cyan);font-weight:700}
+
+/* TAG LIST */
+.tags{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.75rem}
+.tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;padding:3px 10px;
+  border-radius:4px;background:#0D2045;color:var(--cyan);border:1px solid #1A3060}
+
+/* TIP */
+.slide-tip{background:var(--navy-mid);margin:1.5rem -1.5rem -1.5rem;
+  padding:0.7rem 1.5rem;font-size:0.8rem;color:var(--gold);text-align:center}
+.slide-tip.green{background:#064E3B;color:#6EE7B7;border-top:1px solid #065F46}
+
+/* TASK */
+.task-list{display:flex;flex-direction:column;gap:0.6rem}
+.task{display:flex;align-items:flex-start;gap:0.75rem;
+  background:#0E1E38;border-radius:8px;padding:0.8rem 1rem}
+.task-badge{min-width:28px;height:28px;border-radius:6px;
+  background:var(--cyan);color:var(--navy-dark);
+  font-size:0.72rem;font-weight:700;display:flex;align-items:center;
+  justify-content:center;margin-top:2px;flex-shrink:0}
+.task-name{font-size:0.8rem;font-weight:700;color:var(--cyan);margin-bottom:0.2rem}
+.task-desc{font-size:0.82rem;color:#90A0C0;line-height:1.4}
+
+.bonus{background:var(--code-bg);border:1px solid #1A2A4A;border-left:4px solid var(--cyan);
+  border-radius:8px;padding:0.75rem 1rem;margin-top:1rem;
+  font-size:0.8rem;color:var(--cyan-l)}
+.bonus strong{color:var(--cyan)}
+
+/* RESUMO */
+.resumo-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1.25rem}
+.resumo-item{display:flex;align-items:flex-start;gap:0.6rem;
+  padding:0.65rem 0.75rem;border-radius:6px;background:#0D1E38}
+.resumo-bar{width:3px;min-height:20px;border-radius:2px;background:var(--cyan);flex-shrink:0;margin-top:3px}
+.resumo-text{font-size:0.82rem;color:var(--cyan-l);line-height:1.4}
+
+.next-aula{border:1px solid #1A3060;border-left:4px solid var(--gold);
+  border-radius:8px;padding:0.85rem 1rem;background:#0D1E38}
+.next-label{font-size:0.7rem;font-weight:700;color:var(--gold);
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:0.25rem}
+.next-text{font-size:0.9rem;color:var(--white)}
+
+/* FLUXO HTTP */
+.http-flow{display:flex;align-items:center;gap:0;margin-bottom:1.25rem}
+.http-node{flex:1;text-align:center;padding:0.75rem 0.5rem;border-radius:8px;font-size:0.85rem;font-weight:700}
+.http-arrow{display:flex;flex-direction:column;align-items:center;padding:0 0.5rem;color:var(--gold);font-size:0.75rem;gap:2px;flex-shrink:0}
+.http-arrow .req{color:var(--gold)}
+.http-arrow .res{color:var(--cyan-l)}
+
+@media print{
+  body{background:white;padding:0}
+  .nav-bar{display:none}
+  .slides{margin-top:0;gap:0}
+  .slide{box-shadow:none;border-radius:0;max-width:100%;
+    page-break-after:always;break-after:page;border:none}
+  .slide:last-child{page-break-after:auto}
+}
+@media(max-width:640px){
+  .grid-2,.grid-2-wide,.grid-3,.grid-4,.resumo-grid{grid-template-columns:1fr}
+  .capa-title{font-size:1.8rem}
+  .http-flow{flex-direction:column}
+  .nav-pills{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav-bar">
+  <h1>Aula 03 — Fetch API e Axios</h1>
+  <div class="nav-pills">
+    <button class="nav-pill" onclick="ir('s1')">Capa</button>
+    <button class="nav-pill" onclick="ir('s2')">Agenda</button>
+    <button class="nav-pill" onclick="ir('s3')">HTTP</button>
+    <button class="nav-pill" onclick="ir('s4')">Fetch GET</button>
+    <button class="nav-pill" onclick="ir('s5')">POST/PUT/DELETE</button>
+    <button class="nav-pill" onclick="ir('s6')">Axios</button>
+    <button class="nav-pill" onclick="ir('s7')">Axios GET/POST</button>
+    <button class="nav-pill" onclick="ir('s8')">Loading/Erro</button>
+    <button class="nav-pill" onclick="ir('s9')">Desafio</button>
+    <button class="nav-pill" onclick="ir('s10')">Resumo</button>
+  </div>
+  <button class="nav-print" onclick="window.print()">🖨 Imprimir</button>
+</nav>
+
+<div class="slides">
+
+<!-- ════════════════════════════════════════════
+     SLIDE 1 — CAPA
+════════════════════════════════════════════════ -->
+<article class="slide" id="s1">
+  <div class="capa">
+    <div class="capa-tag">Programador Front-End · Aula 03/20</div>
+    <div class="capa-title">Desenvolvimento Web</div>
+    <div class="capa-sub">Requisições HTTP, Fetch API e Integração com API REST</div>
+    <div class="capa-divider"></div>
+    <div class="capa-meta">
+      80h &nbsp;|&nbsp; Módulo Específico Profissional<br>
+      <strong>Prof. Alexandre de Santana de Souza</strong>
+    </div>
+  </div>
+  <div class="capa-footer">Firjan SENAI &nbsp;·&nbsp; Rio de Janeiro &nbsp;·&nbsp; 2024</div>
+</article>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 2 — AGENDA
+════════════════════════════════════════════════ -->
+<article class="slide" id="s2">
+  <div class="slide-header cyan">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Agenda da Aula 03</div>
+    </div>
+  </div>
+  <div class="slide-body">
+    <div class="agenda-list">
+      <div class="agenda-item">
+        <div class="agenda-num">01</div>
+        <div class="agenda-text">Como funciona o HTTP: request, response e verbos</div>
+        <span class="time-pill" style="background:#00B4D820;color:#00B4D8;border:1px solid #00B4D840;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">5 min</span>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-num">02</div>
+        <div class="agenda-text">Fetch API: buscando dados com GET e async/await</div>
+        <span class="time-pill" style="background:#F2A90020;color:#F2A900;border:1px solid #F2A90040;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">15 min</span>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-num">03</div>
+        <div class="agenda-text">Fetch: POST, PUT e DELETE — enviando dados ao servidor</div>
+        <span class="time-pill" style="background:#10B98120;color:#10B981;border:1px solid #10B98140;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">15 min</span>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-num">04</div>
+        <div class="agenda-text">Axios: instalação, comparação com Fetch e instância</div>
+        <span class="time-pill" style="background:#00B4D820;color:#00B4D8;border:1px solid #00B4D840;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">10 min</span>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-num">05</div>
+        <div class="agenda-text">Loading state, tratamento de erros e boas práticas</div>
+        <span class="time-pill" style="background:#10B98120;color:#10B981;border:1px solid #10B98140;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;">15 min</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 3 — COMO FUNCIONA O HTTP (teoria)
+════════════════════════════════════════════════ -->
+<article class="slide" id="s3">
+  <div class="slide-header cyan">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Como funciona o HTTP</div>
+    </div>
+  </div>
+  <div class="slide-body">
+
+    <!-- Fluxo cliente → servidor -->
+    <div class="http-flow" style="margin-bottom:1.25rem;">
+      <div class="http-node" style="background:#0E3060;color:#90E0EF;">
+        🖥️<br>Browser<br><span style="font-size:0.7rem;font-weight:400;">(cliente)</span>
+      </div>
+      <div class="http-arrow">
+        <span class="req">→ Requisição HTTP</span>
+        <span class="res">← Resposta (JSON)</span>
+      </div>
+      <div class="http-node" style="background:#0A2E1A;color:#6EE7B7;">
+        🗄️<br>Servidor<br><span style="font-size:0.7rem;font-weight:400;">(API REST)</span>
+      </div>
+    </div>
+
+    <!-- Verbos HTTP -->
+    <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.6rem;">Verbos HTTP — o que cada um faz</p>
+    <div class="grid-4" style="margin-bottom:1.25rem;">
+      <div class="verbo" style="background:#0E2060;">
+        <div class="verbo-name" style="color:#60A0FF;">GET</div>
+        <div class="verbo-desc">Buscar dados do servidor. Não altera nada.</div>
+      </div>
+      <div class="verbo" style="background:#0A2E1A;">
+        <div class="verbo-name" style="color:#6EE7B7;">POST</div>
+        <div class="verbo-desc">Enviar dados e criar um novo recurso.</div>
+      </div>
+      <div class="verbo" style="background:#2E1A06;">
+        <div class="verbo-name" style="color:#FBD38D;">PUT</div>
+        <div class="verbo-desc">Atualizar um recurso existente por completo.</div>
+      </div>
+      <div class="verbo" style="background:#2E0A0A;">
+        <div class="verbo-name" style="color:#FCA5A5;">DELETE</div>
+        <div class="verbo-desc">Remover um recurso do servidor.</div>
+      </div>
+    </div>
+
+    <!-- Status codes -->
+    <div class="code-wrap accent" style="border-radius:8px;overflow:hidden;">
+      <div class="code-label">Códigos de status HTTP mais importantes</div>
+      <div style="padding:1rem;background:var(--code-bg);">
+        <div class="status-grid">
+          <div class="status-item">
+            <div class="status-code">200 OK</div>
+            <div class="status-desc">Sucesso — dados retornados</div>
+          </div>
+          <div class="status-item">
+            <div class="status-code" style="color:#6EE7B7;">201 Created</div>
+            <div class="status-desc">Recurso criado com sucesso</div>
+          </div>
+          <div class="status-item">
+            <div class="status-code" style="color:#FBD38D;">400 Bad Request</div>
+            <div class="status-desc">Dados inválidos enviados</div>
+          </div>
+          <div class="status-item">
+            <div class="status-code" style="color:#FCA5A5;">401 Unauthorized</div>
+            <div class="status-desc">Não autenticado</div>
+          </div>
+          <div class="status-item">
+            <div class="status-code" style="color:#FCA5A5;">404 Not Found</div>
+            <div class="status-desc">Recurso não encontrado</div>
+          </div>
+          <div class="status-item">
+            <div class="status-code" style="color:#F87171;">500 Server Error</div>
+            <div class="status-desc">Erro interno no servidor</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 4 — PRÁTICA 1: FETCH GET
+════════════════════════════════════════════════ -->
+<article class="slide" id="s4">
+  <div class="slide-header">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Prática 1 — Fetch API: Buscando dados (GET)</div>
+    </div>
+    <span class="slide-badge bg-gold">15 min</span>
+  </div>
+  <div class="slide-body">
+    <div class="info-box">
+      <strong>API pública para praticar:</strong>
+      <code>https://jsonplaceholder.typicode.com</code>
+      — retorna dados fictícios de posts, usuários e comentários. Sem cadastro.
+    </div>
+
+    <div class="grid-2-wide">
+      <!-- coluna esquerda: formas de fetch -->
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+
+        <div>
+          <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">1. Fetch básico com <code>.then()</code></p>
+          <div class="code-wrap accent">
+<pre>fetch('https://jsonplaceholder
+    .typicode.com/posts/1')
+  .then(res => res.json())   <span class="cm">// converte</span>
+  .then(data => console.log(data))
+  .catch(err => console.error(err));</pre>
+          </div>
+        </div>
+
+        <div>
+          <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">2. Fetch com <code>async/await</code> (preferido)</p>
+          <div class="code-wrap gold">
+<pre>async function buscarPost(id) {
+  const res = await fetch(
+    `https://jsonplaceholder
+      .typicode.com/posts/${id}`
+  );
+  const data = await res.json();
+  return data;
+}</pre>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- coluna direita: dentro do React -->
+      <div>
+        <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">3. Dentro de um componente React com <code>useEffect</code></p>
+        <div class="code-wrap green">
+          <div class="code-label">src/components/Posts.jsx</div>
+<pre>import { useState, useEffect }
+  from 'react';
+
+function Posts() {
+  const [posts, setPosts] =
+    useState([]);
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder
+        .typicode.com/posts')
+      .then(r => r.json())
+      .then(d => setPosts(d));
+  }, []); <span class="cm">// [] = executa 1 vez</span>
+
+  return (
+    &lt;ul&gt;
+      {posts.slice(0, 5).map(p =&gt; (
+        &lt;li key={p.id}&gt;
+          {p.title}
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}
+
+export default Posts;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-tip">💻 Implemente o componente <code>Posts</code> e renderize os 5 primeiros títulos no browser!</div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 5 — PRÁTICA 2: POST, PUT, DELETE
+════════════════════════════════════════════════ -->
+<article class="slide" id="s5">
+  <div class="slide-header cyan">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Prática 2 — Fetch: POST, PUT e DELETE</div>
+    </div>
+    <span class="slide-badge bg-cyan">15 min</span>
+  </div>
+  <div class="slide-body">
+
+    <div class="grid-2" style="margin-bottom:1rem;">
+      <!-- POST -->
+      <div>
+        <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">POST — criar um novo recurso</p>
+        <div class="code-wrap green">
+<pre>fetch('/api/posts', {
+  method: 'POST',
+  headers: {
+    'Content-Type':
+      'application/json',
+  },
+  body: JSON.stringify({
+    title: 'Novo Post',
+    body:  'Conteúdo...',
+    userId: 1,
+  }),
+})
+  .then(r => r.json())
+  .then(data => console.log(data));</pre>
+        </div>
+      </div>
+
+      <!-- PUT -->
+      <div>
+        <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">PUT — atualizar um recurso existente</p>
+        <div class="code-wrap gold">
+<pre>fetch('/api/posts/1', {
+  method: 'PUT',
+  headers: {
+    'Content-Type':
+      'application/json',
+  },
+  body: JSON.stringify({
+    title: 'Título atualizado',
+  }),
+})
+  .then(r => r.json())
+  .then(data => console.log(data));</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- DELETE -->
+      <div>
+        <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">DELETE — remover um recurso</p>
+        <div class="code-wrap red">
+<pre>fetch('/api/posts/1', {
+  method: 'DELETE',
+})
+  .then(res =>
+    console.log('Removido:',
+      res.status)  <span class="cm">// 200 ou 204</span>
+  );</pre>
+        </div>
+      </div>
+
+      <!-- Headers -->
+      <div>
+        <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">Headers HTTP mais usados</p>
+        <div class="code-wrap accent">
+<pre><span class="cm">// Indica o formato do corpo:</span>
+'Content-Type': 'application/json'
+
+<span class="cm">// Autenticação por token:</span>
+'Authorization': 'Bearer &lt;token&gt;'
+
+<span class="cm">// Formato aceito na resposta:</span>
+'Accept': 'application/json'</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-tip">🧪 Teste no console: <code>fetch('https://jsonplaceholder.typicode.com/posts', &#123;method:'POST', headers:&#123;...&#125;, body: JSON.stringify(&#123;...&#125;)&#125;)</code></div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 6 — PRÁTICA 3: AXIOS INSTALAÇÃO E COMPARAÇÃO
+════════════════════════════════════════════════ -->
+<article class="slide" id="s6">
+  <div class="slide-header">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Prática 3 — Axios: instalação e comparação com Fetch</div>
+    </div>
+    <span class="slide-badge bg-gold">10 min</span>
+  </div>
+  <div class="slide-body">
+
+    <div style="margin-bottom:1.25rem;">
+      <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">Instalação</p>
+      <div class="code-wrap accent">
+        <pre>npm install axios</pre>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Fetch -->
+      <div class="compare-card">
+        <div class="compare-hdr" style="background:#1A3A6B;color:#90E0EF;">Fetch API (nativo do browser)</div>
+        <div style="background:#0D2248;padding:1rem;">
+          <ul class="blist">
+            <li>Nativo do browser — sem instalar nada</li>
+            <li>Precisa chamar <code>.json()</code> na resposta</li>
+            <li><strong style="color:#FCA5A5;">Não rejeita</strong> erros HTTP como 404 e 500</li>
+            <li>Sem timeout nativo configurável</li>
+            <li>Sem interceptors nativos</li>
+            <li>Precisa de <code>JSON.stringify()</code> no body</li>
+            <li>Precisa definir <code>Content-Type</code> manualmente</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Axios -->
+      <div class="compare-card">
+        <div class="compare-hdr" style="background:#0E3060;color:#F2A900;">Axios (biblioteca externa)</div>
+        <div style="background:#091830;padding:1rem;">
+          <ul class="blist">
+            <li>Biblioteca pequena (~13kb gzipped)</li>
+            <li>Retorna <code>data</code> diretamente na resposta</li>
+            <li><strong style="color:#6EE7B7;">Rejeita</strong> erros HTTP automaticamente</li>
+            <li>Timeout configurável em milissegundos</li>
+            <li>Interceptors prontos (ex: adicionar token)</li>
+            <li>Serializa o objeto JS automaticamente</li>
+            <li>Define <code>Content-Type</code> automaticamente</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-tip">📦 Instale o Axios no seu projeto e substitua um <code>fetch</code> pelo equivalente em Axios!</div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 7 — PRÁTICA 4: AXIOS GET, POST E INSTÂNCIA
+════════════════════════════════════════════════ -->
+<article class="slide" id="s7">
+  <div class="slide-header green">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Prática 4 — Axios: GET, POST e instância com baseURL</div>
+    </div>
+    <span class="slide-badge bg-green">15 min</span>
+  </div>
+  <div class="slide-body">
+
+    <div class="grid-2" style="margin-bottom:1rem;">
+      <!-- GET com axios -->
+      <div>
+        <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">GET com Axios</p>
+        <div class="code-wrap accent">
+<pre>import axios from 'axios';
+
+async function buscar() {
+  <span class="cm">// data já é o objeto JS!</span>
+  <span class="cm">// sem .json() nem JSON.stringify</span>
+  const { data } = await axios.get(
+    'https://jsonplaceholder
+      .typicode.com/users'
+  );
+  console.log(data);
+}</pre>
+        </div>
+      </div>
+
+      <!-- POST com axios -->
+      <div>
+        <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">POST com Axios — muito mais simples</p>
+        <div class="code-wrap gold">
+<pre>async function criar(dados) {
+  <span class="cm">// objeto JS direto no 2º arg</span>
+  <span class="cm">// axios faz JSON.stringify por você</span>
+  const { data } = await axios.post(
+    '/api/usuarios',
+    dados
+  );
+  return data;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instância -->
+    <p style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">
+      Instância com <code>axios.create()</code> — padrão recomendado para projetos reais
+    </p>
+    <div class="grid-2">
+      <div class="code-wrap green">
+        <div class="code-label">src/services/api.js</div>
+<pre>import axios from 'axios';
+
+<span class="cm">// Configura uma instância centralizada</span>
+const api = axios.create({
+  baseURL: 'https://jsonplaceholder
+    .typicode.com',
+  timeout: 5000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export default api;</pre>
+      </div>
+      <div class="code-wrap accent">
+        <div class="code-label">Uso em qualquer componente</div>
+<pre>import api from '../services/api';
+
+<span class="cm">// baseURL já está configurada</span>
+<span class="cm">// só precisa do caminho relativo</span>
+const { data } = await api.get(
+  '/posts'
+);
+
+const { data: novo } = await api.post(
+  '/posts', { title: 'Novo' }
+);</pre>
+      </div>
+    </div>
+
+    <div class="slide-tip green">🗂️ Crie o arquivo <code>src/services/api.js</code> com sua instância Axios e use-a para buscar <code>/users</code>!</div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 8 — PRÁTICA 5: LOADING STATE E ERROS
+════════════════════════════════════════════════ -->
+<article class="slide" id="s8">
+  <div class="slide-header cyan">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Prática 5 — Loading State e Tratamento de Erros</div>
+    </div>
+    <span class="slide-badge bg-cyan">15 min</span>
+  </div>
+  <div class="slide-body">
+    <p style="font-size:0.85rem;color:var(--muted);font-style:italic;margin-bottom:1rem;">Componente completo com os três estados: loading, erro e dados</p>
+
+    <div class="grid-2-wide">
+      <!-- Componente completo -->
+      <div class="code-wrap accent">
+        <div class="code-label">src/components/Usuarios.jsx</div>
+<pre>import { useState, useEffect }
+  from 'react';
+import api from '../services/api';
+
+function Usuarios() {
+  const [users,   setUsers]   =
+    useState([]);
+  const [loading, setLoading] =
+    useState(true);
+  const [error,   setError]   =
+    useState(null);
+
+  useEffect(() => {
+    api.get('/users')
+      .then(({ data }) =>
+        setUsers(data))
+      .catch(err =>
+        setError(err.message))
+      .finally(() =>
+        setLoading(false));
+  }, []);
+
+  if (loading)
+    return &lt;p&gt;Carregando...&lt;/p&gt;;
+
+  if (error)
+    return &lt;p&gt;Erro: {error}&lt;/p&gt;;
+
+  return (
+    &lt;ul&gt;
+      {users.map(u =&gt; (
+        &lt;li key={u.id}&gt;
+          &lt;strong&gt;{u.name}&lt;/strong&gt;
+          &lt;br /&gt;
+          {u.email}
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}
+
+export default Usuarios;</pre>
+      </div>
+
+      <!-- Boas práticas -->
+      <div class="callouts">
+        <div class="callout" style="border-left-color:var(--green);">
+          <div class="callout-title" style="color:var(--green);">1. Sempre usar .catch()</div>
+          <div class="callout-desc">Erros de rede ou HTTP devem ser capturados e exibidos ao usuário de forma amigável — nunca deixe a requisição silenciosa.</div>
+        </div>
+        <div class="callout" style="border-left-color:var(--gold);">
+          <div class="callout-title" style="color:var(--gold);">2. Estado de loading</div>
+          <div class="callout-desc">Sempre exiba um feedback visual enquanto aguarda a resposta. O usuário precisa saber que algo está acontecendo.</div>
+        </div>
+        <div class="callout" style="border-left-color:var(--cyan);">
+          <div class="callout-title">.finally()</div>
+          <div class="callout-desc">Executa <strong>sempre</strong> — tanto em sucesso quanto em erro. Ideal para resetar o estado de <code>loading</code>.</div>
+        </div>
+        <div class="callout" style="border-left-color:var(--red);">
+          <div class="callout-title" style="color:var(--red);">⚠️ Cuidado com Fetch!</div>
+          <div class="callout-desc">O Fetch <strong>não lança erro</strong> para status 4xx/5xx. Sempre verifique <code>if (!res.ok) throw new Error(...)</code> antes do <code>.json()</code>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-tip">🧪 Implemente o componente <code>Usuarios</code> com os três estados: loading, erro e lista!</div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 9 — DESAFIO DE INTEGRAÇÃO
+════════════════════════════════════════════════ -->
+<article class="slide" id="s9">
+  <div class="slide-header">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Desafio de Integração — Aula 03</div>
+    </div>
+    <span class="slide-badge bg-gold">20 min</span>
+  </div>
+  <div class="slide-body dark">
+
+    <p style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:1rem;">
+      Construa um buscador de usuários consumindo uma API real
+    </p>
+
+    <div class="task-list">
+      <div class="task">
+        <div class="task-badge">1</div>
+        <div>
+          <div class="task-name">Listar usuários</div>
+          <div class="task-desc">Busque <code>/users</code> da JSONPlaceholder e exiba uma lista com nome, e-mail e cidade de cada usuário.</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-badge">2</div>
+        <div>
+          <div class="task-name">Detalhe — posts do usuário</div>
+          <div class="task-desc">Ao clicar em um usuário, faça uma segunda requisição para <code>/posts?userId=X</code> e exiba os posts dele na mesma tela.</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-badge">3</div>
+        <div>
+          <div class="task-name">Estado de loading</div>
+          <div class="task-desc">Mostre <em>"Carregando..."</em> enquanto cada requisição está em andamento. Use um estado <code>loading</code> separado por chamada.</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-badge">4</div>
+        <div>
+          <div class="task-name">Tratamento de erro</div>
+          <div class="task-desc">Simule um erro trocando a URL por uma inválida e exiba uma mensagem amigável com um botão para tentar novamente.</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-badge">5</div>
+        <div>
+          <div class="task-name">Instância Axios</div>
+          <div class="task-desc">Use <code>axios.create()</code> com <code>baseURL</code> em <code>src/services/api.js</code> para todas as chamadas — sem repetir a URL base.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bonus">
+      <strong>🌟 Bônus:</strong> adicione um <code>&lt;input&gt;</code> de busca que filtre os usuários por nome localmente (usando <code>.filter()</code> no array já carregado, sem nova requisição).
+    </div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 10 — RESUMO
+════════════════════════════════════════════════ -->
+<article class="slide" id="s10">
+  <div class="slide-header" style="border-bottom-color:var(--cyan);">
+    <div class="slide-header-left">
+      <div class="slide-logo">Firjan<br>SENAI</div>
+      <div class="slide-title">Resumo da Aula 03</div>
+    </div>
+  </div>
+  <div class="slide-body dark">
+
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text">HTTP: GET busca, POST cria, PUT atualiza, DELETE remove</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text">Axios: instalação com <code>npm install axios</code></div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text">Fetch API com <code>.then()</code> e <code>async/await</code></div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text">Axios: sem <code>JSON.stringify</code> nem <code>Content-Type</code> manual</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text"><code>useEffect</code> para buscar dados ao montar componente</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text"><code>.catch()</code> e <code>.finally()</code> para tratar erros e resetar loading</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text">Três estados sempre presentes: <code>loading</code>, <code>error</code> e <code>data</code></div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-bar"></div>
+        <div class="resumo-text">Instância com <code>axios.create()</code> centraliza a <code>baseURL</code></div>
+      </div>
+    </div>
+
+    <div class="next-aula">
+      <div class="next-label">Próxima Aula 04/20</div>
+      <div class="next-text">Gerenciamento de Estado Global — Context API e useReducer</div>
+    </div>
+
+    <p style="text-align:center;font-size:0.7rem;color:#3A5070;margin-top:1rem;letter-spacing:1px;">
+      Firjan SENAI · Programador Front-End · 2024
+    </p>
+  </div>
+</article>
+
+</div>
+
+<script>
+function ir(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+}
+const slides=document.querySelectorAll('.slide');
+const pills=document.querySelectorAll('.nav-pill');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const idx=[...slides].indexOf(e.target);
+      pills.forEach(p=>p.classList.remove('active'));
+      if(pills[idx])pills[idx].classList.add('active');
+    }
+  });
+},{threshold:0.4});
+slides.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
